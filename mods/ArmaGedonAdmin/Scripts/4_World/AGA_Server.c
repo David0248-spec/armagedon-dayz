@@ -239,6 +239,14 @@ class AGA_Server
 		string state = "Raiding is CLOSED right now.";
 		if (AGA_Raid.IsRaidTime()) state = "Raiding is OPEN right now.";
 		NotificationSystem.SendNotificationToPlayerIdentityExtended(p.GetIdentity(), 14, "WELCOME TO ARMA-GEDON", state + " " + AGA_Raid.Cfg().Info, "set:dayz_gui image:icon_info");
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(SendRules, 16000, false, steamId);
+	}
+
+	void SendRules(string steamId)
+	{
+		PlayerBase p = FindPlayer(steamId);
+		if (!p || !p.GetIdentity()) return;
+		NotificationSystem.SendNotificationToPlayerIdentityExtended(p.GetIdentity(), 20, "SERVER RULES", "1. No cheats, exploits or glitching into bases.  2. No racism or toxic behaviour.  3. Raid only during raid hours.  4. No combat logging.  5. Max 1 base per group, build reasonably.  6. Admin decisions are final. AFK > 15 min = kick.", "set:dayz_gui image:icon_info");
 	}
 
 	// jednorazowa sonda: płaskie, wolne miejsca na lotniskach pod spawn helikopterów
