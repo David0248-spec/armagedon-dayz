@@ -20,6 +20,7 @@ class AGA_Menu extends UIScriptedMenu
 	protected vector m_Pick;
 	protected float m_Tick;
 	protected bool m_Centered;
+	protected ref AGA_MapHandler m_MapHandler;
 
 	static ref array<string> s_AllItems;
 	static ref array<string> s_AllNames;
@@ -41,7 +42,8 @@ class AGA_Menu extends UIScriptedMenu
 			m_Pages.Insert(layoutRoot.FindAnyWidget("Page" + i.ToString()));
 		if (m_Map)
 		{
-			m_Map.SetHandler(this);
+			m_MapHandler = new AGA_MapHandler(this);
+			m_Map.SetHandler(m_MapHandler);
 			PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
 			if (p)
 			{
@@ -205,7 +207,7 @@ class AGA_Menu extends UIScriptedMenu
 	}
 
 	// ---------- zdarzenia ----------
-	override bool OnMouseButtonDown(Widget w, int x, int y, int button)
+	bool OnMapClick(Widget w, int x, int y, int button)
 	{
 		if (w == m_Map)
 		{
@@ -317,5 +319,17 @@ class AGA_Menu extends UIScriptedMenu
 		if (qty < 1) qty = 1;
 		vector at = m_Pick;
 		AGA_Client.Get().Action(AGA_ACT_SPAWN, "", m_ItemRows[r], at, qty, mode);
+	}
+}
+
+class AGA_MapHandler extends ScriptedWidgetEventHandler
+{
+	protected AGA_Menu m_Menu;
+	void AGA_MapHandler(AGA_Menu menu) { m_Menu = menu; }
+	override bool OnMouseButtonDown(Widget w, int x, int y, int button)
+	{
+		if (m_Menu)
+			return m_Menu.OnMapClick(w, x, y, button);
+		return false;
 	}
 }
