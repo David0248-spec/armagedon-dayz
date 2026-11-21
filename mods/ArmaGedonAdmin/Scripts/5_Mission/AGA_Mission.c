@@ -3,6 +3,7 @@ modded class MissionGameplay
 {
 	protected bool m_AGA_HomeDown;
 	protected bool m_AGA_EndDown;
+	protected ref AGA_Menu m_AGA_Menu;
 
 	override void OnUpdate(float timeslice)
 	{
@@ -43,7 +44,8 @@ modded class MissionGameplay
 		}
 		if (AGA_Client.Get().IsFlying())
 			AGA_Client.Get().StopFly(false);
-		GetGame().GetUIManager().ShowScriptedMenu(new AGA_Menu(), null);
+		m_AGA_Menu = new AGA_Menu();
+		GetGame().GetUIManager().ShowScriptedMenu(m_AGA_Menu, null);
 	}
 
 	void AGA_ToggleFly()
