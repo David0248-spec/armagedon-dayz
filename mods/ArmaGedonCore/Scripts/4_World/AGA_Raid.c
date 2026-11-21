@@ -18,7 +18,7 @@ class AGA_Raid
 		if (!s_Cfg)
 		{
 			s_Cfg = new AGA_RaidConfig();
-			string path = "$profile:ArmaGedonAdmin/raid.json";
+			string path = "$profile:ArmaGedonCore/raid.json";
 			if (FileExist(path))
 				JsonFileLoader<AGA_RaidConfig>.JsonLoadFile(path, s_Cfg);
 			else

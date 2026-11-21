@@ -3,7 +3,7 @@ class AGA_Server
 {
 	static ref AGA_Server s_Instance;
 
-	protected string m_Dir = "$profile:ArmaGedonAdmin";
+	protected string m_Dir = "$profile:ArmaGedonCore";
 	protected ref AGA_Config m_Config;
 	protected ref AGA_Bans m_Bans;
 	protected ref map<string, bool> m_God;
@@ -93,7 +93,7 @@ class AGA_Server
 		m_Recent.Insert(full);
 		if (m_Recent.Count() > 60)
 			m_Recent.Remove(0);
-		Print("[ArmaGedonAdmin] " + line);
+		Print("[ArmaGedonCore] " + line);
 	}
 
 	void CombatLog(string line)

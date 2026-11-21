@@ -1,6 +1,6 @@
 class CfgPatches
 {
-	class ArmaGedonAdmin
+	class ArmaGedonCore
 	{
 		units[] = {};
 		weapons[] = {};
@@ -11,31 +11,30 @@ class CfgPatches
 
 class CfgMods
 {
-	class ArmaGedonAdmin
+	class ArmaGedonCore
 	{
-		dir = "ArmaGedonAdmin";
+		dir = "ArmaGedonCore";
 		name = "ARMA-GEDON Admin";
 		author = "ARMA-GEDON";
 		version = "1.0";
 		type = "mod";
-		inputs = "ArmaGedonAdmin/Data/Inputs.xml";
 		dependencies[] = {"Game", "World", "Mission"};
 		class defs
 		{
 			class gameScriptModule
 			{
 				value = "";
-				files[] = {"ArmaGedonAdmin/Scripts/3_Game"};
+				files[] = {"ArmaGedonCore/Scripts/3_Game"};
 			};
 			class worldScriptModule
 			{
 				value = "";
-				files[] = {"ArmaGedonAdmin/Scripts/4_World"};
+				files[] = {"ArmaGedonCore/Scripts/4_World"};
 			};
 			class missionScriptModule
 			{
 				value = "";
-				files[] = {"ArmaGedonAdmin/Scripts/5_Mission"};
+				files[] = {"ArmaGedonCore/Scripts/5_Mission"};
 			};
 		};
 	};

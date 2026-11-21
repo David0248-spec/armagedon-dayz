@@ -34,41 +34,6 @@ modded class PlayerBase
 			return;
 		}
 
-		switch (rpc_type)
-		{
-			case AGA_RPC_AUTH_RESULT:
-			{
-				bool ok;
-				if (ctx.Read(ok))
-					AGA_Client.Get().SetAdmin(ok);
-				break;
-			}
-			case AGA_RPC_PLAYERS_RES:
-				AGA_Client.Get().ReadPlayers(ctx);
-				break;
-			case AGA_RPC_INVIS_SYNC:
-				AGA_Client.Get().ReadInvis(ctx);
-				break;
-			case AGA_RPC_SHOT:
-				AGA_Client.Get().ReadShot(ctx);
-				break;
-			case AGA_RPC_LOGS_RES:
-				AGA_Client.Get().ReadLogs(ctx);
-				break;
-			case AGA_RPC_FREEZE:
-			{
-				bool fz;
-				if (ctx.Read(fz))
-				{
-					GetInputController().SetDisabled(fz);
-					if (fz)
-						NotificationSystem.AddNotificationExtended(8, "ADMINISTRACJA", "Zostales zamrozony przez administratora", "set:dayz_gui image:icon_info");
-					else
-						NotificationSystem.AddNotificationExtended(5, "ADMINISTRACJA", "Mozesz sie znowu ruszac", "set:dayz_gui image:icon_info");
-				}
-				break;
-			}
-		}
 	}
 
 	void AGA_FullHeal()

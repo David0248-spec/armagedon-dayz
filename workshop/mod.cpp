@@ -4,6 +4,6 @@ logo = "";
 logoSmall = "";
 logoOver = "";
 tooltip = "ARMA-GEDON DayZ";
-overview = "Paczka serwera ARMA-GEDON: panel administracyjny i zawartość serwera.";
+overview = "Paczka serwera ARMA-GEDON: funkcje i zawartość serwera.";
 author = "ARMA-GEDON";
 version = "1.0";

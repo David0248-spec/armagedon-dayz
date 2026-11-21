@@ -2,6 +2,7 @@
 # id_workshop   nazwa_folderu
 1559212036      @cf
 2464526692      @gamelabs
+1828439124      @vppadmintools
 2545327648      @dabsframework
 2291785308      @dayz-expansion-core
 2116157322      @dayz-expansion-licensed
