@@ -148,7 +148,6 @@ class AGA_Menu extends UIScriptedMenu
 			NotificationSystem.AddNotificationExtended(8, "ARMA-GEDON ADMIN", "Blad wczytania layoutu panelu");
 			return null;
 		}
-		AGA_Client.Get().CLog("layout wczytany, Map=" + (layoutRoot.FindAnyWidget("Map") != null).ToString() + ", Nav0=" + (layoutRoot.FindAnyWidget("Nav0") != null).ToString());
 		m_Map = MapWidget.Cast(layoutRoot.FindAnyWidget("Map"));
 		m_Markers = layoutRoot.FindAnyWidget("Markers");
 		m_Search = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("ISearch"));
@@ -179,14 +178,12 @@ class AGA_Menu extends UIScriptedMenu
 
 		BuildCars();
 		ShowPage(s_Page);
-		AGA_Client.Get().CLog("Init panelu zakonczony");
 		return layoutRoot;
 	}
 
 	override void OnShow()
 	{
 		super.OnShow();
-		AGA_Client.Get().CLog("panel pokazany (OnShow)");
 		AGA_Client.Get().WantPlayers = true;
 		AGA_Client.Get().RequestPlayers();
 		GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
@@ -574,27 +571,14 @@ class AGA_Menu extends UIScriptedMenu
 			SetTxt("VTile" + i.ToString() + "_nm", m_CarName[i]);
 	}
 
-	void DressCar(EntityAI car, int idx)
-	{
-		if (!car) return;
-		array<string> wheels = {"HatchbackWheel", "CivSedanWheel", "Hatchback_02_Wheel", "Sedan_02_Wheel", "Offroad_02_Wheel", "Truck_01_Wheel"};
-		for (int i = 0; i < 4; i++)
-			car.GetInventory().CreateInInventory(wheels[idx]);
-		if (idx == 5)
-		{
-			for (int k = 0; k < 4; k++)
-				car.GetInventory().CreateInInventory("Truck_01_WheelDouble");
-		}
-	}
-
 	void RefreshCars()
 	{
 		if (m_CarEnt.Count() == 0)
 		{
 			for (int i = 0; i < 6; i++)
 			{
+				AGA_Client.Get().CLog("podglad pojazdu: " + m_CarCls[i]);
 				EntityAI e = MakeLocal(m_CarCls[i]);
-				DressCar(e, i);
 				m_CarEnt.Insert(e);
 				SetPreview("VTile" + i.ToString() + "_pv", e, Vector(-8, 40, 0));
 			}
@@ -609,17 +593,26 @@ class AGA_Menu extends UIScriptedMenu
 		SetPreview("VDetail_pv", null, vector.Zero);
 		KillEnt(m_CarDetailEnt);
 		m_CarDetailEnt = MakeLocal(m_CarCls[idx]);
-		DressCar(m_CarDetailEnt, idx);
 		SetPreview("VDetail_pv", m_CarDetailEnt, Vector(-8, m_Rot, 0));
 		SetTxt("VDName", m_CarName[idx]);
 		RefreshCars();
 	}
 
 	// ------------------------------------------------------------ odświeżanie
+	protected bool m_EscDown = true;
+
 	override void Update(float timeslice)
 	{
 		super.Update(timeslice);
 		AGA_Client c = AGA_Client.Get();
+
+		bool esc = KeyState(KeyCode.KC_ESCAPE) != 0;
+		if (esc && !m_EscDown)
+		{
+			Close();
+			return;
+		}
+		m_EscDown = esc;
 
 		if (s_Page == 2 && m_Search)
 		{

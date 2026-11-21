@@ -4,6 +4,7 @@ modded class MissionGameplay
 	protected bool m_AGA_HomeDown;
 	protected bool m_AGA_EndDown;
 	protected ref AGA_Menu m_AGA_Menu;
+	protected int m_AGA_LastToggle;
 
 	override void OnUpdate(float timeslice)
 	{
@@ -29,10 +30,11 @@ modded class MissionGameplay
 
 	void AGA_TogglePanel()
 	{
+		int now = GetGame().GetTime();
+		if (now - m_AGA_LastToggle < 400)
+			return;
+		m_AGA_LastToggle = now;
 		UIScriptedMenu cur = GetGame().GetUIManager().GetMenu();
-		string curName = "brak";
-		if (cur) curName = cur.ClassName();
-		AGA_Client.Get().CLog("wcisnieto HOME/INSERT: admin=" + AGA_Client.Get().IsAdmin().ToString() + ", otwarte menu=" + curName);
 		if (cur && AGA_Menu.Cast(cur))
 		{
 			cur.Close();
@@ -49,7 +51,8 @@ modded class MissionGameplay
 			AGA_Client.Get().StopFly(false);
 		m_AGA_Menu = new AGA_Menu();
 		UIScriptedMenu shown = GetGame().GetUIManager().ShowScriptedMenu(m_AGA_Menu, null);
-		AGA_Client.Get().CLog("ShowScriptedMenu zwrocil: " + (shown != null).ToString());
+		if (!shown)
+			AGA_Client.Get().CLog("BLAD: nie udalo sie otworzyc okna panelu");
 	}
 
 	void AGA_ToggleFly()

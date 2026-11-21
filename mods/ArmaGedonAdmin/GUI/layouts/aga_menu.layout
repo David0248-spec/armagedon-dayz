@@ -5683,7 +5683,7 @@ FrameWidgetClass AGA_Root {
            vexactsize 0
            ignorepointer 1
            color 0.55 0.58 0.63 1
-           text "Kola, akumulator, swiece, drzwi, maska, bagaznik. Paliwo, olej, plyn chlodniczy i hamulcowy do pelna."
+           text "Podglad pokazuje sama karoserie. Pojazd pojawi sie przed toba z kompletem kol, akumulatorem, swiecami, drzwiami, maska i bagaznikiem oraz pelnym paliwem, olejem i plynami."
            font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 15
