@@ -7,7 +7,7 @@ modded class PlayerBase
 
 		if (GetGame().IsServer())
 		{
-			if (!sender || sender != GetIdentity())
+			if (!sender || !GetIdentity() || sender.GetPlainId() != GetIdentity().GetPlainId())
 				return;
 			switch (rpc_type)
 			{
