@@ -652,6 +652,16 @@ class AGA_Client
 		{
 			foreach (AGA_Shot s : m_Shots)
 			{
+				if (s.From == s.To)
+				{
+					vector hm = GetGame().GetScreenPos(s.From);
+					if (hm[2] > 0)
+					{
+						m_Canvas.DrawLine(hm[0] - 9, hm[1] - 9, hm[0] + 9, hm[1] + 9, 3, 0xFFFF2020);
+						m_Canvas.DrawLine(hm[0] - 9, hm[1] + 9, hm[0] + 9, hm[1] - 9, 3, 0xFFFF2020);
+					}
+					continue;
+				}
 				float fade = 1 - s.Age / 12.0;
 				int a = Math.Clamp(fade * 255, 30, 255);
 				int scol = ARGB(a, 255, 150, 40);

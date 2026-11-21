@@ -117,6 +117,7 @@ modded class PlayerBase
 		if (source)
 			weapon = source.GetDisplayName();
 		float dist = vector.Distance(shooter.GetPosition(), GetPosition());
+		AGA_Server.Get().OnHitMarker(ModelToWorld(modelPos), AGA_Server.Get().NameOf(this));
 		AGA_Server.Get().CombatLog("TRAFIENIE " + AGA_Server.Get().NameOf(shooter) + " -> " + AGA_Server.Get().NameOf(this) + " | " + weapon + " | " + dmgZone + " | " + Math.Round(dist).ToString() + " m | dmg " + Math.Round(dmg).ToString());
 	}
 
@@ -151,14 +152,17 @@ modded class Weapon_Base
 		PlayerBase pb = PlayerBase.Cast(GetHierarchyRootPlayer());
 		if (!pb)
 			return;
-		vector usti = ModelToWorld(GetSelectionPositionMS("usti hlavne"));
-		vector konec = ModelToWorld(GetSelectionPositionMS("konec hlavne"));
-		vector dir = vector.Direction(konec, usti);
-		if (dir.Length() < 0.01)
+		// kierunek z kątów celowania postaci (to samo liczy gra dla linii strzału), start z głowy
+		vector usti = pb.GetBonePositionWS(pb.GetBoneIndexByName("Head"));
+		vector aim = pb.GetOrientation();
+		HumanCommandWeapons hcw = pb.GetCommandModifier_Weapons();
+		if (hcw)
 		{
-			usti = pb.GetPosition() + Vector(0, 1.5, 0);
-			dir = pb.GetDirection();
+			aim[0] = aim[0] + hcw.GetBaseAimingAngleLR() + hcw.GetAimingHandsOffsetLR();
+			aim[1] = aim[1] + hcw.GetBaseAimingAngleUD() + hcw.GetAimingHandsOffsetUD();
 		}
+		aim[2] = 0;
+		vector dir = aim.AnglesToVector();
 		dir.Normalize();
 		AGA_Server.Get().OnShot(pb, usti, dir, ammoType, GetDisplayName());
 	}

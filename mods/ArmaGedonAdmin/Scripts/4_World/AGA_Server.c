@@ -240,10 +240,28 @@ class AGA_Server
 			PlayerBase adm = PlayerBase.Cast(m);
 			if (!adm || !IsAdmin(adm.GetIdentity())) continue;
 			ScriptRPC rpc = new ScriptRPC();
-			rpc.Write(from);
+			rpc.Write(from + dir * 1.2);
 			rpc.Write(to);
 			rpc.Write(NameOf(shooter));
 			rpc.Write(weapon);
+			rpc.Send(adm, AGA_RPC_SHOT, false, adm.GetIdentity());
+		}
+	}
+
+	// znacznik prawdziwego trafienia w gracza / bota (pozycja z systemu obrażeń)
+	void OnHitMarker(vector worldPos, string victim)
+	{
+		array<Man> players = new array<Man>;
+		GetGame().GetPlayers(players);
+		foreach (Man m : players)
+		{
+			PlayerBase adm = PlayerBase.Cast(m);
+			if (!adm || !IsAdmin(adm.GetIdentity())) continue;
+			ScriptRPC rpc = new ScriptRPC();
+			rpc.Write(worldPos);
+			rpc.Write(worldPos);
+			rpc.Write(victim);
+			rpc.Write("TRAFIENIE");
 			rpc.Send(adm, AGA_RPC_SHOT, false, adm.GetIdentity());
 		}
 	}
