@@ -1,0 +1,1600 @@
+FrameWidgetClass AGA_Root {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+PanelWidgetClass Dim {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0 0 0 0.55
+ style rover_sim_colorable
+}
+PanelWidgetClass MapBg {
+ position 0.01 0.02
+ size 0.615 0.96
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0 0 0 1
+ style rover_sim_colorable
+ {
+MapWidgetClass Map {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 0
+}
+ }
+}
+PanelWidgetClass Side {
+ position 0.635 0.02
+ size 0.355 0.96
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.06 0.06 0.07 0.94
+ style rover_sim_colorable
+ {
+TextWidgetClass Title {
+ position 0.03 0.005
+ size 0.94 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "ARMA-GEDON ADMIN"
+ font "gui/fonts/metron28"
+ "exact text" 0
+ "text valign" center
+}
+TextWidgetClass Status {
+ position 0.03 0.04
+ size 0.94 0.03
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text ""
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+}
+ButtonWidgetClass Tab0 {
+ position 0.01 0.075
+ size 0.235 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Tab0Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Tab0Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "GRACZE"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Tab1 {
+ position 0.255 0.075
+ size 0.235 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Tab1Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Tab1Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "PRZEDMIOTY"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Tab2 {
+ position 0.5 0.075
+ size 0.235 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Tab2Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Tab2Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "SWIAT"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Tab3 {
+ position 0.745 0.075
+ size 0.235 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Tab3Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Tab3Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "JA"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+FrameWidgetClass Page0 {
+ position 0.01 0.13
+ size 0.98 0.85
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+TextListboxWidgetClass PlayerList {
+ position 0.02 0.0
+ size 0.96 0.45
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 0
+ color 1 1 1 1
+ style Editor
+ "title visible" 0
+ colums ""
+ lines 40
+ "highlight row" 1
+ font "gui/fonts/metron"
+}
+EditBoxWidgetClass ReasonBox {
+ position 0.02 0.47
+ size 0.96 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 1 1 1 1
+ style DefaultBorder
+ text "powod"
+ font "gui/fonts/metron22"
+ "exact text" 0
+}
+ButtonWidgetClass BtnTpTo {
+ position 0.02 0.53
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnTpToBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnTpToTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "TP DO GRACZA"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnBring {
+ position 0.51 0.53
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnBringBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnBringTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "PRZYCIAGNIJ"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnHeal {
+ position 0.02 0.5850000000000001
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnHealBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnHealTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "ULECZ"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnGodP {
+ position 0.51 0.5850000000000001
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnGodPBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnGodPTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "GOD ON/OFF"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnKill {
+ position 0.02 0.64
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnKillBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnKillTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "ZABIJ"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnLocate {
+ position 0.51 0.64
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnLocateBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnLocateTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "POKAZ NA MAPIE"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnKick {
+ position 0.02 0.6950000000000001
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnKickBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnKickTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "KICK"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnBan {
+ position 0.51 0.6950000000000001
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnBanBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnBanTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "BAN"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ }
+}
+FrameWidgetClass Page1 {
+ position 0.01 0.13
+ size 0.98 0.85
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+EditBoxWidgetClass SearchBox {
+ position 0.02 0.0
+ size 0.62 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 1 1 1 1
+ style DefaultBorder
+ text ""
+ font "gui/fonts/metron22"
+ "exact text" 0
+}
+TextWidgetClass QtyLbl {
+ position 0.66 0
+ size 0.12 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "ILOSC"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+}
+EditBoxWidgetClass QtyBox {
+ position 0.8 0.0
+ size 0.18 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 1 1 1 1
+ style DefaultBorder
+ text "1"
+ font "gui/fonts/metron22"
+ "exact text" 0
+}
+TextListboxWidgetClass ItemList {
+ position 0.02 0.055
+ size 0.96 0.5
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 0
+ color 1 1 1 1
+ style Editor
+ "title visible" 0
+ colums ""
+ lines 40
+ "highlight row" 1
+ font "gui/fonts/metron"
+}
+ButtonWidgetClass BtnSpawnInv {
+ position 0.02 0.57
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnSpawnInvBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnSpawnInvTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "DO EKWIPUNKU"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnSpawnGround {
+ position 0.51 0.57
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnSpawnGroundBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnSpawnGroundTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "POD NOGI"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnSpawnPoint {
+ position 0.02 0.625
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnSpawnPointBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnSpawnPointTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "W PUNKT Z MAPY"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+TextWidgetClass CarLbl {
+ position 0.02 0.685
+ size 0.96 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "GOTOWE POJAZDY (PELNE, Z PALIWEM)"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+}
+ButtonWidgetClass Car0 {
+ position 0.02 0.73
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Car0Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Car0Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "OFFROAD HATCHBACK"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Car1 {
+ position 0.51 0.73
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Car1Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Car1Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "OLGA (SEDAN)"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Car2 {
+ position 0.02 0.785
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Car2Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Car2Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "GUNTER"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Car3 {
+ position 0.51 0.785
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Car3Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Car3Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "SARKA"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Car4 {
+ position 0.02 0.84
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Car4Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Car4Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "HUMVEE M1025"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Car5 {
+ position 0.51 0.84
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Car5Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Car5Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "CIEZAROWKA V3S"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ }
+}
+FrameWidgetClass Page2 {
+ position 0.01 0.13
+ size 0.98 0.85
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+TextWidgetClass TimeLbl {
+ position 0.02 0
+ size 0.96 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "GODZINA"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+}
+ButtonWidgetClass Time0 {
+ position 0.02 0.05
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Time0Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Time0Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "06:00"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Time1 {
+ position 0.51 0.05
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Time1Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Time1Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "12:00"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Time2 {
+ position 0.02 0.10500000000000001
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Time2Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Time2Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "18:00"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass Time3 {
+ position 0.51 0.10500000000000001
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass Time3Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass Time3Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "00:00"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+TextWidgetClass WLbl {
+ position 0.02 0.17
+ size 0.96 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "POGODA"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+}
+ButtonWidgetClass W0 {
+ position 0.02 0.22
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass W0Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass W0Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "SLONCE"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass W1 {
+ position 0.51 0.22
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass W1Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass W1Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "POCHMURNO"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass W2 {
+ position 0.02 0.275
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass W2Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass W2Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "DESZCZ"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass W3 {
+ position 0.51 0.275
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass W3Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass W3Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "BURZA"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass W4 {
+ position 0.02 0.33
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass W4Bg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass W4Txt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "MGLA"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+TextWidgetClass MLbl {
+ position 0.02 0.4
+ size 0.96 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "OGLOSZENIE DLA WSZYSTKICH"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+}
+EditBoxWidgetClass MsgBox {
+ position 0.02 0.45
+ size 0.96 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 1 1 1 1
+ style DefaultBorder
+ text ""
+ font "gui/fonts/metron22"
+ "exact text" 0
+}
+ButtonWidgetClass BtnSend {
+ position 0.02 0.505
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnSendBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnSendTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "WYSLIJ"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ }
+}
+FrameWidgetClass Page3 {
+ position 0.01 0.13
+ size 0.98 0.85
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+ButtonWidgetClass BtnFly {
+ position 0.02 0.0
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnFlyBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnFlyTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "LATANIE ON/OFF"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnGod {
+ position 0.51 0.0
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnGodBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnGodTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "GOD MODE ON/OFF"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnHealMe {
+ position 0.02 0.055
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnHealMeBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnHealMeTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "ULECZ MNIE"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+ButtonWidgetClass BtnTpPoint {
+ position 0.51 0.055
+ size 0.47 0.045
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0.75 0.12 0.12 0.9
+ style Default
+ {
+PanelWidgetClass BtnTpPointBg {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ color 0.55 0.08 0.08 0.95
+ style rover_sim_colorable
+}
+TextWidgetClass BtnTpPointTxt {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "TP DO PUNKTU Z MAPY"
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text halign" center
+}
+ }
+}
+TextWidgetClass Help {
+ position 0.02 0.14
+ size 0.96 0.5
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text "LATANIE: WSAD + mysz, Q/E dol/gora, SHIFT szybko, CTRL wolno, SPACJA = teleport tam gdzie kamera. MAPA: prawy klik = teleport, lewy klik = wybierz punkt / gracza. HOME = otworz/zamknij panel."
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+ "text valign" top
+ wrap 1
+}
+ }
+}
+ }
+}
+TextWidgetClass PickTxt {
+ position 0.015 0.93
+ size 0.6 0.04
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+ text ""
+ font "gui/fonts/metron22"
+ "exact text" 0
+ "text valign" center
+}
+FrameWidgetClass Markers {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ ignorepointer 1
+}
+ }
+}
