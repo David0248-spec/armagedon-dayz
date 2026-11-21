@@ -12,6 +12,8 @@ class AGA_Server
 	protected ref array<string> m_Combat;   // ostatnie trafienia / zabójstwa
 	protected float m_SyncTimer;
 	protected ref array<PlayerBase> m_Bots;
+	protected ref map<string, vector> m_AfkPos;
+	protected ref map<string, int> m_AfkMin;
 
 	static AGA_Server Get()
 	{
@@ -27,6 +29,8 @@ class AGA_Server
 		m_Recent = new array<string>;
 		m_Combat = new array<string>;
 		m_Bots = new array<PlayerBase>;
+		m_AfkPos = new map<string, vector>;
+		m_AfkMin = new map<string, int>;
 		if (!FileExist(m_Dir))
 			MakeDirectory(m_Dir);
 		LoadConfig();
@@ -197,6 +201,35 @@ class AGA_Server
 	void RaidTick()
 	{
 		AGA_Raid.Tick();
+		AfkTick();
+	}
+
+	// wyrzucanie AFK po 15 minutach bez ruchu (admini pominięci)
+	void AfkTick()
+	{
+		array<Man> players = new array<Man>;
+		GetGame().GetPlayers(players);
+		foreach (Man m : players)
+		{
+			PlayerBase pb = PlayerBase.Cast(m);
+			if (!pb || !pb.GetIdentity() || !pb.IsAlive() || IsAdmin(pb.GetIdentity())) continue;
+			string id = pb.GetIdentity().GetPlainId();
+			vector now = pb.GetPosition() + pb.GetOrientation();
+			int mins = 0;
+			if (m_AfkPos.Contains(id) && vector.Distance(m_AfkPos.Get(id), now) < 0.5)
+				mins = m_AfkMin.Get(id) + 1;
+			m_AfkPos.Set(id, now);
+			m_AfkMin.Set(id, mins);
+			if (mins == 13)
+				NotificationSystem.SendNotificationToPlayerIdentityExtended(pb.GetIdentity(), 10, "AFK WARNING", "You will be kicked in 2 minutes for being AFK.", "set:dayz_gui image:icon_info");
+			if (mins >= 15)
+			{
+				Log("AFK kick: " + Who(pb));
+				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(DoKick, 500, false, id);
+				m_AfkPos.Remove(id);
+				m_AfkMin.Remove(id);
+			}
+		}
 	}
 
 	void WelcomeInfo(string steamId)

@@ -130,6 +130,13 @@ modded class PlayerBase
 		string how = "?";
 		if (killer)
 			how = killer.GetDisplayName();
+		string why = "You died";
+		if (k && k != this)
+			why = "Killed by " + AGA_Server.Get().NameOf(k) + " | " + how + " | " + Math.Round(vector.Distance(k.GetPosition(), GetPosition())).ToString() + " m";
+		else if (killer && killer != this)
+			why = "Cause of death: " + how;
+		if (GetIdentity())
+			NotificationSystem.SendNotificationToPlayerIdentityExtended(GetIdentity(), 12, "YOU DIED", why, "set:dayz_gui image:icon_info");
 		if (k && k != this)
 		{
 			float dist = vector.Distance(k.GetPosition(), GetPosition());
