@@ -16,4 +16,9 @@ MODS=$(grep -v '^#' server/mods.txt | awk 'NF==2 {print $2}' | while read m; do 
 MODS="${MODS}@ArmaGedonAdmin"
 echo "MODY: $MODS"
 tmux new-session -d -s dayz "cd ~/dayz && ./DayZServer -config=serverDZ.cfg -port=2302 -profiles=profiles '-mod=$MODS' -dologs -adminlog -netlog -freezecheck"
+# paczka Workshop: wysyłana tylko gdy zmienił się mod
+SUM=$(sha1sum dist/@ArmaGedonAdmin/addons/*.pbo | sha1sum | cut -c1-40)
+if [ "$SUM" != "$(cat ~/.ag_ws_sum 2>/dev/null)" ]; then
+  bash server/publish_workshop.sh > ~/ws_publish.log 2>&1 && echo "$SUM" > ~/.ag_ws_sum && echo "WORKSHOP: zaktualizowano paczke Arma-Gedon"
+fi
 echo "DEPLOY OK $(git log --oneline -1)"
