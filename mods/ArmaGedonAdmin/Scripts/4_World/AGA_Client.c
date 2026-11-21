@@ -26,6 +26,7 @@ class AGA_Client
 	{
 		bool was = m_IsAdmin;
 		m_IsAdmin = ok;
+		CLog("odpowiedz autoryzacji dotarla do gry: admin=" + ok.ToString());
 		if (ok && !was)
 			NotificationSystem.AddNotificationExtended(6, "ARMA-GEDON ADMIN", "Panel aktywny: HOME otwiera panel, END wlacza latanie", "set:dayz_gui image:icon_info");
 	}
@@ -36,6 +37,16 @@ class AGA_Client
 		if (!p) return;
 		ScriptRPC rpc = new ScriptRPC();
 		rpc.Send(p, AGA_RPC_AUTH, true, null);
+	}
+
+	void CLog(string msg)
+	{
+		Print("[ArmaGedonAdmin] " + msg);
+		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
+		if (!p) return;
+		ScriptRPC rpc = new ScriptRPC();
+		rpc.Write(msg);
+		rpc.Send(p, AGA_RPC_CLOG, true, null);
 	}
 
 	void RequestPlayers()

@@ -52,7 +52,7 @@ FrameWidgetClass Marker {
      ignorepointer 1
      color 0.93 0.94 0.95 1
      text ""
-     font "gui/fonts/sdf_MetronBook24"
+     font "gui/fonts/metron22"
      "exact text" 1
      "exact text size" 15
      "text halign" left

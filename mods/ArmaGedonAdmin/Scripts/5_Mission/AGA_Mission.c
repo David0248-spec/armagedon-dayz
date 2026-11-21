@@ -10,7 +10,7 @@ modded class MissionGameplay
 		super.OnUpdate(timeslice);
 		AGA_Client.Get().Update(timeslice);
 
-		bool home = KeyState(KeyCode.KC_HOME) != 0;
+		bool home = KeyState(KeyCode.KC_HOME) != 0 || KeyState(KeyCode.KC_INSERT) != 0;
 		UAInput panelIn = GetUApi().GetInputByName("UAAGAPanel");
 		if (panelIn && panelIn.LocalPress())
 			home = true;
@@ -30,6 +30,9 @@ modded class MissionGameplay
 	void AGA_TogglePanel()
 	{
 		UIScriptedMenu cur = GetGame().GetUIManager().GetMenu();
+		string curName = "brak";
+		if (cur) curName = cur.ClassName();
+		AGA_Client.Get().CLog("wcisnieto HOME/INSERT: admin=" + AGA_Client.Get().IsAdmin().ToString() + ", otwarte menu=" + curName);
 		if (cur && AGA_Menu.Cast(cur))
 		{
 			cur.Close();
@@ -45,7 +48,8 @@ modded class MissionGameplay
 		if (AGA_Client.Get().IsFlying())
 			AGA_Client.Get().StopFly(false);
 		m_AGA_Menu = new AGA_Menu();
-		GetGame().GetUIManager().ShowScriptedMenu(m_AGA_Menu, null);
+		UIScriptedMenu shown = GetGame().GetUIManager().ShowScriptedMenu(m_AGA_Menu, null);
+		AGA_Client.Get().CLog("ShowScriptedMenu zwrocil: " + (shown != null).ToString());
 	}
 
 	void AGA_ToggleFly()

@@ -28,7 +28,7 @@ FrameWidgetClass Label {
      ignorepointer 1
      color 1 0.82 0.25 1
      text ""
-     font "gui/fonts/sdf_MetronBook24"
+     font "gui/fonts/metron22"
      "exact text" 1
      "exact text size" 15
      "text halign" center

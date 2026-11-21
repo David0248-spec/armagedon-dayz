@@ -20,6 +20,13 @@ modded class PlayerBase
 				case AGA_RPC_ACTION:
 					AGA_Server.Get().OnAction(this, sender, ctx);
 					break;
+				case AGA_RPC_CLOG:
+				{
+					string msg;
+					if (ctx.Read(msg))
+						AGA_Server.Get().Log("[KLIENT " + sender.GetName() + "] " + msg);
+					break;
+				}
 			}
 		}
 		else

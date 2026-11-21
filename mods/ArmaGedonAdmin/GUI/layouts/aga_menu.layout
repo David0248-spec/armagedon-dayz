@@ -60,7 +60,7 @@ FrameWidgetClass AGA_Root {
        ignorepointer 1
        color 0.86 0.15 0.15 1
        text "ARMA-GEDON"
-       font "gui/fonts/sdf_MetronBook24"
+       font "gui/fonts/metron28"
        "exact text" 1
        "exact text size" 30
        "text halign" left
@@ -76,7 +76,7 @@ FrameWidgetClass AGA_Root {
        ignorepointer 1
        color 0.55 0.58 0.63 1
        text "PANEL ADMINISTRATORA"
-       font "gui/fonts/sdf_MetronLight24"
+       font "gui/fonts/metron22"
        "exact text" 1
        "exact text size" 17
        "text halign" left
@@ -92,7 +92,7 @@ FrameWidgetClass AGA_Root {
        ignorepointer 1
        color 0.93 0.94 0.95 1
        text ""
-       font "gui/fonts/sdf_MetronBook24"
+       font "gui/fonts/metron22"
        "exact text" 1
        "exact text size" 17
        "text halign" right
@@ -106,7 +106,7 @@ FrameWidgetClass AGA_Root {
        hexactsize 0
        vexactsize 0
        color 1 1 1 1
-       style Empty
+       style Default
        {
         PanelWidgetClass Close_bg {
          position 0 0
@@ -129,7 +129,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.93 0.94 0.95 1
          text "X"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" center
@@ -158,7 +158,7 @@ FrameWidgetClass AGA_Root {
        hexactsize 0
        vexactsize 0
        color 1 1 1 1
-       style Empty
+       style Default
        {
         PanelWidgetClass Nav0_bg {
          position 0 0
@@ -193,7 +193,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.93 0.94 0.95 1
          text "MAPA"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 17
          "text halign" left
@@ -209,7 +209,7 @@ FrameWidgetClass AGA_Root {
        hexactsize 0
        vexactsize 0
        color 1 1 1 1
-       style Empty
+       style Default
        {
         PanelWidgetClass Nav1_bg {
          position 0 0
@@ -244,7 +244,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.93 0.94 0.95 1
          text "GRACZE"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 17
          "text halign" left
@@ -260,7 +260,7 @@ FrameWidgetClass AGA_Root {
        hexactsize 0
        vexactsize 0
        color 1 1 1 1
-       style Empty
+       style Default
        {
         PanelWidgetClass Nav2_bg {
          position 0 0
@@ -295,7 +295,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.93 0.94 0.95 1
          text "PRZEDMIOTY"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 17
          "text halign" left
@@ -311,7 +311,7 @@ FrameWidgetClass AGA_Root {
        hexactsize 0
        vexactsize 0
        color 1 1 1 1
-       style Empty
+       style Default
        {
         PanelWidgetClass Nav3_bg {
          position 0 0
@@ -346,7 +346,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.93 0.94 0.95 1
          text "POJAZDY"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 17
          "text halign" left
@@ -362,7 +362,7 @@ FrameWidgetClass AGA_Root {
        hexactsize 0
        vexactsize 0
        color 1 1 1 1
-       style Empty
+       style Default
        {
         PanelWidgetClass Nav4_bg {
          position 0 0
@@ -397,7 +397,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.93 0.94 0.95 1
          text "SWIAT"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 17
          "text halign" left
@@ -413,7 +413,7 @@ FrameWidgetClass AGA_Root {
        hexactsize 0
        vexactsize 0
        color 1 1 1 1
-       style Empty
+       style Default
        {
         PanelWidgetClass Nav5_bg {
          position 0 0
@@ -448,7 +448,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.93 0.94 0.95 1
          text "NARZEDZIA"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 17
          "text halign" left
@@ -466,7 +466,7 @@ FrameWidgetClass AGA_Root {
        ignorepointer 1
        color 0.55 0.58 0.63 1
        text ""
-       font "gui/fonts/sdf_MetronBook24"
+       font "gui/fonts/metron22"
        "exact text" 1
        "exact text size" 13
        "text halign" left
@@ -534,7 +534,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text "LPM: wybierz punkt / gracza     PPM: teleport     Kolko: zoom"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 15
            "text halign" left
@@ -552,7 +552,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "GRACZE ONLINE"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -566,7 +566,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow0_bg {
            position 0 0
@@ -601,7 +601,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -617,7 +617,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -633,7 +633,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow1_bg {
            position 0 0
@@ -668,7 +668,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -684,7 +684,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -700,7 +700,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow2_bg {
            position 0 0
@@ -735,7 +735,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -751,7 +751,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -767,7 +767,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow3_bg {
            position 0 0
@@ -802,7 +802,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -818,7 +818,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -834,7 +834,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow4_bg {
            position 0 0
@@ -869,7 +869,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -885,7 +885,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -901,7 +901,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow5_bg {
            position 0 0
@@ -936,7 +936,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -952,7 +952,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -968,7 +968,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow6_bg {
            position 0 0
@@ -1003,7 +1003,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1019,7 +1019,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1035,7 +1035,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow7_bg {
            position 0 0
@@ -1070,7 +1070,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1086,7 +1086,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1102,7 +1102,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow8_bg {
            position 0 0
@@ -1137,7 +1137,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1153,7 +1153,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1169,7 +1169,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow9_bg {
            position 0 0
@@ -1204,7 +1204,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1220,7 +1220,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1236,7 +1236,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow10_bg {
            position 0 0
@@ -1271,7 +1271,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1287,7 +1287,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1303,7 +1303,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow11_bg {
            position 0 0
@@ -1338,7 +1338,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1354,7 +1354,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1370,7 +1370,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow12_bg {
            position 0 0
@@ -1405,7 +1405,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1421,7 +1421,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1437,7 +1437,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MRow13_bg {
            position 0 0
@@ -1472,7 +1472,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" left
@@ -1488,7 +1488,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1504,7 +1504,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MPrev_bg {
            position 0 0
@@ -1527,7 +1527,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "<"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
            "text halign" center
@@ -1545,7 +1545,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.55 0.58 0.63 1
          text "1 / 1"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 15
          "text halign" center
@@ -1559,7 +1559,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MNext_bg {
            position 0 0
@@ -1582,7 +1582,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ">"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
            "text halign" center
@@ -1600,7 +1600,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.55 0.58 0.63 1
          text "Punkt: brak"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 15
          "text halign" left
@@ -1614,7 +1614,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MTpTo_bg {
            position 0 0
@@ -1637,7 +1637,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "TP DO GRACZA"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" center
@@ -1653,7 +1653,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MBring_bg {
            position 0 0
@@ -1676,7 +1676,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "PRZYCIAGNIJ"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" center
@@ -1692,7 +1692,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MTpPick_bg {
            position 0 0
@@ -1715,7 +1715,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "TELEPORT DO PUNKTU"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
            "text halign" center
@@ -1743,7 +1743,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "LISTA GRACZY"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -1757,7 +1757,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow0_bg {
            position 0 0
@@ -1792,7 +1792,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -1808,7 +1808,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1824,7 +1824,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow1_bg {
            position 0 0
@@ -1859,7 +1859,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -1875,7 +1875,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1891,7 +1891,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow2_bg {
            position 0 0
@@ -1926,7 +1926,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -1942,7 +1942,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -1958,7 +1958,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow3_bg {
            position 0 0
@@ -1993,7 +1993,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2009,7 +2009,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2025,7 +2025,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow4_bg {
            position 0 0
@@ -2060,7 +2060,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2076,7 +2076,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2092,7 +2092,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow5_bg {
            position 0 0
@@ -2127,7 +2127,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2143,7 +2143,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2159,7 +2159,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow6_bg {
            position 0 0
@@ -2194,7 +2194,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2210,7 +2210,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2226,7 +2226,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow7_bg {
            position 0 0
@@ -2261,7 +2261,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2277,7 +2277,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2293,7 +2293,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow8_bg {
            position 0 0
@@ -2328,7 +2328,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2344,7 +2344,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2360,7 +2360,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow9_bg {
            position 0 0
@@ -2395,7 +2395,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2411,7 +2411,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2427,7 +2427,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow10_bg {
            position 0 0
@@ -2462,7 +2462,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2478,7 +2478,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2494,7 +2494,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow11_bg {
            position 0 0
@@ -2529,7 +2529,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2545,7 +2545,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2561,7 +2561,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow12_bg {
            position 0 0
@@ -2596,7 +2596,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2612,7 +2612,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2628,7 +2628,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow13_bg {
            position 0 0
@@ -2663,7 +2663,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2679,7 +2679,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2695,7 +2695,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PRow14_bg {
            position 0 0
@@ -2730,7 +2730,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" left
@@ -2746,7 +2746,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2762,7 +2762,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PPrev_bg {
            position 0 0
@@ -2785,7 +2785,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "<"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
            "text halign" center
@@ -2803,7 +2803,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.55 0.58 0.63 1
          text "1 / 1"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 15
          "text halign" center
@@ -2817,7 +2817,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass PNext_bg {
            position 0 0
@@ -2840,7 +2840,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ">"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
            "text halign" center
@@ -2869,7 +2869,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "Wybierz gracza z listy"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 30
            "text halign" left
@@ -2885,7 +2885,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 15
            "text halign" left
@@ -2901,7 +2901,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text "ZDROWIE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" left
@@ -2917,7 +2917,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -2957,7 +2957,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text "KREW"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" left
@@ -2973,7 +2973,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" right
@@ -3013,7 +3013,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 15
            "text halign" left
@@ -3029,7 +3029,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 1 0.8 0.2 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 15
            "text halign" left
@@ -3043,7 +3043,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass ATpTo_bg {
              position 0 0
@@ -3066,7 +3066,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "TP DO GRACZA"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 16
              "text halign" center
@@ -3082,7 +3082,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass ABring_bg {
              position 0 0
@@ -3105,7 +3105,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "PRZYCIAGNIJ"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 16
              "text halign" center
@@ -3121,7 +3121,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass ALocate_bg {
              position 0 0
@@ -3144,7 +3144,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "POKAZ NA MAPIE"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 16
              "text halign" center
@@ -3160,7 +3160,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass AHeal_bg {
              position 0 0
@@ -3183,7 +3183,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "ULECZ"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 16
              "text halign" center
@@ -3199,7 +3199,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass AGod_bg {
              position 0 0
@@ -3222,7 +3222,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "GOD ON / OFF"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 16
              "text halign" center
@@ -3238,7 +3238,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass AKill_bg {
              position 0 0
@@ -3261,7 +3261,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "ZABIJ"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 16
              "text halign" center
@@ -3279,7 +3279,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text "POWOD (KICK / BAN)"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" left
@@ -3305,9 +3305,9 @@ FrameWidgetClass AGA_Root {
              vexactsize 0
              ignorepointer 0
              color 0.93 0.94 0.95 1
-             style Empty
+             style DefaultBorder
              text ""
-             font "gui/fonts/sdf_MetronLight24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 18
             }
@@ -3321,7 +3321,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass AKick_bg {
              position 0 0
@@ -3344,7 +3344,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "KICK"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 18
              "text halign" center
@@ -3360,7 +3360,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass ABan_bg {
              position 0 0
@@ -3383,7 +3383,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "BAN"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 18
              "text halign" center
@@ -3423,9 +3423,9 @@ FrameWidgetClass AGA_Root {
            vexactsize 0
            ignorepointer 0
            color 0.93 0.94 0.95 1
-           style Empty
+           style DefaultBorder
            text ""
-           font "gui/fonts/sdf_MetronLight24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
           }
@@ -3439,7 +3439,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat0_bg {
            position 0 0
@@ -3462,7 +3462,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "WSZYSTKO"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3478,7 +3478,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat1_bg {
            position 0 0
@@ -3501,7 +3501,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "BRON"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3517,7 +3517,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat2_bg {
            position 0 0
@@ -3540,7 +3540,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "AMUNICJA"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3556,7 +3556,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat3_bg {
            position 0 0
@@ -3579,7 +3579,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "ODZIEZ"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3595,7 +3595,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat4_bg {
            position 0 0
@@ -3618,7 +3618,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "PLECAKI"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3634,7 +3634,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat5_bg {
            position 0 0
@@ -3657,7 +3657,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "JEDZENIE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3673,7 +3673,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat6_bg {
            position 0 0
@@ -3696,7 +3696,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "MEDYCZNE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3712,7 +3712,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ICat7_bg {
            position 0 0
@@ -3735,7 +3735,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "INNE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3751,7 +3751,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile0_bg {
            position 0 0
@@ -3796,7 +3796,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3812,7 +3812,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile1_bg {
            position 0 0
@@ -3857,7 +3857,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3873,7 +3873,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile2_bg {
            position 0 0
@@ -3918,7 +3918,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3934,7 +3934,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile3_bg {
            position 0 0
@@ -3979,7 +3979,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -3995,7 +3995,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile4_bg {
            position 0 0
@@ -4040,7 +4040,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4056,7 +4056,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile5_bg {
            position 0 0
@@ -4101,7 +4101,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4117,7 +4117,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile6_bg {
            position 0 0
@@ -4162,7 +4162,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4178,7 +4178,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile7_bg {
            position 0 0
@@ -4223,7 +4223,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4239,7 +4239,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile8_bg {
            position 0 0
@@ -4284,7 +4284,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4300,7 +4300,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile9_bg {
            position 0 0
@@ -4345,7 +4345,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4361,7 +4361,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile10_bg {
            position 0 0
@@ -4406,7 +4406,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4422,7 +4422,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile11_bg {
            position 0 0
@@ -4467,7 +4467,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4483,7 +4483,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile12_bg {
            position 0 0
@@ -4528,7 +4528,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4544,7 +4544,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile13_bg {
            position 0 0
@@ -4589,7 +4589,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4605,7 +4605,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile14_bg {
            position 0 0
@@ -4650,7 +4650,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4666,7 +4666,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile15_bg {
            position 0 0
@@ -4711,7 +4711,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4727,7 +4727,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile16_bg {
            position 0 0
@@ -4772,7 +4772,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4788,7 +4788,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass ITile17_bg {
            position 0 0
@@ -4833,7 +4833,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 13
            "text halign" center
@@ -4849,7 +4849,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass IPrev_bg {
            position 0 0
@@ -4872,7 +4872,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "<"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
            "text halign" center
@@ -4890,7 +4890,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.55 0.58 0.63 1
          text "1 / 1"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 15
          "text halign" center
@@ -4904,7 +4904,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass INext_bg {
            position 0 0
@@ -4927,7 +4927,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ">"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
            "text halign" center
@@ -4945,7 +4945,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.55 0.58 0.63 1
          text ""
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 14
          "text halign" right
@@ -4982,7 +4982,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "Wybierz przedmiot"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 22
            "text halign" left
@@ -4998,7 +4998,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" left
@@ -5014,7 +5014,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text "ILOSC"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 15
            "text halign" left
@@ -5028,7 +5028,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass IQtyMinus_bg {
              position 0 0
@@ -5051,7 +5051,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "-"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 20
              "text halign" center
@@ -5079,9 +5079,9 @@ FrameWidgetClass AGA_Root {
              vexactsize 0
              ignorepointer 0
              color 0.93 0.94 0.95 1
-             style Empty
+             style DefaultBorder
              text ""
-             font "gui/fonts/sdf_MetronLight24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 18
             }
@@ -5095,7 +5095,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass IQtyPlus_bg {
              position 0 0
@@ -5118,7 +5118,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "+"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 20
              "text halign" center
@@ -5134,7 +5134,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass ISpawnInv_bg {
              position 0 0
@@ -5157,7 +5157,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "DO EKWIPUNKU"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 17
              "text halign" center
@@ -5173,7 +5173,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass ISpawnGround_bg {
              position 0 0
@@ -5196,7 +5196,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "POD NOGI"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 17
              "text halign" center
@@ -5212,7 +5212,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass ISpawnPoint_bg {
              position 0 0
@@ -5235,7 +5235,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "W PUNKT Z MAPY"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 17
              "text halign" center
@@ -5265,7 +5265,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "GOTOWE POJAZDY: KOMPLET CZESCI + PELNE PLYNY"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -5279,7 +5279,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass VTile0_bg {
            position 0 0
@@ -5324,7 +5324,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" center
@@ -5340,7 +5340,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass VTile1_bg {
            position 0 0
@@ -5385,7 +5385,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" center
@@ -5401,7 +5401,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass VTile2_bg {
            position 0 0
@@ -5446,7 +5446,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" center
@@ -5462,7 +5462,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass VTile3_bg {
            position 0 0
@@ -5507,7 +5507,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" center
@@ -5523,7 +5523,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass VTile4_bg {
            position 0 0
@@ -5568,7 +5568,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" center
@@ -5584,7 +5584,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass VTile5_bg {
            position 0 0
@@ -5629,7 +5629,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" center
@@ -5668,7 +5668,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "Wybierz pojazd"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 24
            "text halign" left
@@ -5684,7 +5684,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text "Kola, akumulator, swiece, drzwi, maska, bagaznik. Paliwo, olej, plyn chlodniczy i hamulcowy do pelna."
-           font "gui/fonts/sdf_MetronLight24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 15
            wrap 1
@@ -5697,7 +5697,7 @@ FrameWidgetClass AGA_Root {
            hexactsize 0
            vexactsize 0
            color 1 1 1 1
-           style Empty
+           style Default
            {
             PanelWidgetClass VSpawn_bg {
              position 0 0
@@ -5720,7 +5720,7 @@ FrameWidgetClass AGA_Root {
              ignorepointer 1
              color 0.93 0.94 0.95 1
              text "STWORZ POJAZD"
-             font "gui/fonts/sdf_MetronBook24"
+             font "gui/fonts/metron22"
              "exact text" 1
              "exact text size" 19
              "text halign" center
@@ -5750,7 +5750,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "PORA DNIA"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -5764,7 +5764,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour0_bg {
            position 0 0
@@ -5787,7 +5787,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "00:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -5803,7 +5803,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour1_bg {
            position 0 0
@@ -5826,7 +5826,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "03:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -5842,7 +5842,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour2_bg {
            position 0 0
@@ -5865,7 +5865,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "06:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -5881,7 +5881,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour3_bg {
            position 0 0
@@ -5904,7 +5904,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "09:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -5920,7 +5920,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour4_bg {
            position 0 0
@@ -5943,7 +5943,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "12:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -5959,7 +5959,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour5_bg {
            position 0 0
@@ -5982,7 +5982,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "15:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -5998,7 +5998,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour6_bg {
            position 0 0
@@ -6021,7 +6021,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "18:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -6037,7 +6037,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass THour7_bg {
            position 0 0
@@ -6060,7 +6060,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "21:00"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 20
            "text halign" center
@@ -6078,7 +6078,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "POGODA"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -6092,7 +6092,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass WSet0_bg {
            position 0 0
@@ -6115,7 +6115,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "SLONECZNIE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 19
            "text halign" center
@@ -6131,7 +6131,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass WSet1_bg {
            position 0 0
@@ -6154,7 +6154,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "POCHMURNO"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 19
            "text halign" center
@@ -6170,7 +6170,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass WSet2_bg {
            position 0 0
@@ -6193,7 +6193,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "DESZCZ"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 19
            "text halign" center
@@ -6209,7 +6209,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass WSet3_bg {
            position 0 0
@@ -6232,7 +6232,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "BURZA"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 19
            "text halign" center
@@ -6248,7 +6248,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass WSet4_bg {
            position 0 0
@@ -6271,7 +6271,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "MGLA"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 19
            "text halign" center
@@ -6289,7 +6289,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "OGLOSZENIE DLA WSZYSTKICH GRACZY"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -6315,9 +6315,9 @@ FrameWidgetClass AGA_Root {
            vexactsize 0
            ignorepointer 0
            color 0.93 0.94 0.95 1
-           style Empty
+           style DefaultBorder
            text ""
-           font "gui/fonts/sdf_MetronLight24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
           }
@@ -6331,7 +6331,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass MsgSend_bg {
            position 0 0
@@ -6354,7 +6354,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "WYSLIJ"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
            "text halign" center
@@ -6382,7 +6382,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "NARZEDZIA ADMINA"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -6396,7 +6396,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass SFly_bg {
            position 0 0
@@ -6419,7 +6419,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "LATANIE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 22
            "text halign" center
@@ -6435,7 +6435,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" center
@@ -6451,7 +6451,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass SGod_bg {
            position 0 0
@@ -6474,7 +6474,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "GOD MODE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 22
            "text halign" center
@@ -6490,7 +6490,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" center
@@ -6506,7 +6506,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass SHeal_bg {
            position 0 0
@@ -6529,7 +6529,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "ULECZ MNIE"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 22
            "text halign" center
@@ -6545,7 +6545,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" center
@@ -6561,7 +6561,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass STpPick_bg {
            position 0 0
@@ -6584,7 +6584,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "TP DO PUNKTU Z MAPY"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 22
            "text halign" center
@@ -6600,7 +6600,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text ""
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 14
            "text halign" center
@@ -6618,7 +6618,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.86 0.15 0.15 1
          text "TELEPORT NA WSPOLRZEDNE"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 20
          "text halign" left
@@ -6634,7 +6634,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.55 0.58 0.63 1
          text "X"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 18
          "text halign" left
@@ -6660,9 +6660,9 @@ FrameWidgetClass AGA_Root {
            vexactsize 0
            ignorepointer 0
            color 0.93 0.94 0.95 1
-           style Empty
+           style DefaultBorder
            text ""
-           font "gui/fonts/sdf_MetronLight24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
           }
@@ -6678,7 +6678,7 @@ FrameWidgetClass AGA_Root {
          ignorepointer 1
          color 0.55 0.58 0.63 1
          text "Z"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/metron22"
          "exact text" 1
          "exact text size" 18
          "text halign" left
@@ -6704,9 +6704,9 @@ FrameWidgetClass AGA_Root {
            vexactsize 0
            ignorepointer 0
            color 0.93 0.94 0.95 1
-           style Empty
+           style DefaultBorder
            text ""
-           font "gui/fonts/sdf_MetronLight24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 18
           }
@@ -6720,7 +6720,7 @@ FrameWidgetClass AGA_Root {
          hexactsize 0
          vexactsize 0
          color 1 1 1 1
-         style Empty
+         style Default
          {
           PanelWidgetClass CoordGo_bg {
            position 0 0
@@ -6743,7 +6743,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.93 0.94 0.95 1
            text "TELEPORTUJ"
-           font "gui/fonts/sdf_MetronBook24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            "text halign" center
@@ -6772,7 +6772,7 @@ FrameWidgetClass AGA_Root {
            ignorepointer 1
            color 0.55 0.58 0.63 1
            text "LATANIE:  W S A D + mysz,  Q / E  dol / gora,  SHIFT szybko,  CTRL wolno,  SPACJA teleport w miejsce kamery,  HOME wraca do panelu.     MAPA:  LPM wybiera punkt lub gracza,  PPM teleportuje.     Wszystkie akcje sa zapisywane w logu serwera."
-           font "gui/fonts/sdf_MetronLight24"
+           font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 17
            wrap 1

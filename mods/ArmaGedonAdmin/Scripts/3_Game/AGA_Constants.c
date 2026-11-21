@@ -5,6 +5,7 @@ const int AGA_RPC_PLAYERS     = 0x41470103; // klient -> serwer: prośba o list�
 const int AGA_RPC_PLAYERS_RES = 0x41470104; // serwer -> klient: lista graczy
 const int AGA_RPC_ACTION      = 0x41470105; // klient -> serwer: akcja admina
 const int AGA_RPC_NOTIFY      = 0x41470106; // serwer -> klient: powiadomienie
+const int AGA_RPC_CLOG        = 0x41470107; // klient -> serwer: diagnostyka
 
 // typy akcji
 const int AGA_ACT_TP_POS      = 1;  // teleport siebie na pozycję

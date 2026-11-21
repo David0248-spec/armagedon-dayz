@@ -144,9 +144,11 @@ class AGA_Menu extends UIScriptedMenu
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("ArmaGedonAdmin/GUI/layouts/aga_menu.layout");
 		if (!layoutRoot)
 		{
+			AGA_Client.Get().CLog("BLAD: layout panelu nie wczytal sie (CreateWidgets = null)");
 			NotificationSystem.AddNotificationExtended(8, "ARMA-GEDON ADMIN", "Blad wczytania layoutu panelu");
 			return null;
 		}
+		AGA_Client.Get().CLog("layout wczytany, Map=" + (layoutRoot.FindAnyWidget("Map") != null).ToString() + ", Nav0=" + (layoutRoot.FindAnyWidget("Nav0") != null).ToString());
 		m_Map = MapWidget.Cast(layoutRoot.FindAnyWidget("Map"));
 		m_Markers = layoutRoot.FindAnyWidget("Markers");
 		m_Search = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("ISearch"));
@@ -177,12 +179,14 @@ class AGA_Menu extends UIScriptedMenu
 
 		BuildCars();
 		ShowPage(s_Page);
+		AGA_Client.Get().CLog("Init panelu zakonczony");
 		return layoutRoot;
 	}
 
 	override void OnShow()
 	{
 		super.OnShow();
+		AGA_Client.Get().CLog("panel pokazany (OnShow)");
 		AGA_Client.Get().WantPlayers = true;
 		AGA_Client.Get().RequestPlayers();
 		GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
