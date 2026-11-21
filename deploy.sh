@@ -11,5 +11,8 @@ rm -rf ~/dayz/@ArmaGedonAdmin && cp -r dist/@ArmaGedonAdmin ~/dayz/
 mkdir -p ~/dayz/keys && cp -f dist/keys/*.bikey ~/dayz/keys/ 2>/dev/null || true
 tmux kill-session -t dayz 2>/dev/null || true
 sleep 3
-tmux new-session -d -s dayz "cd ~/dayz && ./DayZServer -config=serverDZ.cfg -port=2302 -profiles=profiles -mod=@ArmaGedonAdmin -dologs -adminlog -netlog -freezecheck"
+MODS=$(grep -v '^#' server/mods.txt | awk 'NF==2 {print $2}' | while read m; do [ -d ~/dayz/$m ] && printf "%s;" "$m"; done)
+MODS="${MODS}@ArmaGedonAdmin"
+echo "MODY: $MODS"
+tmux new-session -d -s dayz "cd ~/dayz && ./DayZServer -config=serverDZ.cfg -port=2302 -profiles=profiles '-mod=$MODS' -dologs -adminlog -netlog -freezecheck"
 echo "DEPLOY OK $(git log --oneline -1)"

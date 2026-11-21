@@ -1,0 +1,19 @@
+# Mody z Workshopu ładowane na serwerze (kolejność = kolejność ładowania)
+# id_workshop   nazwa_folderu
+1559212036      @CF
+2545327648      @DabsFramework
+2291785308      @DayZ-Expansion-Core
+2116157322      @DayZ-Expansion-Licensed
+2291785437      @DayZ-Expansion-Vehicles
+1646187754      @CodeLock
+3322252091      @MountsAndSights
+2143128974      @AdvancedWeaponScopes
+1832448183      @FlipTransport
+1565871491      @BuilderItems
+2353800408      @VanillaRoadPartsPack
+1819514788      @Ear-Plugs
+3097629884      @DutchArmyClothing
+1762444175      @UncuepasCivilianClothing
+1999666859      @ColdWarUniforms
+1797720064      @WindstridesClothingPack
+3303988563      @EarlyWinterChernarus
