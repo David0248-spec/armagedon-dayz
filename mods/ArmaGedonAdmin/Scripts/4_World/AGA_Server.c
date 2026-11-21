@@ -103,8 +103,7 @@ class AGA_Server
 		ScriptRPC rpc = new ScriptRPC();
 		rpc.Write(ok);
 		rpc.Send(sender, AGA_RPC_AUTH_RESULT, true, id);
-		if (ok)
-			Log("Autoryzacja admina: " + Who(sender));
+		Log("Prośba o panel: " + Who(sender) + " -> admin: " + ok.ToString());
 	}
 
 	void OnPlayers(PlayerBase sender, PlayerIdentity id)
