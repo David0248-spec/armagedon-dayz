@@ -22,7 +22,13 @@ class AGA_Client
 	}
 
 	bool IsAdmin() { return m_IsAdmin; }
-	void SetAdmin(bool ok) { m_IsAdmin = ok; }
+	void SetAdmin(bool ok)
+	{
+		bool was = m_IsAdmin;
+		m_IsAdmin = ok;
+		if (ok && !was)
+			NotificationSystem.AddNotificationExtended(6, "ARMA-GEDON ADMIN", "Panel aktywny: HOME otwiera panel, END wlacza latanie", "set:dayz_gui image:icon_info");
+	}
 
 	void RequestAuth()
 	{

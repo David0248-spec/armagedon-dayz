@@ -18,6 +18,7 @@ class CfgMods
 		author = "ARMA-GEDON";
 		version = "1.0";
 		type = "mod";
+		inputs = "ArmaGedonAdmin/Data/Inputs.xml";
 		dependencies[] = {"Game", "World", "Mission"};
 		class defs
 		{

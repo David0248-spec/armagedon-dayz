@@ -1,26 +1,40 @@
 FrameWidgetClass Label {
  position 0 0
- size 200 24
+ size 220 26
  hexactpos 1
  vexactpos 1
- ignorepointer 1
  hexactsize 1
  vexactsize 1
+ ignorepointer 1
  {
-TextWidgetClass Text {
- position 0 0
- size 1 1
- hexactpos 1
- vexactpos 1
- hexactsize 1
- vexactsize 1
- ignorepointer 1
- text ""
- font "gui/fonts/metron22"
- "exact text" 0
- "text valign" center
- "text halign" center
- color 1 0.85 0.2 1
-}
+  PanelWidgetClass Bg {
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   ignorepointer 1
+   color 0 0 0 0.55
+   style rover_sim_colorable
+   {
+    TextWidgetClass Text {
+     position 0 0
+     size 1 1
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 1 0.82 0.25 1
+     text ""
+     font "gui/fonts/sdf_MetronBook24"
+     "exact text" 1
+     "exact text size" 15
+     "text halign" center
+     "text valign" center
+    }
+   }
+  }
  }
 }

@@ -1,34 +1,64 @@
 FrameWidgetClass Marker {
  position 0 0
- size 220 22
+ size 260 26
  hexactpos 1
  vexactpos 1
  hexactsize 1
  vexactsize 1
- {
-PanelWidgetClass Dot {
- position 0 0.25
- size 0.05 0.5
- hexactpos 1
- vexactpos 1
- hexactsize 1
- vexactsize 1
- color 1 0.2 0.2 1
- style rover_sim_colorable
-}
-TextWidgetClass Text {
- position 0.07 0
- size 0.93 1
- hexactpos 0
- vexactpos 0
- hexactsize 0
- vexactsize 0
  ignorepointer 1
- text ""
- font "gui/fonts/metron22"
- "exact text" 0
- "text valign" center
- color 1 1 1 1
-}
+ {
+  PanelWidgetClass Ring {
+   position 0 7
+   size 12 12
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   ignorepointer 1
+   color 0 0 0 1
+   style rover_sim_colorable
+   {
+    PanelWidgetClass Dot {
+     position 2 2
+     size 8 8
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     ignorepointer 1
+     color 0.86 0.15 0.15 1
+     style rover_sim_colorable
+    }
+   }
+  }
+  PanelWidgetClass LblBg {
+   position 16 2
+   size 170 22
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   ignorepointer 1
+   color 0 0 0 0.6
+   style rover_sim_colorable
+   {
+    TextWidgetClass Text {
+     position 0.04 0
+     size 0.94 1
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.93 0.94 0.95 1
+     text ""
+     font "gui/fonts/sdf_MetronBook24"
+     "exact text" 1
+     "exact text size" 15
+     "text halign" left
+     "text valign" center
+    }
+   }
+  }
  }
 }

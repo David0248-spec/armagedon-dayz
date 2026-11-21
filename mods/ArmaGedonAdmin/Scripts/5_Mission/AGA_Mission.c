@@ -2,18 +2,31 @@
 modded class MissionGameplay
 {
 	protected bool m_AGA_HomeDown;
+	protected bool m_AGA_EndDown;
 
 	override void OnUpdate(float timeslice)
 	{
 		super.OnUpdate(timeslice);
 		AGA_Client.Get().Update(timeslice);
-		bool down = KeyState(KeyCode.KC_HOME) != 0;
-		if (down && !m_AGA_HomeDown)
-			AGA_Toggle();
-		m_AGA_HomeDown = down;
+
+		bool home = KeyState(KeyCode.KC_HOME) != 0;
+		UAInput panelIn = GetUApi().GetInputByName("UAAGAPanel");
+		if (panelIn && panelIn.LocalPress())
+			home = true;
+		if (home && !m_AGA_HomeDown)
+			AGA_TogglePanel();
+		m_AGA_HomeDown = home;
+
+		bool end = KeyState(KeyCode.KC_END) != 0;
+		UAInput flyIn = GetUApi().GetInputByName("UAAGAFly");
+		if (flyIn && flyIn.LocalPress())
+			end = true;
+		if (end && !m_AGA_EndDown)
+			AGA_ToggleFly();
+		m_AGA_EndDown = end;
 	}
 
-	void AGA_Toggle()
+	void AGA_TogglePanel()
 	{
 		UIScriptedMenu cur = GetGame().GetUIManager().GetMenu();
 		if (cur && AGA_Menu.Cast(cur))
@@ -32,6 +45,15 @@ modded class MissionGameplay
 			AGA_Client.Get().StopFly(false);
 		GetGame().GetUIManager().ShowScriptedMenu(new AGA_Menu(), null);
 	}
+
+	void AGA_ToggleFly()
+	{
+		if (GetGame().GetUIManager().GetMenu())
+			return;
+		if (!AGA_Client.Get().IsAdmin())
+			return;
+		AGA_Client.Get().ToggleFly();
+	}
 }
 
 modded class MissionServer
@@ -47,7 +69,7 @@ modded class MissionServer
 		super.InvokeOnConnect(player, identity);
 		if (identity && AGA_Server.Get().IsBanned(identity.GetPlainId()))
 		{
-			AGA_Server.Get().Log("Zbanowany próbował wejść: " + identity.GetName() + " (" + identity.GetPlainId() + ")");
+			AGA_Server.Get().Log("Zbanowany probowal wejsc: " + identity.GetName() + " (" + identity.GetPlainId() + ")");
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().DoKick, 2000, false, identity.GetPlainId());
 		}
 	}
