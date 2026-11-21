@@ -1,0 +1,66 @@
+	<type name="ExpansionMh6">
+		<attachments chance="1.00">
+			<item name="ExpansionHelicopterBattery" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionIgniterPlug" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionHydraulicHoses" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="HeadlightH7" chance="0.60" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="Expansion_Mh6_Door_1_1" chance="0.70" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="Expansion_Mh6_Door_1_2" chance="0.70" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="Expansion_Mh6_Door_2_1" chance="0.70" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="Expansion_Mh6_Door_2_2" chance="0.70" />
+		</attachments>
+	</type>
+	<type name="ExpansionUh1h">
+		<attachments chance="1.00">
+			<item name="ExpansionHelicopterBattery" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionIgniterPlug" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionHydraulicHoses" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="HeadlightH7" chance="0.60" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionUh1hDoor_1_1" chance="0.70" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionUh1hDoor_1_2" chance="0.70" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionUh1hDoor_2_1" chance="0.70" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionUh1hDoor_2_2" chance="0.70" />
+		</attachments>
+	</type>
+	<type name="ExpansionGyrocopter">
+		<attachments chance="1.00">
+			<item name="ExpansionHelicopterBattery" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionIgniterPlug" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="ExpansionHydraulicHoses" chance="0.25" />
+		</attachments>
+		<attachments chance="1.00">
+			<item name="HeadlightH7" chance="0.60" />
+		</attachments>
+	</type>

@@ -25,3 +25,27 @@ open(p, 'w').write(s)
 print('cfgeconomycore: %d plikow typow modow' % len(files))
 PY
 ls ~/dayz/keys
+# --- helikoptery Expansion: typy + event + miejsca spawnu + części ---
+cp -f ~/armagedon-dayz/server/ce/types_helis.xml $CE/types_helis.xml
+python3 - "$MIS" ~/armagedon-dayz/server/ce <<'PY'
+import sys, os, re
+mis, src = sys.argv[1], sys.argv[2]
+def patch(fname, block_file, closing):
+    p = os.path.join(mis, fname)
+    s = open(p).read()
+    s = re.sub(r'\s*<!-- ARMAGEDON-START -->.*?<!-- ARMAGEDON-END -->', '', s, flags=re.S)
+    block = open(os.path.join(src, block_file)).read()
+    s = s.replace(closing, '\t<!-- ARMAGEDON-START -->\n' + block + '\t<!-- ARMAGEDON-END -->\n' + closing)
+    open(p, 'w').write(s)
+    print('patched', fname)
+patch('db/events.xml', 'events_helis.xml', '</events>')
+patch('cfgeventspawns.xml', 'eventspawns_helis.xml', '</eventposdef>')
+patch('cfgspawnabletypes.xml', 'spawnabletypes_helis.xml', '</spawnabletypes>')
+# typy helikopterów do listy plików CE
+p = os.path.join(mis, 'cfgeconomycore.xml')
+s = open(p).read()
+if 'types_helis.xml' not in s:
+    s = s.replace('\t</ce>\n</economycore>', '\t\t<file name="types_helis.xml" type="types" />\n\t</ce>\n</economycore>')
+    open(p, 'w').write(s)
+print('helis ok')
+PY
