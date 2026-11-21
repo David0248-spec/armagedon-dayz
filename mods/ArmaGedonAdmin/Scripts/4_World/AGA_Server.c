@@ -31,6 +31,9 @@ class AGA_Server
 			MakeDirectory(m_Dir);
 		LoadConfig();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(SyncInvis, 2000, true);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(RaidTick, 60000, true);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ProbeHeliSpots, 90000, false);
+		AGA_Raid.Cfg();
 	}
 
 	void LoadConfig()
@@ -189,6 +192,67 @@ class AGA_Server
 		if (p)
 			return BotName(p);
 		return "?";
+	}
+
+	void RaidTick()
+	{
+		AGA_Raid.Tick();
+	}
+
+	void WelcomeInfo(string steamId)
+	{
+		PlayerBase p = FindPlayer(steamId);
+		if (!p || !p.GetIdentity()) return;
+		string state = "Raiding is CLOSED right now.";
+		if (AGA_Raid.IsRaidTime()) state = "Raiding is OPEN right now.";
+		NotificationSystem.SendNotificationToPlayerIdentityExtended(p.GetIdentity(), 14, "WELCOME TO ARMA-GEDON", state + " " + AGA_Raid.Cfg().Info, "set:dayz_gui image:icon_info");
+	}
+
+	// jednorazowa sonda: płaskie, wolne miejsca na lotniskach pod spawn helikopterów
+	void ProbeHeliSpots()
+	{
+		string path = m_Dir + "/heli_spots.txt";
+		if (FileExist(path)) return;
+		array<vector> centers = {Vector(4800, 0, 2500), Vector(4700, 0, 10100), Vector(11950, 0, 12550), Vector(12100, 0, 9150), Vector(7400, 0, 4900)};
+		array<vector> found = new array<vector>;
+		foreach (vector c : centers)
+		{
+			int got = 0;
+			for (int i = 0; i < 400 && got < 6; i++)
+			{
+				vector p = c + Vector(Math.RandomFloat(-380, 380), 0, Math.RandomFloat(-380, 380));
+				if (GetGame().SurfaceIsSea(p[0], p[2]) || GetGame().SurfaceIsPond(p[0], p[2])) continue;
+				float y0 = GetGame().SurfaceY(p[0], p[2]);
+				float y1 = GetGame().SurfaceY(p[0] + 7, p[2]);
+				float y2 = GetGame().SurfaceY(p[0] - 7, p[2]);
+				float y3 = GetGame().SurfaceY(p[0], p[2] + 7);
+				float y4 = GetGame().SurfaceY(p[0], p[2] - 7);
+				float mx = Math.Max(Math.Max(y1, y2), Math.Max(y3, y4));
+				float mn = Math.Min(Math.Min(y1, y2), Math.Min(y3, y4));
+				if (Math.AbsFloat(mx - y0) > 0.4 || Math.AbsFloat(mn - y0) > 0.4) continue;
+				p[1] = y0;
+				array<Object> objs = new array<Object>;
+				array<CargoBase> cargos = new array<CargoBase>;
+				GetGame().GetObjectsAtPosition(p, 11, objs, cargos);
+				if (objs.Count() > 0) continue;
+				bool near = false;
+				foreach (vector f : found)
+				{
+					if (vector.Distance(f, p) < 45) near = true;
+				}
+				if (near) continue;
+				found.Insert(p);
+				got++;
+			}
+		}
+		FileHandle fh = OpenFile(path, FileMode.WRITE);
+		if (fh != 0)
+		{
+			foreach (vector v : found)
+				FPrintln(fh, Math.Round(v[0]).ToString() + " " + Math.Round(v[1]).ToString() + " " + Math.Round(v[2]).ToString());
+			CloseFile(fh);
+		}
+		Log("Sonda helikopterow: znaleziono miejsc: " + found.Count().ToString());
 	}
 
 	// ---------- niewidzialność: rozsyłanie listy do wszystkich ----------
