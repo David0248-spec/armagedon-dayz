@@ -20,7 +20,7 @@ while read -r id name; do
   rm -rf "$DAYZ/$name"
   cp -r "$WS/$id" "$DAYZ/$name"
   # małe litery w nazwach (od najgłębszych)
-  find "$DAYZ/$name" -depth -name '*[A-Z]*' | while read -r f; do
+  find "$DAYZ/$name" -mindepth 1 -depth -name '*[A-Z]*' | while read -r f; do
     d=$(dirname "$f"); b=$(basename "$f"); l=$(echo "$b" | tr 'A-Z' 'a-z')
     [ "$b" != "$l" ] && mv -f "$f" "$d/$l"
   done

@@ -9,6 +9,7 @@ fi
 git reset -q --hard origin/main
 rm -rf ~/dayz/@ArmaGedonAdmin && cp -r dist/@ArmaGedonAdmin ~/dayz/
 mkdir -p ~/dayz/keys && cp -f dist/keys/*.bikey ~/dayz/keys/ 2>/dev/null || true
+bash server/setup_ce.sh || true
 tmux kill-session -t dayz 2>/dev/null || true
 sleep 3
 MODS=$(grep -v '^#' server/mods.txt | awk 'NF==2 {print $2}' | while read m; do [ -d ~/dayz/$m ] && printf "%s;" "$m"; done)
