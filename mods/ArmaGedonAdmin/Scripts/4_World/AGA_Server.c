@@ -202,6 +202,7 @@ class AGA_Server
 	{
 		AGA_Raid.Tick();
 		AfkTick();
+		AGA_Events.Tick();
 	}
 
 	// wyrzucanie AFK po 15 minutach bez ruchu (admini pominięci)
