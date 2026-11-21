@@ -651,7 +651,6 @@ class AGA_Server
 		if (bike)
 		{
 			bike.Fill(MotorbikeFluid.FUEL, bike.GetFluidCapacity(MotorbikeFluid.FUEL));
-			bike.Fill(MotorbikeFluid.OIL, bike.GetFluidCapacity(MotorbikeFluid.OIL));
 		}
 	}
 
