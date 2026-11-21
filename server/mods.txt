@@ -17,3 +17,20 @@
 1999666859      @coldwaruniforms
 1797720064      @windstridesclothingpack
 3303988563      @earlywinterchernarus
+# --- paczka w stylu KarmaKrew (QoL / raid / ubrania / pojazdy) ---
+1827241477      @breachingcharge
+2670506982      @buildingfortifications
+2122332595      @vehicle3pp
+2444247391      @inventorymovesounds
+2449234595      @magobfuscation
+2918418331      @survivoranimations
+2536780687      @skyz
+2757657387      @carvanillaplus
+2760370513      @sotavanillaretexture
+2839126911      @techshilux
+2536888090      @rusforma_vehicles
+2931560672      @forwardoperatorgear
+3017771544      @thyer5ghillies
+3735683378      @asmondvanillaclothing
+2786677604      @survivalistsfacepaints
+2691041685      @carepackages
