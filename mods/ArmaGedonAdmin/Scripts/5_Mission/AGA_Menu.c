@@ -770,6 +770,8 @@ class AGA_Menu extends UIScriptedMenu
 		SetTxt("EBoxes_st", OnOff(c.EspBoxes));
 		SetTxt("ELines_st", OnOff(c.EspLines));
 		SetTxt("EShots_st", OnOff(c.EspShots));
+		SetTxt("EAi_st", OnOff(c.EspAi));
+		Mark("EAi", c.EspAi);
 		Mark("EOn", c.EspOn);
 		Mark("ENames", c.EspNames);
 		Mark("EBoxes", c.EspBoxes);
@@ -1182,7 +1184,16 @@ class AGA_Menu extends UIScriptedMenu
 				m_Msg.SetText("");
 				return true;
 			}
-			case "EOn": c.EspOn = !c.EspOn; RefreshToggles(); return true;
+			case "EOn":
+			{
+				c.EspOn = !c.EspOn;
+				c.CLog("ESP przelaczone: " + c.EspOn.ToString());
+				RefreshToggles();
+				return true;
+			}
+			case "EAi": c.EspAi = !c.EspAi; RefreshToggles(); return true;
+			case "EBot": c.Action(AGA_ACT_BOT, "", "", "0 0 0", 1); return true;
+			case "EBotDel": c.Action(AGA_ACT_BOT, "", "", "0 0 0", 0); return true;
 			case "ENames": c.EspNames = !c.EspNames; RefreshToggles(); return true;
 			case "EBoxes": c.EspBoxes = !c.EspBoxes; RefreshToggles(); return true;
 			case "ELines": c.EspLines = !c.EspLines; RefreshToggles(); return true;

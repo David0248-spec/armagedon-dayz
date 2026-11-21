@@ -36,6 +36,7 @@ const int AGA_ACT_SPAWN_AI    = 20;
 const int AGA_ACT_PM          = 21;
 const int AGA_ACT_HEAL_ALL    = 22;
 const int AGA_ACT_CLEAR_AI    = 23;
+const int AGA_ACT_BOT         = 24; // num 1 = stwórz bota testowego, 0 = usuń boty
 
 // tryby spawnu (val); +10 = z wyposażeniem (OnDebugSpawn)
 const int AGA_SPAWN_INV       = 0;

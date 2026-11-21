@@ -11,6 +11,7 @@ class AGA_Server
 	protected ref array<string> m_Recent;   // ostatnie wpisy admina
 	protected ref array<string> m_Combat;   // ostatnie trafienia / zabójstwa
 	protected float m_SyncTimer;
+	protected ref array<PlayerBase> m_Bots;
 
 	static AGA_Server Get()
 	{
@@ -25,6 +26,7 @@ class AGA_Server
 		m_Invis = new map<string, bool>;
 		m_Recent = new array<string>;
 		m_Combat = new array<string>;
+		m_Bots = new array<PlayerBase>;
 		if (!FileExist(m_Dir))
 			MakeDirectory(m_Dir);
 		LoadConfig();
@@ -103,6 +105,11 @@ class AGA_Server
 
 	PlayerBase FindPlayer(string steamId)
 	{
+		for (int b = 0; b < m_Bots.Count(); b++)
+		{
+			if (m_Bots[b] && BotId(b) == steamId)
+				return m_Bots[b];
+		}
 		array<Man> players = new array<Man>;
 		GetGame().GetPlayers(players);
 		foreach (Man m : players)
@@ -119,6 +126,55 @@ class AGA_Server
 		NotificationSystem.SendNotificationToPlayerIdentityExtended(id, 5, "ARMA-GEDON ADMIN", text, "set:dayz_gui image:icon_info");
 	}
 
+	string BotId(int idx)
+	{
+		return "BOT" + (idx + 1).ToString();
+	}
+
+	string BotName(PlayerBase p)
+	{
+		int idx = m_Bots.Find(p);
+		if (idx == -1) return "?";
+		return "BOT TESTOWY " + (idx + 1).ToString();
+	}
+
+	void SpawnBot(PlayerBase p, PlayerIdentity id)
+	{
+		vector at = p.GetPosition() + p.GetDirection() * 6;
+		at = GroundAt(at);
+		PlayerBase bot = PlayerBase.Cast(GetGame().CreateObjectEx("SurvivorM_Mirek", at, ECE_PLACE_ON_SURFACE));
+		if (!bot)
+		{
+			Notify(id, "Nie udało się stworzyć bota");
+			return;
+		}
+		vector o = p.GetOrientation();
+		o[0] = o[0] + 180;
+		bot.SetOrientation(o);
+		array<string> gear = {"TShirt_Red", "Jeans_Blue", "AthleticShoes_Black", "BallisticHelmet_Green", "PlateCarrierVest"};
+		foreach (string g : gear)
+			bot.GetInventory().CreateInInventory(g);
+		m_Bots.Insert(bot);
+		Notify(id, "Bot testowy stworzony: " + BotName(bot));
+		Log(Who(p) + " stworzył bota testowego");
+	}
+
+	void ClearBots(PlayerBase p, PlayerIdentity id)
+	{
+		int n = 0;
+		foreach (PlayerBase b : m_Bots)
+		{
+			if (b)
+			{
+				GetGame().ObjectDelete(b);
+				n++;
+			}
+		}
+		m_Bots.Clear();
+		Notify(id, "Usunięto botów: " + n.ToString());
+		Log(Who(p) + " usunął boty testowe");
+	}
+
 	string Who(PlayerBase p)
 	{
 		if (p && p.GetIdentity())
@@ -130,6 +186,8 @@ class AGA_Server
 	{
 		if (p && p.GetIdentity())
 			return p.GetIdentity().GetName();
+		if (p)
+			return BotName(p);
 		return "?";
 	}
 
@@ -213,11 +271,26 @@ class AGA_Server
 			if (cp && cp.GetIdentity())
 				list.Insert(cp);
 		}
+		array<string> ids = new array<string>;
+		array<string> names = new array<string>;
+		foreach (PlayerBase lp : list)
+		{
+			ids.Insert(lp.GetIdentity().GetPlainId());
+			names.Insert(lp.GetIdentity().GetName());
+		}
+		for (int bi = 0; bi < m_Bots.Count(); bi++)
+		{
+			if (!m_Bots[bi]) continue;
+			list.Insert(m_Bots[bi]);
+			ids.Insert(BotId(bi));
+			names.Insert(BotName(m_Bots[bi]));
+		}
 		ScriptRPC rpc = new ScriptRPC();
 		rpc.Write(list.Count());
-		foreach (PlayerBase pb : list)
+		for (int li = 0; li < list.Count(); li++)
 		{
-			string sid = pb.GetIdentity().GetPlainId();
+			PlayerBase pb = list[li];
+			string sid = ids[li];
 			int lo, hi;
 			pb.GetNetworkID(lo, hi);
 			string hands = "";
@@ -228,7 +301,7 @@ class AGA_Server
 			float energy = 0;
 			if (pb.GetStatWater()) water = pb.GetStatWater().Get();
 			if (pb.GetStatEnergy()) energy = pb.GetStatEnergy().Get();
-			rpc.Write(pb.GetIdentity().GetName());
+			rpc.Write(names[li]);
 			rpc.Write(sid);
 			rpc.Write(pb.GetPosition());
 			rpc.Write(pb.GetHealth("", ""));
@@ -327,14 +400,14 @@ class AGA_Server
 			{
 				if (!t) return;
 				t.SetAllowDamage(true);
-				m_God.Remove(t.GetIdentity().GetPlainId());
+				if (t.GetIdentity()) m_God.Remove(t.GetIdentity().GetPlainId());
 				t.SetHealth("", "", 0);
 				Log(Who(sender) + " zabił " + Who(t));
 				break;
 			}
 			case AGA_ACT_KICK:
 			{
-				if (!t) return;
+				if (!t || !t.GetIdentity()) return;
 				Log(Who(sender) + " wyrzucił " + Who(t) + " | powód: " + text);
 				Notify(t.GetIdentity(), "Zostałeś wyrzucony: " + text);
 				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(DoKick, 1500, false, t.GetIdentity().GetPlainId());
@@ -357,7 +430,8 @@ class AGA_Server
 			case AGA_ACT_GOD:
 			{
 				if (!t) t = sender;
-				string gid = t.GetIdentity().GetPlainId();
+				string gid = target;
+				if (t.GetIdentity()) gid = t.GetIdentity().GetPlainId();
 				bool on = (num == 1);
 				t.SetAllowDamage(!on);
 				if (on)
@@ -376,6 +450,7 @@ class AGA_Server
 			case AGA_ACT_INVIS:
 			{
 				if (!t) t = sender;
+				if (!t.GetIdentity()) { Notify(id, "Boty nie obsługują niewidzialności"); return; }
 				string iid = t.GetIdentity().GetPlainId();
 				bool inv = (num == 1);
 				if (inv)
@@ -389,7 +464,7 @@ class AGA_Server
 			}
 			case AGA_ACT_FREEZE:
 			{
-				if (!t) return;
+				if (!t || !t.GetIdentity()) return;
 				ScriptRPC fr = new ScriptRPC();
 				fr.Write(num == 1);
 				fr.Send(t, AGA_RPC_FREEZE, true, t.GetIdentity());
@@ -415,7 +490,7 @@ class AGA_Server
 			}
 			case AGA_ACT_PM:
 			{
-				if (!t || text == "") return;
+				if (!t || !t.GetIdentity() || text == "") return;
 				NotificationSystem.SendNotificationToPlayerIdentityExtended(t.GetIdentity(), 15, "WIADOMOŚĆ OD ADMINISTRACJI", text, "set:dayz_gui image:icon_info");
 				Notify(id, "Wysłano wiadomość do " + NameOf(t));
 				Log(Who(sender) + " wiadomość do " + Who(t) + ": " + text);
@@ -451,6 +526,14 @@ class AGA_Server
 			case AGA_ACT_SPAWN_AI:
 			{
 				SpawnAI(sender, id, text, num, pos);
+				break;
+			}
+			case AGA_ACT_BOT:
+			{
+				if (num == 1)
+					SpawnBot(sender, id);
+				else
+					ClearBots(sender, id);
 				break;
 			}
 			case AGA_ACT_CLEAR_AI:

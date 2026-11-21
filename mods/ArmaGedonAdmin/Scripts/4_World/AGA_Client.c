@@ -27,6 +27,7 @@ class AGA_Client
 	bool EspBoxes = true;
 	bool EspLines;
 	bool EspShots = true;
+	bool EspAi;
 	float EspRange = 1500;
 
 	// narzędzia
@@ -42,6 +43,9 @@ class AGA_Client
 	protected CanvasWidget m_Canvas;
 	protected ref array<Widget> m_Labels = new array<Widget>;
 	protected ref array<ref AGA_Shot> m_Shots = new array<ref AGA_Shot>;
+	protected ref array<Object> m_AiObjs = new array<Object>;
+	protected float m_AiScan;
+	protected bool m_EspFailed;
 
 	protected ref array<int> m_InvisLow = new array<int>;
 	protected ref array<int> m_InvisHigh = new array<int>;
@@ -305,7 +309,7 @@ class AGA_Client
 		if (!menuOpen)
 			UpdateHotkeys();
 
-		DrawEsp(menuOpen);
+		DrawEsp(menuOpen, dt);
 	}
 
 	// ---------------- skróty: Delete (tryb usuwania), Page Up (TP tam gdzie patrzysz) ----------------
@@ -489,10 +493,44 @@ class AGA_Client
 	// ---------------- ESP ----------------
 	protected void EnsureEsp()
 	{
-		if (m_EspRoot) return;
+		if (m_EspRoot || m_EspFailed) return;
 		m_EspRoot = GetGame().GetWorkspace().CreateWidgets("ArmaGedonAdmin/GUI/layouts/aga_esp.layout");
 		if (m_EspRoot)
 			m_Canvas = CanvasWidget.Cast(m_EspRoot.FindAnyWidget("Canvas"));
+		if (!m_EspRoot || !m_Canvas)
+		{
+			m_EspFailed = true;
+			CLog("BLAD: warstwa ESP nie wczytala sie (root=" + (m_EspRoot != null).ToString() + ", canvas=" + (m_Canvas != null).ToString() + ")");
+			NotificationSystem.AddNotificationExtended(6, "ARMA-GEDON ADMIN", "ESP: blad warstwy rysowania");
+		}
+		else
+		{
+			CLog("ESP: warstwa rysowania gotowa");
+		}
+	}
+
+	protected void ScanAi(vector cam, float dt)
+	{
+		m_AiScan -= dt;
+		if (m_AiScan > 0) return;
+		m_AiScan = 1.0;
+		m_AiObjs.Clear();
+		float r = EspRange;
+		if (r > 400) r = 400;
+		array<Object> objs = new array<Object>;
+		array<CargoBase> cargos = new array<CargoBase>;
+		GetGame().GetObjectsAtPosition(cam, r, objs, cargos);
+		foreach (Object o : objs)
+		{
+			if (DayZInfected.Cast(o) || DayZAnimal.Cast(o))
+			{
+				EntityAI e = EntityAI.Cast(o);
+				if (e && e.IsAlive())
+					m_AiObjs.Insert(o);
+			}
+			if (m_AiObjs.Count() >= 150)
+				break;
+		}
 	}
 
 	protected void Box(float x0, float y0, float x1, float y1, int col)
@@ -514,7 +552,7 @@ class AGA_Client
 		return m_Labels[idx];
 	}
 
-	protected void DrawEsp(bool menuOpen)
+	protected void DrawEsp(bool menuOpen, float dt)
 	{
 		bool active = EspOn || m_Cam != null;
 		if (!active || menuOpen)
@@ -584,6 +622,31 @@ class AGA_Client
 		}
 		for (int k = used; k < m_Labels.Count(); k++)
 			m_Labels[k].Show(false);
+
+		if (EspAi)
+		{
+			ScanAi(cam, dt);
+			foreach (Object ao : m_AiObjs)
+			{
+				if (!ao) continue;
+				vector af = ao.GetPosition();
+				float ah = 1.7;
+				int acol = 0xFF3DD16A;
+				if (DayZAnimal.Cast(ao))
+				{
+					ah = 1.2;
+					acol = 0xFF3DA5FF;
+				}
+				vector asf = GetGame().GetScreenPos(af);
+				vector ash = GetGame().GetScreenPos(af + Vector(0, ah, 0));
+				if (asf[2] <= 0 || ash[2] <= 0) continue;
+				float abh = asf[1] - ash[1];
+				if (abh < 4) abh = 4;
+				float abw = abh * 0.5;
+				if (DayZAnimal.Cast(ao)) abw = abh * 1.2;
+				Box(ash[0] - abw * 0.5, ash[1], ash[0] + abw * 0.5, asf[1], acol);
+			}
+		}
 
 		if (EspShots)
 		{

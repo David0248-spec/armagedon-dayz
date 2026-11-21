@@ -8985,7 +8985,7 @@ FrameWidgetClass AGA_Root {
         }
         ButtonWidgetClass EOn {
          position 0.0 0.06
-         size 0.19 0.12
+         size 0.16 0.12
          hexactpos 0
          vexactpos 0
          hexactsize 0
@@ -9016,7 +9016,7 @@ FrameWidgetClass AGA_Root {
            text "ESP"
            font "gui/fonts/metron22"
            "exact text" 1
-           "exact text size" 20
+           "exact text size" 18
            "text halign" center
            "text valign" center
           }
@@ -9039,8 +9039,8 @@ FrameWidgetClass AGA_Root {
          }
         }
         ButtonWidgetClass ENames {
-         position 0.199 0.06
-         size 0.19 0.12
+         position 0.1665 0.06
+         size 0.16 0.12
          hexactpos 0
          vexactpos 0
          hexactsize 0
@@ -9071,7 +9071,7 @@ FrameWidgetClass AGA_Root {
            text "NAZWY"
            font "gui/fonts/metron22"
            "exact text" 1
-           "exact text size" 20
+           "exact text size" 18
            "text halign" center
            "text valign" center
           }
@@ -9094,8 +9094,8 @@ FrameWidgetClass AGA_Root {
          }
         }
         ButtonWidgetClass EBoxes {
-         position 0.398 0.06
-         size 0.19 0.12
+         position 0.333 0.06
+         size 0.16 0.12
          hexactpos 0
          vexactpos 0
          hexactsize 0
@@ -9126,7 +9126,7 @@ FrameWidgetClass AGA_Root {
            text "BOXY"
            font "gui/fonts/metron22"
            "exact text" 1
-           "exact text size" 20
+           "exact text size" 18
            "text halign" center
            "text valign" center
           }
@@ -9149,8 +9149,8 @@ FrameWidgetClass AGA_Root {
          }
         }
         ButtonWidgetClass ELines {
-         position 0.597 0.06
-         size 0.19 0.12
+         position 0.49950000000000006 0.06
+         size 0.16 0.12
          hexactpos 0
          vexactpos 0
          hexactsize 0
@@ -9181,7 +9181,7 @@ FrameWidgetClass AGA_Root {
            text "LINIE"
            font "gui/fonts/metron22"
            "exact text" 1
-           "exact text size" 20
+           "exact text size" 18
            "text halign" center
            "text valign" center
           }
@@ -9204,8 +9204,8 @@ FrameWidgetClass AGA_Root {
          }
         }
         ButtonWidgetClass EShots {
-         position 0.796 0.06
-         size 0.19 0.12
+         position 0.666 0.06
+         size 0.16 0.12
          hexactpos 0
          vexactpos 0
          hexactsize 0
@@ -9236,11 +9236,66 @@ FrameWidgetClass AGA_Root {
            text "STRZALY"
            font "gui/fonts/metron22"
            "exact text" 1
-           "exact text size" 20
+           "exact text size" 18
            "text halign" center
            "text valign" center
           }
           TextWidgetClass EShots_st {
+           position 0 0.68
+           size 1 0.3
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           ignorepointer 1
+           color 0.55 0.58 0.63 1
+           text ""
+           font "gui/fonts/metron22"
+           "exact text" 1
+           "exact text size" 14
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ButtonWidgetClass EAi {
+         position 0.8325 0.06
+         size 0.16 0.12
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         color 1 1 1 1
+         style Default
+         {
+          PanelWidgetClass EAi_bg {
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           ignorepointer 1
+           color 0.11 0.118 0.137 1
+           style rover_sim_colorable
+          }
+          TextWidgetClass EAi_txt {
+           position 0.0 0
+           size 1.0 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           ignorepointer 1
+           color 0.93 0.94 0.95 1
+           text "ZOMBIE / ZWIERZETA"
+           font "gui/fonts/metron22"
+           "exact text" 1
+           "exact text size" 18
+           "text halign" center
+           "text valign" center
+          }
+          TextWidgetClass EAi_st {
            position 0 0.68
            size 1 0.3
            hexactpos 0
@@ -9478,9 +9533,103 @@ FrameWidgetClass AGA_Root {
           }
          }
         }
+        TextWidgetClass EBT {
+         position 0.62 0.24
+         size 0.38 0.05
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.86 0.15 0.15 1
+         text "TESTY W POJEDYNKE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 20
+         "text halign" left
+         "text valign" center
+        }
+        ButtonWidgetClass EBot {
+         position 0.62 0.3
+         size 0.185 0.08
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         color 1 1 1 1
+         style Default
+         {
+          PanelWidgetClass EBot_bg {
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           ignorepointer 1
+           color 0.55 0.09 0.09 1
+           style rover_sim_colorable
+          }
+          TextWidgetClass EBot_txt {
+           position 0.0 0
+           size 1.0 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           ignorepointer 1
+           color 0.93 0.94 0.95 1
+           text "STWORZ BOTA"
+           font "gui/fonts/metron22"
+           "exact text" 1
+           "exact text size" 16
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ButtonWidgetClass EBotDel {
+         position 0.815 0.3
+         size 0.185 0.08
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         color 1 1 1 1
+         style Default
+         {
+          PanelWidgetClass EBotDel_bg {
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           ignorepointer 1
+           color 0.11 0.118 0.137 1
+           style rover_sim_colorable
+          }
+          TextWidgetClass EBotDel_txt {
+           position 0.0 0
+           size 1.0 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           ignorepointer 1
+           color 0.93 0.94 0.95 1
+           text "USUN BOTY"
+           font "gui/fonts/metron22"
+           "exact text" 1
+           "exact text size" 16
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
         PanelWidgetClass ELeg {
          position 0 0.45
-         size 1 0.2
+         size 1 0.22
          hexactpos 0
          vexactpos 0
          hexactsize 0
@@ -9498,7 +9647,7 @@ FrameWidgetClass AGA_Root {
            vexactsize 0
            ignorepointer 1
            color 0.55 0.58 0.63 1
-           text "KOLORY:  czerwony = gracz,  zolty = god mode,  fioletowy = niewidzialny,  pomaranczowe linie = strzaly z ostatnich 12 sekund (od lufy do miejsca trafienia).  ESP dziala tez podczas latania.  Pozycje graczy spoza zasiegu sieci sa odswiezane co sekunde."
+           text "KOLORY:  czerwony = gracz / bot,  zolty = god mode,  fioletowy = niewidzialny,  zielony = zombie,  niebieski = zwierze,  pomaranczowe linie = strzaly z ostatnich 12 sekund (od lufy do miejsca trafienia, takze Twoje).     TEST:  stworz bota, wlacz ESP, zamknij panel i strzelaj obok i w bota.  Kazde trafienie bota pojawi sie w zakladce LOGI (czesc ciala, odleglosc, obrazenia)."
            font "gui/fonts/metron22"
            "exact text" 1
            "exact text size" 16
