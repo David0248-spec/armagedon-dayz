@@ -7,9 +7,11 @@ class AGA_ItemDef
 	int Cat;
 }
 
+// baza przedmiotów i pojazdów z konfiguracji gry (budowana raz)
 class AGA_ItemDb
 {
 	static ref array<ref AGA_ItemDef> s_Items;
+	static ref array<ref AGA_ItemDef> s_Vehicles;
 
 	static array<ref AGA_ItemDef> Get()
 	{
@@ -18,9 +20,17 @@ class AGA_ItemDb
 		return s_Items;
 	}
 
+	static array<ref AGA_ItemDef> Vehicles()
+	{
+		if (!s_Vehicles)
+			Build();
+		return s_Vehicles;
+	}
+
 	static void Build()
 	{
 		s_Items = new array<ref AGA_ItemDef>;
+		s_Vehicles = new array<ref AGA_ItemDef>;
 		array<string> roots = {"CfgWeapons", "CfgMagazines", "CfgVehicles"};
 		array<string> medical = {"bandage", "morphine", "epinephrine", "saline", "bloodbag", "bloodtest", "tetracycline", "painkiller", "charcoal", "vitamin", "splint", "disinfect", "iodine", "rag", "startkit", "firstaid", "pills", "defibrillator", "chelating", "cotton"};
 		foreach (string root : roots)
@@ -33,8 +43,43 @@ class AGA_ItemDb
 				string path = root + " " + cls;
 				if (GetGame().ConfigGetInt(path + " scope") != 2)
 					continue;
+				string low = cls;
+				low.ToLower();
+				string dn;
+				GetGame().ConfigGetText(path + " displayName", dn);
+				if (dn == "")
+					dn = cls;
+				string dl = dn;
+				dl.ToLower();
+
 				TStringArray parents = new TStringArray;
 				GetGame().ConfigGetFullPath(path, parents);
+
+				// pojazdy
+				if (parents.Find("Transport") != -1)
+				{
+					if (low.Contains("test"))
+						continue;
+					int vc = 5;
+					if (parents.Find("BoatScript") != -1 || parents.Find("Boat") != -1)
+						vc = 3;
+					else if (parents.Find("MotorbikeScript") != -1 || parents.Find("Motorbike") != -1)
+						vc = 4;
+					else if (parents.Find("CarScript") != -1 || parents.Find("Car") != -1)
+					{
+						vc = 1;
+						if (low.Contains("truck") || low.Contains("van_"))
+							vc = 2;
+					}
+					AGA_ItemDef v = new AGA_ItemDef();
+					v.Cls = cls;
+					v.Name = dn;
+					v.Low = low + " " + dl;
+					v.Cat = vc;
+					s_Vehicles.Insert(v);
+					continue;
+				}
+
 				int cat = 7;
 				if (parents.Find("Weapon_Base") != -1)
 					cat = 1;
@@ -42,26 +87,19 @@ class AGA_ItemDb
 					cat = 2;
 				else if (parents.Find("Clothing_Base") != -1 || parents.Find("Clothing") != -1)
 				{
+					cat = 3;
+					TStringArray slots = new TStringArray;
+					GetGame().ConfigGetTextArray(path + " inventorySlot", slots);
 					string slot;
 					GetGame().ConfigGetText(path + " inventorySlot", slot);
-					cat = 3;
-					if (slot == "Back")
+					if (slot == "Back" || slots.Find("Back") != -1)
 						cat = 4;
-					else
-					{
-						TStringArray slots = new TStringArray;
-						GetGame().ConfigGetTextArray(path + " inventorySlot", slots);
-						if (slots.Find("Back") != -1)
-							cat = 4;
-					}
 				}
 				else if (parents.Find("Edible_Base") != -1)
 					cat = 5;
 				else if (parents.Find("Inventory_Base") == -1 && parents.Find("ItemBase") == -1)
-					continue; // budynki, AI, efekty itp.
+					continue;
 
-				string low = cls;
-				low.ToLower();
 				if (cat == 7)
 				{
 					foreach (string m : medical)
@@ -73,15 +111,9 @@ class AGA_ItemDb
 						}
 					}
 				}
-				string dn;
-				GetGame().ConfigGetText(path + " displayName", dn);
-				if (dn == "")
-					dn = cls;
 				AGA_ItemDef d = new AGA_ItemDef();
 				d.Cls = cls;
 				d.Name = dn;
-				string dl = dn;
-				dl.ToLower();
 				d.Low = low + " " + dl;
 				d.Cat = cat;
 				s_Items.Insert(d);
@@ -111,9 +143,11 @@ class AGA_Menu extends UIScriptedMenu
 	protected int m_PPage;
 	protected vector m_Pick;
 
+	// przedmioty
 	protected int m_Cat;
 	protected string m_LastSearch = "-";
 	protected int m_IPage;
+	protected bool m_Full;
 	protected ref array<AGA_ItemDef> m_Filtered = new array<AGA_ItemDef>;
 	protected ref array<EntityAI> m_TileEnt = new array<EntityAI>;
 	protected ref array<string> m_TileCls = new array<string>;
@@ -121,22 +155,40 @@ class AGA_Menu extends UIScriptedMenu
 	protected EntityAI m_DetailEnt;
 	protected float m_Rot;
 
-	protected int m_SelCar = -1;
-	protected ref array<EntityAI> m_CarEnt = new array<EntityAI>;
-	protected EntityAI m_CarDetailEnt;
-	protected ref array<string> m_CarCls;
-	protected ref array<string> m_CarName;
+	// pojazdy
+	protected int m_VCat;
+	protected int m_VPage;
+	protected ref array<AGA_ItemDef> m_VFiltered = new array<AGA_ItemDef>;
+	protected ref array<EntityAI> m_VEnt = new array<EntityAI>;
+	protected ref array<string> m_VCls = new array<string>;
+	protected string m_SelVeh;
+	protected EntityAI m_VDetailEnt;
 
-	void AGA_Menu()
-	{
-		m_CarCls = {"OffroadHatchback", "CivilianSedan", "Hatchback_02", "Sedan_02", "Offroad_02", "Truck_01_Covered"};
-		m_CarName = {"ADA 4X4", "OLGA 24", "GUNTER 2", "SARKA 120", "M1025 HUMVEE", "V3S CARGO"};
-	}
+	// AI
+	protected ref array<string> m_Zombies;
+	protected ref array<string> m_Animals;
+	protected ref array<int> m_AiCounts;
+	protected string m_AiCls;
+	protected string m_AiName;
+	protected int m_AiCountIdx;
+
+	protected ref array<string> m_Kits;
 
 	protected float m_Tick;
+	protected float m_LogTick;
+	protected bool m_EscDown = true;
 
 	const int COL_HOVER = 0xFF2A2F38;
 	const int COL_RED = 0xFFDB2626;
+	const int COL_ACTIVE = 0xFF171A20;
+
+	void AGA_Menu()
+	{
+		m_Zombies = {"ZmbM_CitizenASkinny_Blue", "ZmbF_CitizenANormal_Blue", "ZmbM_SoldierNormal", "ZmbM_PolicemanFat", "ZmbM_DoctorFat", "ZmbM_PrisonerSkinny", "ZmbM_FirefighterNormal", "ZmbM_ConstrWorkerNormal_Beige"};
+		m_Animals = {"Animal_CanisLupus_Grey", "Animal_UrsusArctos", "Animal_CervusElaphus", "Animal_SusScrofa", "Animal_BosTaurus_Brown", "Animal_GallusGallusDomesticus", "Animal_VulpesVulpes", "Animal_OvisAries"};
+		m_AiCounts = {1, 3, 5, 10, 20};
+		m_Kits = {"SZTURM", "SNAJPER", "MEDYK", "BUDOWA", "SURVIVAL", "UBRANIE"};
+	}
 
 	// ------------------------------------------------------------
 	override Widget Init()
@@ -166,6 +218,11 @@ class AGA_Menu extends UIScriptedMenu
 			m_TileEnt.Insert(null);
 			m_TileCls.Insert("");
 		}
+		for (int j = 0; j < 6; j++)
+		{
+			m_VEnt.Insert(null);
+			m_VCls.Insert("");
+		}
 
 		PlayerBase me = PlayerBase.Cast(GetGame().GetPlayer());
 		if (m_Map && me)
@@ -176,7 +233,7 @@ class AGA_Menu extends UIScriptedMenu
 		if (me && me.GetIdentity())
 			SetTxt("Who", "ADMIN: " + me.GetIdentity().GetName());
 
-		BuildCars();
+		RefreshToggles();
 		ShowPage(s_Page);
 		return layoutRoot;
 	}
@@ -233,6 +290,15 @@ class AGA_Menu extends UIScriptedMenu
 			SetBg(n, m_BaseColor.Get(n));
 	}
 
+	void Mark(string n, bool on)
+	{
+		ShowW(n + "_bar", on);
+		if (on)
+			SetBg(n, COL_ACTIVE);
+		else
+			ResetBg(n);
+	}
+
 	void CollectColors(Widget w)
 	{
 		while (w)
@@ -247,6 +313,12 @@ class AGA_Menu extends UIScriptedMenu
 				CollectColors(w.GetChildren());
 			w = w.GetSibling();
 		}
+	}
+
+	string OnOff(bool b)
+	{
+		if (b) return "WLACZONE";
+		return "wylaczone";
 	}
 
 	EntityAI MakeLocal(string cls)
@@ -288,18 +360,19 @@ class AGA_Menu extends UIScriptedMenu
 			m_TileEnt[i] = null;
 			m_TileCls[i] = "";
 		}
-		for (int j = 0; j < m_CarEnt.Count(); j++)
+		for (int j = 0; j < m_VEnt.Count(); j++)
 		{
 			SetPreview("VTile" + j.ToString() + "_pv", null, vector.Zero);
-			KillEnt(m_CarEnt[j]);
+			KillEnt(m_VEnt[j]);
+			m_VEnt[j] = null;
+			m_VCls[j] = "";
 		}
-		m_CarEnt.Clear();
 		SetPreview("IDetail_pv", null, vector.Zero);
 		SetPreview("VDetail_pv", null, vector.Zero);
 		KillEnt(m_DetailEnt);
-		KillEnt(m_CarDetailEnt);
+		KillEnt(m_VDetailEnt);
 		m_DetailEnt = null;
-		m_CarDetailEnt = null;
+		m_VDetailEnt = null;
 	}
 
 	string Short(string s, int len)
@@ -317,18 +390,21 @@ class AGA_Menu extends UIScriptedMenu
 		return null;
 	}
 
+	int Pages(int count, int per)
+	{
+		int p = (count + per - 1) / per;
+		if (p < 1) p = 1;
+		return p;
+	}
+
 	// ------------------------------------------------------------ strony
 	void ShowPage(int idx)
 	{
 		s_Page = idx;
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 9; i++)
 		{
 			ShowW("Page" + i.ToString(), i == idx);
-			ShowW("Nav" + i.ToString() + "_bar", i == idx);
-			if (i == idx)
-				SetBg("Nav" + i.ToString(), 0xFF171A20);
-			else
-				ResetBg("Nav" + i.ToString());
+			Mark("Nav" + i.ToString(), i == idx);
 		}
 		if (m_Markers)
 			m_Markers.Show(idx == 0);
@@ -338,7 +414,14 @@ class AGA_Menu extends UIScriptedMenu
 			RefreshItems();
 		}
 		if (idx == 3)
-			RefreshCars();
+			RefreshVehicles();
+		if (idx == 4)
+			RefreshAi();
+		if (idx == 8)
+		{
+			AGA_Client.Get().RequestLogs();
+			m_LogTick = 0.5;
+		}
 	}
 
 	// ------------------------------------------------------------ gracze
@@ -347,8 +430,7 @@ class AGA_Menu extends UIScriptedMenu
 		array<ref AGA_PlayerInfo> list = AGA_Client.Get().Players;
 		PlayerBase me = PlayerBase.Cast(GetGame().GetPlayer());
 
-		int mPages = (list.Count() + 13) / 14;
-		if (mPages < 1) mPages = 1;
+		int mPages = Pages(list.Count(), 14);
 		if (m_MPage >= mPages) m_MPage = mPages - 1;
 		SetTxt("MPage", (m_MPage + 1).ToString() + " / " + mPages.ToString());
 		for (int i = 0; i < 14; i++)
@@ -370,8 +452,7 @@ class AGA_Menu extends UIScriptedMenu
 			ShowW(rn + "_bar", info.SteamId == m_SelId);
 		}
 
-		int pPages = (list.Count() + 14) / 15;
-		if (pPages < 1) pPages = 1;
+		int pPages = Pages(list.Count(), 15);
 		if (m_PPage >= pPages) m_PPage = pPages - 1;
 		SetTxt("PPage", (m_PPage + 1).ToString() + " / " + pPages.ToString());
 		for (int k = 0; k < 15; k++)
@@ -385,11 +466,21 @@ class AGA_Menu extends UIScriptedMenu
 			}
 			AGA_PlayerInfo pinfo = list[pidx];
 			ShowW(pn, true);
-			SetTxt(pn + "_txt", Short(pinfo.Name, 22));
-			SetTxt(pn + "_r", "HP " + Math.Round(pinfo.Health).ToString());
+			string flags = "";
+			if (pinfo.God) flags = flags + " G";
+			if (pinfo.Invis) flags = flags + " N";
+			if (pinfo.InVehicle) flags = flags + " P";
+			SetTxt(pn + "_txt", Short(pinfo.Name, 20));
+			SetTxt(pn + "_r", "HP " + Math.Round(pinfo.Health).ToString() + flags);
 			ShowW(pn + "_bar", pinfo.SteamId == m_SelId);
 		}
 		RefreshCard();
+	}
+
+	void SetBar(string n, float frac)
+	{
+		Widget w = F(n);
+		if (w) w.SetSize(Math.Clamp(frac, 0, 1), 1);
 	}
 
 	void RefreshCard()
@@ -401,25 +492,32 @@ class AGA_Menu extends UIScriptedMenu
 			SetTxt("CSteam", "");
 			SetTxt("CHpV", "");
 			SetTxt("CBlV", "");
+			SetTxt("CWaV", "");
+			SetTxt("CEnV", "");
 			SetTxt("CPos", "");
+			SetTxt("CHands", "");
 			SetTxt("CGod", "");
 			return;
 		}
 		SetTxt("CName", info.Name);
 		SetTxt("CSteam", "STEAM ID: " + info.SteamId);
-		float hp = Math.Clamp(info.Health / 100.0, 0, 1);
-		float bl = Math.Clamp(info.Blood / 5000.0, 0, 1);
 		SetTxt("CHpV", Math.Round(info.Health).ToString() + " / 100");
 		SetTxt("CBlV", Math.Round(info.Blood).ToString() + " / 5000");
-		Widget hpw = F("CHp");
-		if (hpw) hpw.SetSize(hp, 1);
-		Widget blw = F("CBl");
-		if (blw) blw.SetSize(bl, 1);
+		SetTxt("CWaV", Math.Round(info.Water).ToString());
+		SetTxt("CEnV", Math.Round(info.Energy).ToString());
+		SetBar("CHp", info.Health / 100.0);
+		SetBar("CBl", info.Blood / 5000.0);
+		SetBar("CWa", info.Water / 5000.0);
+		SetBar("CEn", info.Energy / 20000.0);
 		SetTxt("CPos", "POZYCJA: " + Math.Round(info.Pos[0]).ToString() + " / " + Math.Round(info.Pos[2]).ToString());
-		if (info.God)
-			SetTxt("CGod", "GOD MODE AKTYWNY");
-		else
-			SetTxt("CGod", "");
+		string hands = info.InHands;
+		if (hands == "") hands = "nic";
+		SetTxt("CHands", "W RECE: " + hands);
+		string st = "";
+		if (info.God) st = st + "GOD MODE   ";
+		if (info.Invis) st = st + "NIEWIDZIALNY   ";
+		if (info.InVehicle) st = st + "W POJEZDZIE";
+		SetTxt("CGod", st);
 	}
 
 	void UpdateMarkers()
@@ -462,6 +560,8 @@ class AGA_Menu extends UIScriptedMenu
 					dot.SetColor(0xFFFFC52E);
 				else if (info.SteamId == myId)
 					dot.SetColor(0xFF3DD16A);
+				else if (info.Invis)
+					dot.SetColor(0xFFB46CFF);
 				else
 					dot.SetColor(COL_RED);
 			}
@@ -484,7 +584,6 @@ class AGA_Menu extends UIScriptedMenu
 		}
 		for (int c = 0; c < 8; c++)
 		{
-			ShowW("ICat" + c.ToString() + "_bar", false);
 			if (c == m_Cat)
 				SetBg("ICat" + c.ToString(), COL_RED);
 			else
@@ -496,8 +595,7 @@ class AGA_Menu extends UIScriptedMenu
 
 	void FillTiles()
 	{
-		int pages = (m_Filtered.Count() + 17) / 18;
-		if (pages < 1) pages = 1;
+		int pages = Pages(m_Filtered.Count(), 18);
 		if (m_IPage >= pages) m_IPage = pages - 1;
 		if (m_IPage < 0) m_IPage = 0;
 		SetTxt("IPage", (m_IPage + 1).ToString() + " / " + pages.ToString());
@@ -561,50 +659,167 @@ class AGA_Menu extends UIScriptedMenu
 	void SpawnSelected(int mode)
 	{
 		if (m_SelItem == "") return;
-		AGA_Client.Get().Action(AGA_ACT_SPAWN, "", m_SelItem, m_Pick, Qty(), mode);
+		int m = mode;
+		if (m_Full) m = m + 10;
+		AGA_Client.Get().Action(AGA_ACT_SPAWN, "", m_SelItem, m_Pick, Qty(), m);
 	}
 
 	// ------------------------------------------------------------ pojazdy
-	void BuildCars()
+	void RefreshVehicles()
 	{
-		for (int i = 0; i < 6; i++)
-			SetTxt("VTile" + i.ToString() + "_nm", m_CarName[i]);
+		m_VFiltered.Clear();
+		array<ref AGA_ItemDef> all = AGA_ItemDb.Vehicles();
+		foreach (AGA_ItemDef d : all)
+		{
+			if (m_VCat != 0 && d.Cat != m_VCat) continue;
+			m_VFiltered.Insert(d);
+		}
+		for (int c = 0; c < 6; c++)
+		{
+			if (c == m_VCat)
+				SetBg("VCat" + c.ToString(), COL_RED);
+			else
+				ResetBg("VCat" + c.ToString());
+		}
+		SetTxt("VCount", "POJAZDY: " + m_VFiltered.Count().ToString());
+		FillVehTiles();
 	}
 
-	void RefreshCars()
+	void FillVehTiles()
 	{
-		if (m_CarEnt.Count() == 0)
+		int pages = Pages(m_VFiltered.Count(), 6);
+		if (m_VPage >= pages) m_VPage = pages - 1;
+		if (m_VPage < 0) m_VPage = 0;
+		SetTxt("VPage", (m_VPage + 1).ToString() + " / " + pages.ToString());
+		for (int i = 0; i < 6; i++)
 		{
-			for (int i = 0; i < 6; i++)
+			int idx = m_VPage * 6 + i;
+			string tn = "VTile" + i.ToString();
+			string cls = "";
+			if (idx < m_VFiltered.Count())
+				cls = m_VFiltered[idx].Cls;
+			ShowW(tn, cls != "");
+			if (cls == "")
 			{
-				AGA_Client.Get().CLog("podglad pojazdu: " + m_CarCls[i]);
-				EntityAI e = MakeLocal(m_CarCls[i]);
-				m_CarEnt.Insert(e);
-				SetPreview("VTile" + i.ToString() + "_pv", e, Vector(-8, 40, 0));
+				SetPreview(tn + "_pv", null, vector.Zero);
+				KillEnt(m_VEnt[i]);
+				m_VEnt[i] = null;
+				m_VCls[i] = "";
+				continue;
+			}
+			SetTxt(tn + "_nm", Short(m_VFiltered[idx].Name, 26));
+			ShowW(tn + "_bar", cls == m_SelVeh);
+			if (m_VCls[i] != cls)
+			{
+				SetPreview(tn + "_pv", null, vector.Zero);
+				KillEnt(m_VEnt[i]);
+				m_VEnt[i] = MakeLocal(cls);
+				m_VCls[i] = cls;
+				SetPreview(tn + "_pv", m_VEnt[i], Vector(-8, 40, 0));
 			}
 		}
-		for (int j = 0; j < 6; j++)
-			ShowW("VTile" + j.ToString() + "_bar", j == m_SelCar);
 	}
 
-	void SelectCar(int idx)
+	void SelectVehicle(string cls)
 	{
-		m_SelCar = idx;
+		m_SelVeh = cls;
 		SetPreview("VDetail_pv", null, vector.Zero);
-		KillEnt(m_CarDetailEnt);
-		m_CarDetailEnt = MakeLocal(m_CarCls[idx]);
-		SetPreview("VDetail_pv", m_CarDetailEnt, Vector(-8, m_Rot, 0));
-		SetTxt("VDName", m_CarName[idx]);
-		RefreshCars();
+		KillEnt(m_VDetailEnt);
+		m_VDetailEnt = MakeLocal(cls);
+		SetPreview("VDetail_pv", m_VDetailEnt, Vector(-8, m_Rot, 0));
+		string dn = cls;
+		foreach (AGA_ItemDef d : m_VFiltered)
+		{
+			if (d.Cls == cls)
+				dn = d.Name;
+		}
+		SetTxt("VDName", Short(dn, 28));
+		SetTxt("VDClass", cls);
+		for (int i = 0; i < 6; i++)
+			ShowW("VTile" + i.ToString() + "_bar", m_VCls[i] == cls);
+	}
+
+	// ------------------------------------------------------------ AI
+	void RefreshAi()
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			Mark("AiZ" + i.ToString(), m_Zombies[i] == m_AiCls);
+			Mark("AiA" + i.ToString(), m_Animals[i] == m_AiCls);
+		}
+		for (int k = 0; k < 5; k++)
+			Mark("AiN" + k.ToString(), k == m_AiCountIdx);
+		if (m_AiCls == "")
+		{
+			SetTxt("ASel", "Wybierz typ AI");
+			SetTxt("ASelN", "");
+		}
+		else
+		{
+			SetTxt("ASel", m_AiName + "  x" + m_AiCounts[m_AiCountIdx].ToString());
+			SetTxt("ASelN", m_AiCls);
+		}
+	}
+
+	// ------------------------------------------------------------ ESP / przełączniki
+	void RefreshToggles()
+	{
+		AGA_Client c = AGA_Client.Get();
+		SetTxt("EOn_st", OnOff(c.EspOn));
+		SetTxt("ENames_st", OnOff(c.EspNames));
+		SetTxt("EBoxes_st", OnOff(c.EspBoxes));
+		SetTxt("ELines_st", OnOff(c.EspLines));
+		SetTxt("EShots_st", OnOff(c.EspShots));
+		Mark("EOn", c.EspOn);
+		Mark("ENames", c.EspNames);
+		Mark("EBoxes", c.EspBoxes);
+		Mark("ELines", c.EspLines);
+		Mark("EShots", c.EspShots);
+		array<float> ranges = {300, 1000, 2500, 10000};
+		for (int i = 0; i < 4; i++)
+			Mark("ERange" + i.ToString(), ranges[i] == c.EspRange);
+		SetTxt("SFly_st", "klawisz END");
+		SetTxt("SGod_st", OnOff(c.God));
+		SetTxt("SInvis_st", OnOff(c.Invis));
+		SetTxt("SDel_st", OnOff(c.DeleteMode) + " (DELETE)");
+		SetTxt("SHeal_st", "");
+		SetTxt("STpPick_st", "");
+		SetTxt("SRepair_st", "promien 25 m");
+		SetTxt("SLogs_st", "");
+		IFullLabel();
+	}
+
+	void IFullLabel()
+	{
+		if (m_Full)
+			SetTxt("IFull_txt", "Z WYPOSAZENIEM: TAK");
+		else
+			SetTxt("IFull_txt", "Z WYPOSAZENIEM: NIE");
+	}
+
+	// ------------------------------------------------------------ logi
+	void RefreshLogs()
+	{
+		AGA_Client c = AGA_Client.Get();
+		int na = c.LogAdmin.Count();
+		int nc = c.LogCombat.Count();
+		for (int i = 0; i < 24; i++)
+		{
+			int ia = na - 24 + i;
+			string la = "";
+			if (ia >= 0 && ia < na) la = c.LogAdmin[ia];
+			SetTxt("LA" + i.ToString(), Short(la, 95));
+			int ic = nc - 24 + i;
+			string lc = "";
+			if (ic >= 0 && ic < nc) lc = c.LogCombat[ic];
+			SetTxt("LC" + i.ToString(), Short(lc, 95));
+		}
 	}
 
 	// ------------------------------------------------------------ odświeżanie
-	protected bool m_EscDown = true;
-
 	override void Update(float timeslice)
 	{
 		super.Update(timeslice);
-		AGA_Client c = AGA_Client.Get();
 
 		bool esc = KeyState(KeyCode.KC_ESCAPE) != 0;
 		if (esc && !m_EscDown)
@@ -631,7 +846,7 @@ class AGA_Menu extends UIScriptedMenu
 		if (dp && m_DetailEnt && s_Page == 2)
 			dp.SetModelOrientation(Vector(-12, m_Rot, 0));
 		ItemPreviewWidget vp = ItemPreviewWidget.Cast(F("VDetail_pv"));
-		if (vp && m_CarDetailEnt && s_Page == 3)
+		if (vp && m_VDetailEnt && s_Page == 3)
 			vp.SetModelOrientation(Vector(-8, m_Rot, 0));
 
 		m_Tick -= timeslice;
@@ -640,6 +855,17 @@ class AGA_Menu extends UIScriptedMenu
 			m_Tick = 0.5;
 			RefreshPlayers();
 			RefreshStats();
+			if (s_Page == 8)
+				RefreshLogs();
+		}
+		if (s_Page == 8)
+		{
+			m_LogTick -= timeslice;
+			if (m_LogTick <= 0)
+			{
+				m_LogTick = 3;
+				AGA_Client.Get().RequestLogs();
+			}
 		}
 		UpdateMarkers();
 	}
@@ -649,41 +875,37 @@ class AGA_Menu extends UIScriptedMenu
 		AGA_Client c = AGA_Client.Get();
 		int y, mo, d, h, mi;
 		GetGame().GetWorld().GetDate(y, mo, d, h, mi);
-		string fly = "NIE";
-		if (c.IsFlying()) fly = "TAK";
-		string god = "NIE";
-		if (c.God) god = "TAK";
-		SetTxt("Stats", "ONLINE: " + c.Players.Count().ToString() + "      CZAS: " + h.ToStringLen(2) + ":" + mi.ToStringLen(2) + "      GOD: " + god);
-		SetTxt("SFly_st", "klawisz END");
-		SetTxt("SGod_st", god);
+		string flags = "";
+		if (c.God) flags = flags + "   GOD";
+		if (c.Invis) flags = flags + "   NIEWIDZIALNY";
+		if (c.EspOn) flags = flags + "   ESP";
+		if (c.DeleteMode) flags = flags + "   USUWANIE";
+		SetTxt("Stats", "ONLINE: " + c.Players.Count().ToString() + "      CZAS: " + h.ToStringLen(2) + ":" + mi.ToStringLen(2) + flags);
 		if (m_Pick != vector.Zero)
 			SetTxt("MPick", "PUNKT: " + Math.Round(m_Pick[0]).ToString() + " / " + Math.Round(m_Pick[2]).ToString());
 	}
 
 	// ------------------------------------------------------------ zdarzenia
+	bool IsActiveButton(string n)
+	{
+		Widget bar = F(n + "_bar");
+		if (bar && bar.IsVisible()) return true;
+		if (n.IndexOf("ICat") == 0 && n.Substring(4, 1).ToInt() == m_Cat) return true;
+		if (n.IndexOf("VCat") == 0 && n.Substring(4, 1).ToInt() == m_VCat) return true;
+		return false;
+	}
+
 	override bool OnMouseEnter(Widget w, int x, int y)
 	{
-		if (ButtonWidget.Cast(w) && m_BaseColor.Contains(w.GetName()))
-		{
-			Widget bar = F(w.GetName() + "_bar");
-			if (!bar || !bar.IsVisible())
-				SetBg(w.GetName(), COL_HOVER);
-		}
+		if (ButtonWidget.Cast(w) && m_BaseColor.Contains(w.GetName()) && !IsActiveButton(w.GetName()))
+			SetBg(w.GetName(), COL_HOVER);
 		return false;
 	}
 
 	override bool OnMouseLeave(Widget w, Widget enterW, int x, int y)
 	{
-		if (ButtonWidget.Cast(w) && m_BaseColor.Contains(w.GetName()))
-		{
-			string n = w.GetName();
-			if (n.IndexOf("Nav") == 0 && n.Substring(3, 1).ToInt() == s_Page)
-				SetBg(n, 0xFF171A20);
-			else if (n.IndexOf("ICat") == 0 && n.Substring(4, 1).ToInt() == m_Cat)
-				SetBg(n, COL_RED);
-			else
-				ResetBg(n);
-		}
+		if (ButtonWidget.Cast(w) && m_BaseColor.Contains(w.GetName()) && !IsActiveButton(w.GetName()))
+			ResetBg(w.GetName());
 		return false;
 	}
 
@@ -697,6 +919,12 @@ class AGA_Menu extends UIScriptedMenu
 		{
 			m_IPage = m_IPage + dir;
 			FillTiles();
+			return true;
+		}
+		if (n.IndexOf("VTile") == 0 && s_Page == 3)
+		{
+			m_VPage = m_VPage + dir;
+			FillVehTiles();
 			return true;
 		}
 		if (n.IndexOf("PRow") == 0)
@@ -743,6 +971,13 @@ class AGA_Menu extends UIScriptedMenu
 		}
 	}
 
+	void Spectate()
+	{
+		if (m_SelId == "") return;
+		Close();
+		AGA_Client.Get().StartSpectate(m_SelId);
+	}
+
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
 		if (!w) return false;
@@ -783,9 +1018,40 @@ class AGA_Menu extends UIScriptedMenu
 				SelectItem(m_TileCls[ti]);
 			return true;
 		}
+		if (n.IndexOf("VCat") == 0)
+		{
+			m_VCat = n.Substring(4, 1).ToInt();
+			m_VPage = 0;
+			RefreshVehicles();
+			return true;
+		}
 		if (n.IndexOf("VTile") == 0)
 		{
-			SelectCar(n.Substring(5, 1).ToInt());
+			int vi = n.Substring(5, 1).ToInt();
+			if (vi >= 0 && vi < 6 && m_VCls[vi] != "")
+				SelectVehicle(m_VCls[vi]);
+			return true;
+		}
+		if (n.IndexOf("AiZ") == 0)
+		{
+			int zi = n.Substring(3, 1).ToInt();
+			m_AiCls = m_Zombies[zi];
+			m_AiName = "ZOMBIE";
+			RefreshAi();
+			return true;
+		}
+		if (n.IndexOf("AiA") == 0)
+		{
+			int ai = n.Substring(3, 1).ToInt();
+			m_AiCls = m_Animals[ai];
+			m_AiName = "ZWIERZE";
+			RefreshAi();
+			return true;
+		}
+		if (n.IndexOf("AiN") == 0)
+		{
+			m_AiCountIdx = n.Substring(3, 1).ToInt();
+			RefreshAi();
 			return true;
 		}
 		if (n.IndexOf("THour") == 0)
@@ -799,6 +1065,24 @@ class AGA_Menu extends UIScriptedMenu
 			c.Action(AGA_ACT_WEATHER, "", "", "0 0 0", n.Substring(4, 1).ToInt());
 			return true;
 		}
+		if (n.IndexOf("ERange") == 0)
+		{
+			array<float> ranges = {300, 1000, 2500, 10000};
+			c.EspRange = ranges[n.Substring(6, 1).ToInt()];
+			RefreshToggles();
+			return true;
+		}
+		if (n.IndexOf("PKit") == 0)
+		{
+			if (m_SelId != "")
+				c.Action(AGA_ACT_KIT, m_SelId, m_Kits[n.Substring(4, 1).ToInt()]);
+			return true;
+		}
+		if (n.IndexOf("SKit") == 0)
+		{
+			c.Action(AGA_ACT_KIT, "", m_Kits[n.Substring(4, 1).ToInt()]);
+			return true;
+		}
 
 		switch (n)
 		{
@@ -809,20 +1093,37 @@ class AGA_Menu extends UIScriptedMenu
 			case "PNext": m_PPage = m_PPage + 1; RefreshPlayers(); return true;
 			case "IPrev": m_IPage = m_IPage - 1; FillTiles(); return true;
 			case "INext": m_IPage = m_IPage + 1; FillTiles(); return true;
+			case "VPrev": m_VPage = m_VPage - 1; FillVehTiles(); return true;
+			case "VNext": m_VPage = m_VPage + 1; FillVehTiles(); return true;
 			case "MTpTo": c.Action(AGA_ACT_TP_TO, m_SelId); return true;
 			case "ATpTo": c.Action(AGA_ACT_TP_TO, m_SelId); return true;
 			case "MBring": c.Action(AGA_ACT_BRING, m_SelId); return true;
 			case "ABring": c.Action(AGA_ACT_BRING, m_SelId); return true;
+			case "MSpec": Spectate(); return true;
+			case "ASpec": Spectate(); return true;
 			case "AHeal": c.Action(AGA_ACT_HEAL, m_SelId); return true;
 			case "AKill": c.Action(AGA_ACT_KILL, m_SelId); return true;
 			case "AKick": c.Action(AGA_ACT_KICK, m_SelId, m_Reason.GetText()); return true;
 			case "ABan": c.Action(AGA_ACT_BAN, m_SelId, m_Reason.GetText()); return true;
+			case "AFreeze": c.Action(AGA_ACT_FREEZE, m_SelId, "", "0 0 0", 1); return true;
+			case "AUnfreeze": c.Action(AGA_ACT_FREEZE, m_SelId, "", "0 0 0", 0); return true;
+			case "AStrip": c.Action(AGA_ACT_STRIP, m_SelId); return true;
+			case "APm": c.Action(AGA_ACT_PM, m_SelId, m_Reason.GetText()); return true;
+			case "PHealAll": c.Action(AGA_ACT_HEAL_ALL); return true;
 			case "AGod":
 			{
 				int gp = 1;
 				AGA_PlayerInfo gi = FindInfo(m_SelId);
 				if (gi && gi.God) gp = 0;
 				c.Action(AGA_ACT_GOD, m_SelId, "", "0 0 0", gp);
+				return true;
+			}
+			case "AInvis":
+			{
+				int ip = 1;
+				AGA_PlayerInfo ii = FindInfo(m_SelId);
+				if (ii && ii.Invis) ip = 0;
+				c.Action(AGA_ACT_INVIS, m_SelId, "", "0 0 0", ip);
 				return true;
 			}
 			case "ALocate":
@@ -848,20 +1149,44 @@ class AGA_Menu extends UIScriptedMenu
 			}
 			case "IQtyMinus": { int qm = Qty() - 1; if (qm < 1) qm = 1; m_Qty.SetText(qm.ToString()); return true; }
 			case "IQtyPlus": { int qp = Qty() + 1; if (qp > 50) qp = 50; m_Qty.SetText(qp.ToString()); return true; }
+			case "IFull": m_Full = !m_Full; IFullLabel(); return true;
 			case "ISpawnInv": SpawnSelected(AGA_SPAWN_INV); return true;
 			case "ISpawnGround": SpawnSelected(AGA_SPAWN_GROUND); return true;
 			case "ISpawnPoint": SpawnSelected(AGA_SPAWN_CURSOR); return true;
 			case "VSpawn":
 			{
-				if (m_SelCar >= 0) c.Action(AGA_ACT_CAR, "", m_CarCls[m_SelCar]);
+				if (m_SelVeh != "") c.Action(AGA_ACT_CAR, "", m_SelVeh);
 				return true;
 			}
+			case "VSpawnPick":
+			{
+				if (m_SelVeh != "" && m_Pick != vector.Zero) c.Action(AGA_ACT_CAR, "", m_SelVeh, m_Pick);
+				return true;
+			}
+			case "VRepair": c.Action(AGA_ACT_REPAIR_CAR); return true;
+			case "SRepair": c.Action(AGA_ACT_REPAIR_CAR); return true;
+			case "AiSpawn":
+			{
+				if (m_AiCls != "") c.Action(AGA_ACT_SPAWN_AI, "", m_AiCls, "0 0 0", m_AiCounts[m_AiCountIdx]);
+				return true;
+			}
+			case "AiSpawnPick":
+			{
+				if (m_AiCls != "" && m_Pick != vector.Zero) c.Action(AGA_ACT_SPAWN_AI, "", m_AiCls, m_Pick, m_AiCounts[m_AiCountIdx]);
+				return true;
+			}
+			case "AiClear": c.Action(AGA_ACT_CLEAR_AI, "", "", "0 0 0", 150); return true;
 			case "MsgSend":
 			{
 				c.Action(AGA_ACT_MESSAGE, "", m_Msg.GetText());
 				m_Msg.SetText("");
 				return true;
 			}
+			case "EOn": c.EspOn = !c.EspOn; RefreshToggles(); return true;
+			case "ENames": c.EspNames = !c.EspNames; RefreshToggles(); return true;
+			case "EBoxes": c.EspBoxes = !c.EspBoxes; RefreshToggles(); return true;
+			case "ELines": c.EspLines = !c.EspLines; RefreshToggles(); return true;
+			case "EShots": c.EspShots = !c.EspShots; RefreshToggles(); return true;
 			case "SFly": Close(); c.StartFly(); return true;
 			case "SGod":
 			{
@@ -869,9 +1194,22 @@ class AGA_Menu extends UIScriptedMenu
 				int g = 0;
 				if (c.God) g = 1;
 				c.Action(AGA_ACT_GOD, "", "", "0 0 0", g);
+				RefreshToggles();
 				return true;
 			}
+			case "SInvis":
+			{
+				c.Invis = !c.Invis;
+				int iv = 0;
+				if (c.Invis) iv = 1;
+				c.Action(AGA_ACT_INVIS, "", "", "0 0 0", iv);
+				RefreshToggles();
+				return true;
+			}
+			case "SDel": c.DeleteMode = !c.DeleteMode; RefreshToggles(); return true;
 			case "SHeal": c.Action(AGA_ACT_HEAL); return true;
+			case "SLogs": ShowPage(8); return true;
+			case "LRefresh": c.RequestLogs(); return true;
 			case "CoordGo":
 			{
 				vector tp = Vector(m_CoordX.GetText().ToFloat(), 0, m_CoordZ.GetText().ToFloat());

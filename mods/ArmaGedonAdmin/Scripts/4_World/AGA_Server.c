@@ -7,6 +7,10 @@ class AGA_Server
 	protected ref AGA_Config m_Config;
 	protected ref AGA_Bans m_Bans;
 	protected ref map<string, bool> m_God;
+	protected ref map<string, bool> m_Invis;
+	protected ref array<string> m_Recent;   // ostatnie wpisy admina
+	protected ref array<string> m_Combat;   // ostatnie trafienia / zabójstwa
+	protected float m_SyncTimer;
 
 	static AGA_Server Get()
 	{
@@ -18,9 +22,13 @@ class AGA_Server
 	void AGA_Server()
 	{
 		m_God = new map<string, bool>;
+		m_Invis = new map<string, bool>;
+		m_Recent = new array<string>;
+		m_Combat = new array<string>;
 		if (!FileExist(m_Dir))
 			MakeDirectory(m_Dir);
 		LoadConfig();
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(SyncInvis, 2000, true);
 	}
 
 	void LoadConfig()
@@ -56,19 +64,41 @@ class AGA_Server
 		return m_Bans.Banned.Find(steamId) != -1;
 	}
 
-	void Log(string line)
+	string Stamp()
 	{
 		int y, mo, d, h, mi, s;
 		GetYearMonthDay(y, mo, d);
 		GetHourMinuteSecond(h, mi, s);
-		string stamp = string.Format("%1-%2-%3 %4:%5:%6", y, mo.ToStringLen(2), d.ToStringLen(2), h.ToStringLen(2), mi.ToStringLen(2), s.ToStringLen(2));
+		return string.Format("%1-%2-%3 %4:%5:%6", y, mo.ToStringLen(2), d.ToStringLen(2), h.ToStringLen(2), mi.ToStringLen(2), s.ToStringLen(2));
+	}
+
+	void Log(string line)
+	{
+		string full = Stamp() + " | " + line;
 		FileHandle f = OpenFile(m_Dir + "/admin_log.txt", FileMode.APPEND);
 		if (f != 0)
 		{
-			FPrintln(f, stamp + " | " + line);
+			FPrintln(f, full);
 			CloseFile(f);
 		}
+		m_Recent.Insert(full);
+		if (m_Recent.Count() > 60)
+			m_Recent.Remove(0);
 		Print("[ArmaGedonAdmin] " + line);
+	}
+
+	void CombatLog(string line)
+	{
+		string full = Stamp() + " | " + line;
+		FileHandle f = OpenFile(m_Dir + "/combat_log.txt", FileMode.APPEND);
+		if (f != 0)
+		{
+			FPrintln(f, full);
+			CloseFile(f);
+		}
+		m_Combat.Insert(full);
+		if (m_Combat.Count() > 60)
+			m_Combat.Remove(0);
 	}
 
 	PlayerBase FindPlayer(string steamId)
@@ -84,16 +114,80 @@ class AGA_Server
 		return null;
 	}
 
-	protected void Notify(PlayerIdentity id, string text)
+	void Notify(PlayerIdentity id, string text)
 	{
 		NotificationSystem.SendNotificationToPlayerIdentityExtended(id, 5, "ARMA-GEDON ADMIN", text, "set:dayz_gui image:icon_info");
 	}
 
-	protected string Who(PlayerBase p)
+	string Who(PlayerBase p)
 	{
 		if (p && p.GetIdentity())
 			return p.GetIdentity().GetName() + " (" + p.GetIdentity().GetPlainId() + ")";
 		return "?";
+	}
+
+	string NameOf(PlayerBase p)
+	{
+		if (p && p.GetIdentity())
+			return p.GetIdentity().GetName();
+		return "?";
+	}
+
+	// ---------- niewidzialność: rozsyłanie listy do wszystkich ----------
+	void SyncInvis()
+	{
+		array<Man> players = new array<Man>;
+		GetGame().GetPlayers(players);
+		array<int> lows = new array<int>;
+		array<int> highs = new array<int>;
+		foreach (Man m : players)
+		{
+			PlayerBase pb = PlayerBase.Cast(m);
+			if (!pb || !pb.GetIdentity()) continue;
+			if (!m_Invis.Contains(pb.GetIdentity().GetPlainId())) continue;
+			int lo, hi;
+			pb.GetNetworkID(lo, hi);
+			lows.Insert(lo);
+			highs.Insert(hi);
+		}
+		foreach (Man r : players)
+		{
+			PlayerBase rp = PlayerBase.Cast(r);
+			if (!rp || !rp.GetIdentity()) continue;
+			ScriptRPC rpc = new ScriptRPC();
+			rpc.Write(lows.Count());
+			for (int i = 0; i < lows.Count(); i++)
+			{
+				rpc.Write(lows[i]);
+				rpc.Write(highs[i]);
+			}
+			rpc.Send(rp, AGA_RPC_INVIS_SYNC, false, rp.GetIdentity());
+		}
+	}
+
+	// ---------- strzały: przekazanie do adminów online ----------
+	void OnShot(PlayerBase shooter, vector from, vector dir, string ammo, string weapon)
+	{
+		vector to = from + dir * 900;
+		vector contactPos, contactDir;
+		int comp;
+		set<Object> hit = new set<Object>;
+		if (DayZPhysics.RaycastRV(from + dir * 0.5, to, contactPos, contactDir, comp, hit, null, shooter, false, false, ObjIntersectFire, 0.05))
+			to = contactPos;
+
+		array<Man> players = new array<Man>;
+		GetGame().GetPlayers(players);
+		foreach (Man m : players)
+		{
+			PlayerBase adm = PlayerBase.Cast(m);
+			if (!adm || !IsAdmin(adm.GetIdentity())) continue;
+			ScriptRPC rpc = new ScriptRPC();
+			rpc.Write(from);
+			rpc.Write(to);
+			rpc.Write(NameOf(shooter));
+			rpc.Write(weapon);
+			rpc.Send(adm, AGA_RPC_SHOT, false, adm.GetIdentity());
+		}
 	}
 
 	// ---------- obsługa RPC ----------
@@ -112,28 +206,57 @@ class AGA_Server
 			return;
 		array<Man> players = new array<Man>;
 		GetGame().GetPlayers(players);
-		ScriptRPC rpc = new ScriptRPC();
-		int count = 0;
+		array<PlayerBase> list = new array<PlayerBase>;
 		foreach (Man c : players)
 		{
-			if (PlayerBase.Cast(c) && c.GetIdentity())
-				count++;
+			PlayerBase cp = PlayerBase.Cast(c);
+			if (cp && cp.GetIdentity())
+				list.Insert(cp);
 		}
-		rpc.Write(count);
-		foreach (Man m : players)
+		ScriptRPC rpc = new ScriptRPC();
+		rpc.Write(list.Count());
+		foreach (PlayerBase pb : list)
 		{
-			PlayerBase pb = PlayerBase.Cast(m);
-			if (!pb || !pb.GetIdentity())
-				continue;
 			string sid = pb.GetIdentity().GetPlainId();
+			int lo, hi;
+			pb.GetNetworkID(lo, hi);
+			string hands = "";
+			EntityAI inHands = pb.GetHumanInventory().GetEntityInHands();
+			if (inHands)
+				hands = inHands.GetDisplayName();
+			float water = 0;
+			float energy = 0;
+			if (pb.GetStatWater()) water = pb.GetStatWater().Get();
+			if (pb.GetStatEnergy()) energy = pb.GetStatEnergy().Get();
 			rpc.Write(pb.GetIdentity().GetName());
 			rpc.Write(sid);
 			rpc.Write(pb.GetPosition());
 			rpc.Write(pb.GetHealth("", ""));
 			rpc.Write(pb.GetHealth("", "Blood"));
 			rpc.Write(m_God.Contains(sid));
+			rpc.Write(lo);
+			rpc.Write(hi);
+			rpc.Write(hands);
+			rpc.Write(water);
+			rpc.Write(energy);
+			rpc.Write(m_Invis.Contains(sid));
+			rpc.Write(pb.IsInVehicle());
 		}
 		rpc.Send(sender, AGA_RPC_PLAYERS_RES, true, id);
+	}
+
+	void OnLogs(PlayerBase sender, PlayerIdentity id)
+	{
+		if (!IsAdmin(id))
+			return;
+		ScriptRPC rpc = new ScriptRPC();
+		rpc.Write(m_Recent.Count());
+		foreach (string a : m_Recent)
+			rpc.Write(a);
+		rpc.Write(m_Combat.Count());
+		foreach (string b : m_Combat)
+			rpc.Write(b);
+		rpc.Send(sender, AGA_RPC_LOGS_RES, true, id);
 	}
 
 	void OnAction(PlayerBase sender, PlayerIdentity id, ParamsReadContext ctx)
@@ -160,10 +283,8 @@ class AGA_Server
 		{
 			case AGA_ACT_TP_POS:
 			{
-				if (pos[1] <= 0)
-					pos[1] = GetGame().SurfaceY(pos[0], pos[2]);
 				TeleportTo(sender, pos);
-				Log(Who(sender) + " teleport na " + pos.ToString());
+				Log(Who(sender) + " teleport na " + Math.Round(pos[0]).ToString() + " / " + Math.Round(pos[2]).ToString());
 				break;
 			}
 			case AGA_ACT_TP_TO:
@@ -177,7 +298,7 @@ class AGA_Server
 			{
 				if (!t) { Notify(id, "Gracz offline"); return; }
 				TeleportTo(t, sender.GetPosition() + Vector(1, 0, 1));
-				Notify(id, "Przyciągnięto " + t.GetIdentity().GetName());
+				Notify(id, "Przyciągnięto " + NameOf(t));
 				Log(Who(sender) + " przyciągnął " + Who(t));
 				break;
 			}
@@ -185,8 +306,21 @@ class AGA_Server
 			{
 				if (!t) t = sender;
 				t.AGA_FullHeal();
-				Notify(id, "Uleczono " + t.GetIdentity().GetName());
+				Notify(id, "Uleczono " + NameOf(t));
 				Log(Who(sender) + " uleczył " + Who(t));
+				break;
+			}
+			case AGA_ACT_HEAL_ALL:
+			{
+				array<Man> all = new array<Man>;
+				GetGame().GetPlayers(all);
+				foreach (Man hm : all)
+				{
+					PlayerBase hp = PlayerBase.Cast(hm);
+					if (hp) hp.AGA_FullHeal();
+				}
+				Notify(id, "Uleczono wszystkich graczy");
+				Log(Who(sender) + " uleczył wszystkich");
 				break;
 			}
 			case AGA_ACT_KILL:
@@ -235,8 +369,56 @@ class AGA_Server
 				{
 					m_God.Remove(gid);
 				}
-				Notify(id, "God mode: " + on.ToString());
+				Notify(id, "God mode " + NameOf(t) + ": " + on.ToString());
 				Log(Who(sender) + " god mode " + on.ToString() + " dla " + Who(t));
+				break;
+			}
+			case AGA_ACT_INVIS:
+			{
+				if (!t) t = sender;
+				string iid = t.GetIdentity().GetPlainId();
+				bool inv = (num == 1);
+				if (inv)
+					m_Invis.Set(iid, true);
+				else
+					m_Invis.Remove(iid);
+				SyncInvis();
+				Notify(id, "Niewidzialność " + NameOf(t) + ": " + inv.ToString());
+				Log(Who(sender) + " niewidzialność " + inv.ToString() + " dla " + Who(t));
+				break;
+			}
+			case AGA_ACT_FREEZE:
+			{
+				if (!t) return;
+				ScriptRPC fr = new ScriptRPC();
+				fr.Write(num == 1);
+				fr.Send(t, AGA_RPC_FREEZE, true, t.GetIdentity());
+				Notify(id, "Zamrożenie " + NameOf(t) + ": " + (num == 1).ToString());
+				Log(Who(sender) + " zamrożenie " + (num == 1).ToString() + " dla " + Who(t));
+				break;
+			}
+			case AGA_ACT_STRIP:
+			{
+				if (!t) return;
+				t.RemoveAllItems();
+				Notify(id, "Wyczyszczono ekwipunek: " + NameOf(t));
+				Log(Who(sender) + " wyczyścił ekwipunek " + Who(t));
+				break;
+			}
+			case AGA_ACT_KIT:
+			{
+				if (!t) t = sender;
+				GiveKit(t, text);
+				Notify(id, "Zestaw " + text + " dla " + NameOf(t));
+				Log(Who(sender) + " dał zestaw " + text + " dla " + Who(t));
+				break;
+			}
+			case AGA_ACT_PM:
+			{
+				if (!t || text == "") return;
+				NotificationSystem.SendNotificationToPlayerIdentityExtended(t.GetIdentity(), 15, "WIADOMOŚĆ OD ADMINISTRACJI", text, "set:dayz_gui image:icon_info");
+				Notify(id, "Wysłano wiadomość do " + NameOf(t));
+				Log(Who(sender) + " wiadomość do " + Who(t) + ": " + text);
 				break;
 			}
 			case AGA_ACT_SPAWN:
@@ -246,7 +428,34 @@ class AGA_Server
 			}
 			case AGA_ACT_CAR:
 			{
-				SpawnCar(sender, id, text);
+				SpawnVehicle(sender, id, text, pos);
+				break;
+			}
+			case AGA_ACT_REPAIR_CAR:
+			{
+				RepairNearestVehicle(sender, id);
+				break;
+			}
+			case AGA_ACT_DELETE_OBJ:
+			{
+				array<string> parts = new array<string>;
+				text.Split(",", parts);
+				if (parts.Count() != 2) return;
+				Object obj = GetGame().GetObjectByNetworkId(parts[0].ToInt(), parts[1].ToInt());
+				if (!obj || obj.IsMan()) { Notify(id, "Nie można usunąć tego obiektu"); return; }
+				Log(Who(sender) + " usunął obiekt " + obj.GetType() + " na " + obj.GetPosition().ToString());
+				GetGame().ObjectDelete(obj);
+				Notify(id, "Usunięto: " + obj.GetType());
+				break;
+			}
+			case AGA_ACT_SPAWN_AI:
+			{
+				SpawnAI(sender, id, text, num, pos);
+				break;
+			}
+			case AGA_ACT_CLEAR_AI:
+			{
+				ClearAI(sender, id, num);
 				break;
 			}
 			case AGA_ACT_TIME:
@@ -292,6 +501,17 @@ class AGA_Server
 		p.SetPosition(pos);
 	}
 
+	bool IsValidClass(string cls)
+	{
+		return GetGame().ConfigIsExisting("CfgVehicles " + cls) || GetGame().ConfigIsExisting("CfgWeapons " + cls) || GetGame().ConfigIsExisting("CfgMagazines " + cls);
+	}
+
+	vector GroundAt(vector at)
+	{
+		at[1] = GetGame().SurfaceY(at[0], at[2]);
+		return at;
+	}
+
 	void SpawnItem(PlayerBase p, PlayerIdentity id, string cls, int count, float mode, vector cursor)
 	{
 		if (cls == "" || !IsValidClass(cls))
@@ -302,6 +522,12 @@ class AGA_Server
 		if (count < 1) count = 1;
 		if (count > 50) count = 50;
 		int m = mode;
+		bool full = false;
+		if (m >= 10)
+		{
+			full = true;
+			m = m - 10;
+		}
 		int made = 0;
 		for (int i = 0; i < count; i++)
 		{
@@ -312,12 +538,14 @@ class AGA_Server
 			{
 				vector at = p.GetPosition() + p.GetDirection() * 1.5;
 				if (m == AGA_SPAWN_CURSOR && cursor != vector.Zero)
-					at = cursor;
+					at = GroundAt(cursor);
 				e = EntityAI.Cast(GetGame().CreateObjectEx(cls, at, ECE_PLACE_ON_SURFACE));
 			}
 			if (e)
 			{
 				made++;
+				if (full)
+					e.OnDebugSpawn();
 				ItemBase ib = ItemBase.Cast(e);
 				if (ib && ib.HasQuantity())
 					ib.SetQuantityMax();
@@ -327,56 +555,185 @@ class AGA_Server
 		Log(Who(p) + " spawn " + made.ToString() + "x " + cls);
 	}
 
-	bool IsValidClass(string cls)
+	void GiveKit(PlayerBase p, string kit)
 	{
-		return GetGame().ConfigIsExisting("CfgVehicles " + cls) || GetGame().ConfigIsExisting("CfgWeapons " + cls) || GetGame().ConfigIsExisting("CfgMagazines " + cls);
+		array<string> items = new array<string>;
+		array<string> weapons = new array<string>;
+		switch (kit)
+		{
+			case "SZTURM":
+				items = {"PlateCarrierVest", "BallisticHelmet_Black", "TacticalGloves_Black", "GorkaEJacket_Flat", "GorkaPants_Flat", "MilitaryBoots_Black", "AssaultBag_Black", "Mag_STANAG_30Rnd", "Mag_STANAG_30Rnd", "Mag_STANAG_30Rnd", "Ammo_556x45", "BandageDressing", "BandageDressing"};
+				weapons = {"M4A1"};
+				break;
+			case "SNAJPER":
+				items = {"GhillieSuit_Woodland", "HuntingJacket_Spring", "HunterPants_Spring", "MilitaryBoots_Brown", "HuntingBag", "Mag_SVD_10Rnd", "Mag_SVD_10Rnd", "Ammo_762x54", "Ammo_762x54", "Rangefinder", "BandageDressing"};
+				weapons = {"SVD"};
+				break;
+			case "MEDYK":
+				items = {"MedicalScrubsShirt_Green", "MedicalScrubsPants_Green", "FirstAidKit", "BandageDressing", "BandageDressing", "BandageDressing", "Morphine", "Epinephrine", "SalineBagIV", "BloodBagIV", "BloodTestKit", "TetracyclineAntibiotics", "PainkillerTablets", "CharcoalTablets", "VitaminBottle", "DisinfectantSpray", "Splint"};
+				break;
+			case "BUDOWA":
+				items = {"MountainBag_Green", "Hammer", "Hatchet", "Shovel", "Pliers", "Hacksaw", "NailBox", "NailBox", "NailBox", "MetalWire", "CombinationLock", "Flashlight", "Battery9V"};
+				break;
+			case "SURVIVAL":
+				items = {"Canteen", "WaterBottle", "TacticalBaconCan", "BakedBeansCan", "SpaghettiCan", "CanOpener", "HuntingKnife", "Matchbox", "Compass", "ChernarusMap", "BandageDressing", "Heatpack", "Rope"};
+				break;
+			case "UBRANIE":
+				items = {"M65Jacket_Olive", "CargoPants_Green", "MilitaryBoots_Bluerock", "WorkingGloves_Brown", "BeanieHat_Green", "AliceBag_Green", "MilitaryBelt", "SmershVest", "Balaclava3Holes_Green"};
+				break;
+		}
+		foreach (string cls : items)
+		{
+			EntityAI e = p.GetInventory().CreateInInventory(cls);
+			if (!e)
+				e = EntityAI.Cast(GetGame().CreateObjectEx(cls, p.GetPosition(), ECE_PLACE_ON_SURFACE));
+			ItemBase ib = ItemBase.Cast(e);
+			if (ib && ib.HasQuantity())
+				ib.SetQuantityMax();
+		}
+		foreach (string wcls : weapons)
+		{
+			EntityAI w = p.GetHumanInventory().CreateInHands(wcls);
+			if (!w)
+				w = p.GetInventory().CreateInInventory(wcls);
+			if (!w)
+				w = EntityAI.Cast(GetGame().CreateObjectEx(wcls, p.GetPosition(), ECE_PLACE_ON_SURFACE));
+			if (w)
+				w.OnDebugSpawn();
+		}
 	}
 
-	void SpawnCar(PlayerBase p, PlayerIdentity id, string preset)
+	void SpawnVehicle(PlayerBase p, PlayerIdentity id, string cls, vector pick)
 	{
-		array<string> parts = new array<string>;
-		string body = preset;
-		switch (preset)
+		if (cls == "" || !GetGame().ConfigIsExisting("CfgVehicles " + cls))
 		{
-			case "OffroadHatchback":
-				parts = {"HatchbackWheel","HatchbackWheel","HatchbackWheel","HatchbackWheel","HatchbackWheel","CarBattery","CarRadiator","SparkPlug","HeadlightH7","HeadlightH7","HatchbackHood","HatchbackTrunk","HatchbackDoors_Driver","HatchbackDoors_CoDriver"};
-				break;
-			case "CivilianSedan":
-				parts = {"CivSedanWheel","CivSedanWheel","CivSedanWheel","CivSedanWheel","CarBattery","CarRadiator","SparkPlug","HeadlightH7","HeadlightH7","CivSedanHood","CivSedanTrunk","CivSedanDoors_Driver","CivSedanDoors_CoDriver","CivSedanDoors_BackLeft","CivSedanDoors_BackRight"};
-				break;
-			case "Hatchback_02":
-				parts = {"Hatchback_02_Wheel","Hatchback_02_Wheel","Hatchback_02_Wheel","Hatchback_02_Wheel","CarBattery","CarRadiator","SparkPlug","HeadlightH7","HeadlightH7","Hatchback_02_Hood","Hatchback_02_Trunk","Hatchback_02_Door_1_1","Hatchback_02_Door_1_2","Hatchback_02_Door_2_1","Hatchback_02_Door_2_2"};
-				break;
-			case "Sedan_02":
-				parts = {"Sedan_02_Wheel","Sedan_02_Wheel","Sedan_02_Wheel","Sedan_02_Wheel","CarBattery","CarRadiator","SparkPlug","HeadlightH7","HeadlightH7","Sedan_02_Hood","Sedan_02_Trunk","Sedan_02_Door_1_1","Sedan_02_Door_1_2","Sedan_02_Door_2_1","Sedan_02_Door_2_2"};
-				break;
-			case "Offroad_02":
-				parts = {"Offroad_02_Wheel","Offroad_02_Wheel","Offroad_02_Wheel","Offroad_02_Wheel","Offroad_02_Wheel","CarBattery","GlowPlug","HeadlightH7","HeadlightH7","Offroad_02_Hood","Offroad_02_Trunk","Offroad_02_Door_1_1","Offroad_02_Door_1_2","Offroad_02_Door_2_1","Offroad_02_Door_2_2"};
-				break;
-			case "Truck_01_Covered":
-				parts = {"Truck_01_Wheel","Truck_01_Wheel","Truck_01_WheelDouble","Truck_01_WheelDouble","Truck_01_WheelDouble","Truck_01_WheelDouble","TruckBattery","HeadlightH7","HeadlightH7","Truck_01_Hood","Truck_01_Door_1_1","Truck_01_Door_2_1"};
-				break;
-			default:
-				Notify(id, "Nieznany pojazd: " + preset);
-				return;
-		}
-		vector at = p.GetPosition() + p.GetDirection() * 6;
-		at[1] = GetGame().SurfaceY(at[0], at[2]) + 0.5;
-		CarScript car = CarScript.Cast(GetGame().CreateObjectEx(body, at, ECE_PLACE_ON_SURFACE));
-		if (!car)
-		{
-			Notify(id, "Nie udało się stworzyć: " + body);
+			Notify(id, "Nieznany pojazd: " + cls);
 			return;
 		}
-		car.SetOrientation(p.GetOrientation());
-		foreach (string part : parts)
-			car.GetInventory().CreateInInventory(part);
-		car.Fill(CarFluid.FUEL, car.GetFluidCapacity(CarFluid.FUEL));
-		car.Fill(CarFluid.OIL, car.GetFluidCapacity(CarFluid.OIL));
-		car.Fill(CarFluid.BRAKE, car.GetFluidCapacity(CarFluid.BRAKE));
-		car.Fill(CarFluid.COOLANT, car.GetFluidCapacity(CarFluid.COOLANT));
-		Notify(id, "Pojazd gotowy: " + body);
-		Log(Who(p) + " spawn pojazdu " + body);
+		vector at = p.GetPosition() + p.GetDirection() * 7;
+		if (pick != vector.Zero)
+			at = pick;
+		at = GroundAt(at);
+		if (GetGame().IsKindOf(cls, "BoatScript"))
+		{
+			float sea = g_Game.SurfaceGetSeaLevel();
+			if (at[1] < sea)
+				at[1] = sea;
+		}
+		at[1] = at[1] + 0.5;
+		EntityAI veh = EntityAI.Cast(GetGame().CreateObjectEx(cls, at, ECE_PLACE_ON_SURFACE));
+		if (!veh)
+		{
+			Notify(id, "Nie udało się stworzyć: " + cls);
+			return;
+		}
+		veh.SetOrientation(p.GetOrientation());
+		veh.OnDebugSpawn();
+		FillVehicle(veh);
+		Notify(id, "Pojazd gotowy: " + veh.GetDisplayName());
+		Log(Who(p) + " spawn pojazdu " + cls);
+	}
+
+	void FillVehicle(EntityAI veh)
+	{
+		CarScript car = CarScript.Cast(veh);
+		if (car)
+		{
+			car.Fill(CarFluid.FUEL, car.GetFluidCapacity(CarFluid.FUEL));
+			car.Fill(CarFluid.OIL, car.GetFluidCapacity(CarFluid.OIL));
+			car.Fill(CarFluid.BRAKE, car.GetFluidCapacity(CarFluid.BRAKE));
+			car.Fill(CarFluid.COOLANT, car.GetFluidCapacity(CarFluid.COOLANT));
+		}
+		BoatScript boat = BoatScript.Cast(veh);
+		if (boat)
+			boat.Fill(BoatFluid.FUEL, boat.GetFluidCapacity(BoatFluid.FUEL));
+		MotorbikeScript bike = MotorbikeScript.Cast(veh);
+		if (bike)
+		{
+			bike.Fill(MotorbikeFluid.FUEL, bike.GetFluidCapacity(MotorbikeFluid.FUEL));
+			bike.Fill(MotorbikeFluid.OIL, bike.GetFluidCapacity(MotorbikeFluid.OIL));
+		}
+	}
+
+	void RepairNearestVehicle(PlayerBase p, PlayerIdentity id)
+	{
+		array<Object> objs = new array<Object>;
+		array<CargoBase> cargos = new array<CargoBase>;
+		GetGame().GetObjectsAtPosition(p.GetPosition(), 25, objs, cargos);
+		EntityAI best;
+		float bestDist = 1000;
+		foreach (Object o : objs)
+		{
+			EntityAI e = EntityAI.Cast(o);
+			if (!e) continue;
+			if (!CarScript.Cast(e) && !BoatScript.Cast(e) && !MotorbikeScript.Cast(e)) continue;
+			float dist = vector.Distance(p.GetPosition(), e.GetPosition());
+			if (dist < bestDist)
+			{
+				bestDist = dist;
+				best = e;
+			}
+		}
+		if (!best)
+		{
+			Notify(id, "Brak pojazdu w promieniu 25 m");
+			return;
+		}
+		best.SetHealthMax("", "");
+		array<string> zones = new array<string>;
+		best.GetDamageZones(zones);
+		foreach (string z : zones)
+			best.SetHealthMax(z, "");
+		for (int i = 0; i < best.GetInventory().AttachmentCount(); i++)
+		{
+			EntityAI att = best.GetInventory().GetAttachmentFromIndex(i);
+			if (att)
+				att.SetHealthMax("", "");
+		}
+		FillVehicle(best);
+		Notify(id, "Naprawiono i zatankowano: " + best.GetDisplayName());
+		Log(Who(p) + " naprawił pojazd " + best.GetType());
+	}
+
+	void SpawnAI(PlayerBase p, PlayerIdentity id, string cls, int count, vector pick)
+	{
+		if (!GetGame().ConfigIsExisting("CfgVehicles " + cls))
+		{
+			Notify(id, "Nieznana klasa AI: " + cls);
+			return;
+		}
+		if (count < 1) count = 1;
+		if (count > 30) count = 30;
+		vector center = p.GetPosition() + p.GetDirection() * 15;
+		if (pick != vector.Zero)
+			center = pick;
+		for (int i = 0; i < count; i++)
+		{
+			vector at = center + Vector(Math.RandomFloat(-6, 6), 0, Math.RandomFloat(-6, 6));
+			at = GroundAt(at);
+			GetGame().CreateObjectEx(cls, at, ECE_PLACE_ON_SURFACE | ECE_INITAI | ECE_EQUIP_ATTACHMENTS);
+		}
+		Notify(id, "Stworzono AI: " + count.ToString() + "x " + cls);
+		Log(Who(p) + " spawn AI " + count.ToString() + "x " + cls);
+	}
+
+	void ClearAI(PlayerBase p, PlayerIdentity id, int radius)
+	{
+		if (radius < 10) radius = 100;
+		array<Object> objs = new array<Object>;
+		array<CargoBase> cargos = new array<CargoBase>;
+		GetGame().GetObjectsAtPosition(p.GetPosition(), radius, objs, cargos);
+		int removed = 0;
+		foreach (Object o : objs)
+		{
+			if (DayZInfected.Cast(o) || DayZAnimal.Cast(o))
+			{
+				GetGame().ObjectDelete(o);
+				removed++;
+			}
+		}
+		Notify(id, "Usunięto AI: " + removed.ToString());
+		Log(Who(p) + " usunął AI w promieniu " + radius.ToString() + " m: " + removed.ToString());
 	}
 
 	void SetWeather(int preset)
@@ -386,28 +743,28 @@ class AGA_Server
 		float hold = 3600;
 		switch (preset)
 		{
-			case 0: // słońce
+			case 0:
 				w.GetOvercast().Set(0.05, 30, hold);
 				w.GetRain().Set(0, 10, hold);
 				w.GetFog().Set(0, 30, hold);
 				break;
-			case 1: // pochmurno
+			case 1:
 				w.GetOvercast().Set(0.6, 30, hold);
 				w.GetRain().Set(0, 10, hold);
 				w.GetFog().Set(0.05, 30, hold);
 				break;
-			case 2: // deszcz
+			case 2:
 				w.GetOvercast().Set(0.85, 30, hold);
 				w.GetRain().Set(0.7, 30, hold);
 				w.GetFog().Set(0.1, 30, hold);
 				break;
-			case 3: // burza
+			case 3:
 				w.GetOvercast().Set(1, 30, hold);
 				w.GetRain().Set(1, 30, hold);
 				w.GetFog().Set(0.15, 30, hold);
 				w.SetStorm(1, 0.7, 20);
 				break;
-			case 4: // mgła
+			case 4:
 				w.GetOvercast().Set(0.5, 30, hold);
 				w.GetRain().Set(0, 10, hold);
 				w.GetFog().Set(0.6, 30, hold);
