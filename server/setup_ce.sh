@@ -17,6 +17,7 @@ python3 ~/armagedon-dayz/server/mod_types.py
 cp -f ~/armagedon-dayz/server/ce/types_helis.xml $CE/types_helis.xml
 cp -f ~/armagedon-dayz/server/ce/types_aga.xml $CE/types_aga.xml
 cp -f ~/armagedon-dayz/server/ce/types_weapons.xml $CE/types_weapons.xml
+cp -f ~/armagedon-dayz/server/ce/types_gear.xml $CE/types_gear.xml
 # wpis w cfgeconomycore.xml (odtwarzany za każdym razem)
 python3 - "$MIS" <<'PY'
 import sys, os, re, glob

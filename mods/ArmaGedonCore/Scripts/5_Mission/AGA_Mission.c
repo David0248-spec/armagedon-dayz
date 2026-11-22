@@ -54,6 +54,7 @@ modded class MissionServer
 	override void OnClientDisconnectedEvent(PlayerIdentity identity, PlayerBase player, int logoutTime, bool authFailed)
 	{
 		if (identity) AGA_Link.Forget(identity.GetPlainId());
+		if (identity && player) AGA_Survival.SaveStam(player, identity.GetPlainId());
 		if (!authFailed && player && player.IsAlive() && player.AGA_InCombat())
 		{
 			if (logoutTime < 60) logoutTime = 60;
@@ -66,6 +67,8 @@ modded class MissionServer
 	override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity)
 	{
 		super.InvokeOnConnect(player, identity);
+		AGA_Survival.Start();
+		if (identity) AGA_Survival.LoadStam(player, identity.GetPlainId());
 		AGA_Territory.AGA_SyncPl(player);
 		if (identity)
 			GetRPCManager().SendRPC("AGA", "AGA_Zones", new Param1<ref AGA_ZoneDb>(AGA_Territory.Zones()), true, identity);

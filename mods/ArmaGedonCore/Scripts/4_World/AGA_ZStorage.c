@@ -820,6 +820,7 @@ modded class PluginRecipesManagerBase
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new AGA_CraftGunRack);
+		RegisterRecipe(new AGA_CraftPalisadeKit);
 	}
 }
 

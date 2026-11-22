@@ -1,13 +1,13 @@
 {
   "_opis": "Vanilla+ : blisko vanilli, lekko łatwiej. Mnożniki nominal/min (1.0 = vanilla). Nazwa nadpisuje kategorię.",
   "category_mult": {
-    "weapons": 3.5,
-    "explosives": 1.3,
-    "tools": 1.8,
-    "food": 1.8,
-    "containers": 1.2,
-    "clothes": 1.8,
-    "lootdispatch": 1.8
+    "weapons": 3.0,
+    "explosives": 1.15,
+    "tools": 1.55,
+    "food": 1.55,
+    "containers": 1.1,
+    "clothes": 1.55,
+    "lootdispatch": 1.55
   },
   "name_mult": {
     "Ammo_": 2.2,

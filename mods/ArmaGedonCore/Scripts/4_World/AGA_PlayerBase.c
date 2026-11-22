@@ -3,7 +3,8 @@ modded class PlayerBase
 {
 	// walka: strzał albo trafienie przez gracza w ostatnich 60 s
 	protected int m_AGA_CombatUntil;
-	void AGA_MarkCombat() { m_AGA_CombatUntil = GetGame().GetTime() + 600000; } // 10 min od ostatniego kontaktu
+	// walka z graczem: 10 min, strzal / walka z zombie: 1 min (dluzszy licznik nie jest skracany)
+	void AGA_MarkCombat(int ms = 600000) { int t = GetGame().GetTime() + ms; if (t > m_AGA_CombatUntil) m_AGA_CombatUntil = t; }
 	bool AGA_InCombat() { return GetGame().GetTime() < m_AGA_CombatUntil; }
 
 
@@ -142,6 +143,6 @@ modded class Weapon_Base
 		PlayerBase pb = PlayerBase.Cast(GetHierarchyRootPlayer());
 		if (!pb)
 			return;
-		pb.AGA_MarkCombat();
+		pb.AGA_MarkCombat(60000);
 	}
 }

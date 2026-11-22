@@ -46,32 +46,32 @@
 			<item name="Mag_AKM_Palm30Rnd" chance="1.00"/>
 		</attachments>
 	</type>
-	<type name="KK_ADAR">
+	<type name="AG_ADAR">
 		<attachments chance="0.50">
 			<item name="Mag_STANAG_30Rnd" chance="1.00"/>
 		</attachments>
 	</type>
-	<type name="KK_FN_SPR_A3G">
+	<type name="AG_FN_SPR_A3G">
 		<attachments chance="0.50">
 			<item name="Mag_fn_spr_a3g_5rnd" chance="1.00"/>
 		</attachments>
 	</type>
-	<type name="KK_M76_Zastava">
+	<type name="AG_M76_Zastava">
 		<attachments chance="0.50">
 			<item name="Mag_M76_10rnd" chance="1.00"/>
 		</attachments>
 	</type>
-	<type name="KK_PP19">
+	<type name="AG_PP19">
 		<attachments chance="0.50">
 			<item name="Mag_PP19_30Rnd" chance="1.00"/>
 		</attachments>
 	</type>
-	<type name="KK_RPK_762x39">
+	<type name="AG_RPK_762x39">
 		<attachments chance="0.50">
 			<item name="Mag_AKM_30Rnd" chance="1.00"/>
 		</attachments>
 	</type>
-	<type name="KK_SR2m">
+	<type name="AG_SR2m">
 		<attachments chance="0.50">
 			<item name="Mag_SR2_30rnd" chance="1.00"/>
 		</attachments>
