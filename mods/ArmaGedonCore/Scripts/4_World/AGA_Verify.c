@@ -30,12 +30,13 @@ class AGA_Verify
 	static void Begin(PlayerIdentity id)
 	{
 		Init();
-		if (!id || AGA_Server.Get().IsStaff(id)) return;
+		if (!id) return;   // weryfikacja dla kazdego (takze admin)
 		string uid = id.GetPlainId();
 		AGA_VerifyState st = new AGA_VerifyState();
 		st.Code = NewCode();
 		st.Tries = TRIES;
 		s_St.Set(uid, st);
+		AGA_Server.Get().Log("[WERYFIKACJA] start " + id.GetName() + " (" + uid + ")");
 		Ask(id, st);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Timeout, TIMEOUT_MS, false, uid);
 	}
