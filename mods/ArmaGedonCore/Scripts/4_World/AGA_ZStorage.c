@@ -187,9 +187,12 @@ class AGA_Build
 	{
 		AGA_UpStep s = StepFor(target);
 		if (!s || !p || target.IsSetForDeletion()) return;
-		TerritoryFlag f = OwnFlag(p, target.GetPosition());
-		if (!f || f.AGA_Level() < s.Flag) return;
-		if (Missing(target, s) != "") return;
+		string why = Blocker(p, target, s);
+		if (why != "")
+		{
+			AGA_Territory.Tell(p, "Upgrade needs: " + why + ".");
+			return;
+		}
 		Consume(target, s);
 		EntityAI nw = Swap(target, s.To);
 		if (!nw) return;
@@ -239,10 +242,45 @@ class AGA_Build
 		return e && e.ConfigGetInt("aga_fixed") == 1;
 	}
 
-	// po ulepszeniu i dla skrzyń eventów obiektu nie da się podnieść
+	// skrzyń eventów nie da się podnieść; meble bazy – tylko puste
 	static bool Locked(EntityAI e)
 	{
-		return Fixed(e) || Tier(e) > 1;
+		return Fixed(e);
+	}
+
+	static bool IsEmptyBox(EntityAI e)
+	{
+		if (!e || !e.GetInventory()) return true;
+		if (e.GetInventory().AttachmentCount() > 0) return false;
+		CargoBase c = e.GetInventory().GetCargo();
+		return !c || c.GetItemCount() == 0;
+	}
+
+	// cel akcji: sam obiekt, nawet gdy celownik trafia w przedmiot leżący na nim
+	static EntityAI Furniture(ActionTarget target)
+	{
+		if (!target) return null;
+		EntityAI e = EntityAI.Cast(target.GetObject());
+		if (e && StepFor(e)) return e;
+		EntityAI par = EntityAI.Cast(target.GetParent());
+		if (par && StepFor(par)) return par;
+		if (e && e.GetHierarchyParent())
+		{
+			EntityAI root = e.GetHierarchyRoot();
+			if (root && StepFor(root)) return root;
+		}
+		return null;
+	}
+
+	// co blokuje ulepszenie ("" = można)
+	static string Blocker(PlayerBase p, EntityAI e, AGA_UpStep s)
+	{
+		TerritoryFlag f = OwnFlag(p, e.GetPosition());
+		if (!f) return "your own territory";
+		if (f.AGA_Level() < s.Flag) return "flag pole level " + s.Flag.ToString();
+		string miss = Missing(e, s);
+		if (miss != "") return miss + " in Upgrade Materials";
+		return "";
 	}
 
 	static bool NearBench(vector pos, float r)
@@ -382,6 +420,20 @@ modded class mmg_storage_openable_noLock_base
 	}
 }
 
+// gun wall (MMG blokuje podnoszenie) – pusty można przenieść
+modded class mmg_gun_wall_base
+{
+	override bool CanPutIntoHands(EntityAI parent)
+	{
+		return AGA_Build.IsEmptyBox(this);
+	}
+
+	override bool IsTakeable()
+	{
+		return AGA_Build.IsEmptyBox(this);
+	}
+}
+
 // natywne ulepszenie MMG (młotek, tylko pusta skrzynia, bez flagi) – zastąpione naszym
 modded class ActionUpgradeSupplyCrate_1to2
 {
@@ -435,32 +487,27 @@ class AGA_ActionUpgrade : ActionContinuousBase
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
 	{
 		if (!item || !target || player.IsPlacingLocal()) return false;
-		EntityAI e = EntityAI.Cast(target.GetObject());
-		if (!e || e.GetHierarchyParent()) return false;
+		EntityAI e = AGA_Build.Furniture(target);
+		if (!e) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);
 		if (!s) return false;
-		TerritoryFlag f = AGA_Build.OwnFlag(player, e.GetPosition());
-		if (!f) return false;
-		if (f.AGA_Level() < s.Flag)
-		{
-			AGA_Territory.Msg("This upgrade requires a level " + s.Flag.ToString() + " flag pole.");
-			return false;
-		}
-		string miss = AGA_Build.Missing(e, s);
-		if (miss != "")
-		{
-			AGA_Territory.Msg("Put into the upgrade slots: " + miss + ".");
-			return false;
-		}
-		m_Text = "Upgrade to " + GetGame().ConfigGetTextOut("CfgVehicles " + s.To + " displayName");
+		if (!AGA_Build.OwnFlag(player, e.GetPosition())) return false;
+		string to = GetGame().ConfigGetTextOut("CfgVehicles " + s.To + " displayName");
+		string why = AGA_Build.Blocker(player, e, s);
+		if (why == "") m_Text = "Upgrade to " + to;
+		else m_Text = "Upgrade to " + to + " (needs: " + why + ")";
 		return true;
 	}
 
 	override void OnFinishProgressServer(ActionData action_data)
 	{
-		EntityAI e = EntityAI.Cast(action_data.m_Target.GetObject());
+		EntityAI e = AGA_Build.Furniture(action_data.m_Target);
+		if (!e) return;
+		AGA_UpStep s = AGA_Build.StepFor(e);
+		bool ok = false;
+		if (s && AGA_Build.Blocker(action_data.m_Player, e, s) == "") ok = true;
 		AGA_Build.Upgrade(action_data.m_Player, e);
-		MiscGameplayFunctions.DealAbsoluteDmg(action_data.m_MainItem, 4);
+		if (ok) MiscGameplayFunctions.DealAbsoluteDmg(action_data.m_MainItem, 4);
 	}
 }
 
