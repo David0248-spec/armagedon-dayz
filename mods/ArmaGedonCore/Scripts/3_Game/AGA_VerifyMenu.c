@@ -1,4 +1,4 @@
-// ARMA-GEDON – weryfikacja anty-cheat (okno po regulaminie)
+// ARMA-GEDON – weryfikacja anty-cheat: okno pokazuje sie juz na ekranie odliczania (przed wejsciem postaci)
 class AGA_VerifyMenu extends UIScriptedMenu
 {
 	static ref AGA_VerifyMenu s_Open;
@@ -72,7 +72,7 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	override void OnShow()
 	{
 		super.OnShow();
-		GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
+		if (GetGame().GetMission()) GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
 		GetGame().GetUIManager().ShowUICursor(true);
 		if (m_Answer) SetFocus(m_Answer);
 	}
@@ -81,7 +81,7 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	{
 		super.OnHide();
 		GetGame().GetUIManager().ShowUICursor(false);
-		GetGame().GetMission().PlayerControlEnable(false);
+		if (GetGame().GetMission()) GetGame().GetMission().PlayerControlEnable(false);
 		m_Closed = true;
 	}
 
@@ -110,5 +110,74 @@ class AGA_VerifyMenu extends UIScriptedMenu
 			return true;
 		}
 		return false;
+	}
+}
+
+
+// odbior pytania z serwera i pokazywanie okna – dziala zanim powstanie misja (ekran odliczania)
+class AGA_VerifyClient
+{
+	static ref AGA_VerifyClient s_Inst;
+	static bool s_Hello;
+
+	static void Init()
+	{
+		if (s_Inst) return;
+		s_Inst = new AGA_VerifyClient();
+		GetRPCManager().AddRPC("AGA", "AGA_VerifyAsk", s_Inst, SingleplayerExecutionType.Client);
+	}
+
+	static void Hello()
+	{
+		Init();
+		GetRPCManager().SendRPC("AGA", "AGA_VerifyHello", new Param1<int>(0), true);
+	}
+
+	void AGA_VerifyAsk(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		Param2<string, int> data;
+		if (!ctx.Read(data)) return;
+		if (data.param2 < 0)
+		{
+			AGA_VerifyMenu.s_Pending = false;
+			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Passed();
+			return;
+		}
+		AGA_VerifyMenu.s_Code = data.param1;
+		AGA_VerifyMenu.s_Tries = data.param2;
+		AGA_VerifyMenu.s_Pending = true;
+		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Refresh(true);
+		Show();
+	}
+
+	static void Show()
+	{
+		if (!AGA_VerifyMenu.s_Pending) return;
+		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) return;
+		UIScriptedMenu cur = GetGame().GetUIManager().GetMenu();
+		if (cur && !LoginTimeBase.Cast(cur) && !LoginScreenBase.Cast(cur)) return;
+		AGA_VerifyMenu.s_Open = new AGA_VerifyMenu();
+		GetGame().GetUIManager().ShowScriptedMenu(AGA_VerifyMenu.s_Open, cur);
+	}
+}
+
+modded class DayZGame
+{
+	override void OnLoginTimeEvent(int loginTime)
+	{
+		super.OnLoginTimeEvent(loginTime);
+		AGA_VerifyClient.Hello();
+		AGA_VerifyClient.Show();
+	}
+
+	override void OnUpdate(bool doSim, float timeslice)
+	{
+		super.OnUpdate(doSim, timeslice);
+		if (!IsDedicatedServer() && IsMultiplayer())
+		{
+			AGA_VerifyClient.Init();
+			AGA_VerifyClient.Show();
+			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed() && GetMission()) GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
+		}
 	}
 }

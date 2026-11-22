@@ -14,7 +14,7 @@ FrameWidgetClass AGA_Verify {
    hexactsize 0
    vexactsize 0
    ignorepointer 1
-   color 0 0 0 0.75
+   color 0.02 0.022 0.026 0.97
    style rover_sim_colorable
   }
   PanelWidgetClass Win {

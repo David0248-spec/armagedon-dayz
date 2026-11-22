@@ -96,7 +96,6 @@ modded class MissionServer
 modded class MissionGameplay
 {
 	protected bool m_AGA_RulesShown;
-	protected bool m_AGA_VerifyHello;
 	protected float m_AGA_RulesTimer;
 	protected bool m_AGA_RecipesDone;
 
@@ -109,7 +108,6 @@ modded class MissionGameplay
 		GetRPCManager().AddRPC("AGA", "AGA_OnRecipes", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_Zones", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_OnGroupView", this, SingleplayerExecutionType.Client);
-		GetRPCManager().AddRPC("AGA", "AGA_VerifyAsk", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_OnFlyBy", this, SingleplayerExecutionType.Client);
 	}
 
@@ -124,22 +122,6 @@ modded class MissionGameplay
 		Param4<vector, vector, int, int> d;
 		if (!ctx.Read(d)) return;
 		AGA_FlyBy.Start(d.param1, d.param2, d.param3, d.param4);
-	}
-
-	void AGA_VerifyAsk(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
-	{
-		Param2<string, int> data;
-		if (!ctx.Read(data)) return;
-		if (data.param2 < 0)
-		{
-			AGA_VerifyMenu.s_Pending = false;
-			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Passed();
-			return;
-		}
-		AGA_VerifyMenu.s_Code = data.param1;
-		AGA_VerifyMenu.s_Tries = data.param2;
-		AGA_VerifyMenu.s_Pending = true;
-		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Refresh(true);
 	}
 
 	void AGA_OnGroupView(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -183,25 +165,8 @@ modded class MissionGameplay
 			AGA_ToggleGroup();
 		}
 		m_AGA_PDown = pd;
-		// weryfikacja anty-cheat: od razu po polaczeniu, takze nad ekranem odliczania; regulamin dopiero po niej
-		if (!m_AGA_VerifyHello)
-		{
-			m_AGA_VerifyHello = true;
-			GetRPCManager().SendRPC("AGA", "AGA_VerifyHello", new Param1<int>(0), true);
-		}
-		if (AGA_VerifyMenu.s_Pending)
-		{
-			if (!AGA_VerifyMenu.s_Open || AGA_VerifyMenu.s_Open.IsClosed())
-			{
-				UIScriptedMenu curM = GetGame().GetUIManager().GetMenu();
-				if (!curM || LoginTimeBase.Cast(curM))
-				{
-					AGA_VerifyMenu.s_Open = new AGA_VerifyMenu();
-					GetGame().GetUIManager().ShowScriptedMenu(AGA_VerifyMenu.s_Open, curM);
-				}
-			}
-			return;
-		}
+		// regulamin dopiero po weryfikacji anty-cheat
+		if (AGA_VerifyMenu.s_Pending) return;
 		if (m_AGA_RulesShown) return;
 		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
 		if (!p || !p.IsAlive()) return;
