@@ -80,8 +80,9 @@ class AGA_Events
 		if (e.Crates.Count() == 0) return false;
 		foreach (EntityAI c : e.Crates)
 		{
-			if (c && c.GetInventory() && c.GetInventory().GetCargo() && c.GetInventory().GetCargo().GetItemCount() > 0)
-				return false;
+			if (!c || !c.GetInventory()) continue;
+			if (c.GetInventory().AttachmentCount() > 0) return false;
+			if (c.GetInventory().GetCargo() && c.GetInventory().GetCargo().GetItemCount() > 0) return false;
 		}
 		return true;
 	}
@@ -452,17 +453,27 @@ class AGA_Events
 
 	static string CrateClass(AGA_Event e)
 	{
-		if (e.Kind == "PLANE") return "AGA_LootCrateMil";
-		if (e.Kind == "CONVOY") return "AGA_LootCrateMed";
-		if (e.Kind == "HELI" && e.Variant == "MIL") return "AGA_LootCrateMil";
-		if (e.Kind == "HELI" && e.Variant == "MED") return "AGA_LootCrateMed";
+		if (e.Kind == "PLANE") return "AGA_EvWeapons";
+		if (e.Kind == "CONVOY") return "AGA_EvArmy";
+		if (e.Kind == "HELI" && e.Variant == "MIL") return "AGA_EvWeapons";
+		if (e.Kind == "HELI" && e.Variant == "MED") return "AGA_EvMedic";
 		return "AGA_LootCrate";
 	}
 
 	static EntityAI LootCrate(AGA_Event e, float right, float fwd)
 	{
 		EntityAI c = EntityAI.Cast(Put(e, CrateClass(e), right, fwd, Math.RandomFloat(-20, 20), 0));
-		if (c) e.Crates.Insert(c);
+		if (c)
+		{
+			e.Crates.Insert(c);
+			// skrzynie MMG są zamykane – otwarte na czas napełniania, potem zamknięte
+			ItemBase ib = ItemBase.Cast(c);
+			if (ib && ib.ConfigGetBool("itemIsOpenable"))
+			{
+				ib.Open();
+				GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(ib.Close, 4000, false);
+			}
+		}
 		return c;
 	}
 
@@ -489,7 +500,13 @@ class AGA_Events
 			vector ori = c.GetOrientation();
 			vector side = Vector(ori[0] + 90, 0, 0).AnglesToVector();
 			vector p = c.GetPosition() + side * Math.RandomFloat(1.1, 1.6);
-			DropAt(p, parts[0]);
+			EntityAI gun = DropAt(p, parts[0]);
+			// skrzynia wojskowa: broń na stojaku w skrzyni (sloty) albo w środku
+			if (gun && c.IsKindOf("mmg_storage_openable_noLock_base"))
+			{
+				if (!c.ServerTakeEntityAsAttachment(gun))
+					c.ServerTakeEntityToCargo(gun);
+			}
 		}
 		if (parts.Count() > 1) { Give(c, parts[1]); Give(c, parts[1]); }
 	}

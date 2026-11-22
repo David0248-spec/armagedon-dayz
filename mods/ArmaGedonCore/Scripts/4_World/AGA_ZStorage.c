@@ -1,5 +1,12 @@
-// ARMA-GEDON – magazyny bazy: skrzynie (ulepszane), gun rack, gun wall, gear stand, workbench, metalowe panele
-// Wymagają własnego terytorium; ulepszenia odblokowuje poziom flagi.
+// ARMA-GEDON – meble bazy na modelach MMG Base Storage, ulepszane tierami.
+// Ulepszenie: materiały wkłada się w sloty "Upgrade Materials" obiektu, potem siekiera w ręce -> "Upgrade".
+// Zawartość przechodzi do nowego obiektu. Poziom ulepszenia wymaga poziomu flagi.
+//
+//  Skrzynia:   WoodenCrate (50) -> T2 mmg_supplycrate_level1 (100) -> T3 level2 (150) -> T4 level3 (200)
+//  Gun rack:   mmg_craftable_gun_rack (2 bronie) -> mmg_gun_rack_tan (4 + 2 ammo) -> mmg_gun_rack_green (4 + 3 ammo + 3 pistolety)
+//  Gun wall:   mmg_gun_wall_wooden (4 bronie) -> mmg_gun_wall_metal (8 broni + 8 granatów)
+//  Gear stand: mmg_gear_stand (hełm + kamizelka) -> AGA_GearStand2 (pełny strój)
+//  Workbench:  mmg_old_table -> mmg_toolwagon_red (naprawa do pristine)
 
 class AGA_UpStep
 {
@@ -16,15 +23,10 @@ class AGA_UpStep
 		Mat = new array<string>;
 		Qty = new array<int>;
 	}
-
 }
 
 class AGA_Build
 {
-	static const int MAX_RACKS = 2;
-	static const int MAX_WALLS = 2;
-	static const int MAX_STANDS = 2;
-	static const int MAX_BENCHES = 1;
 	static ref array<ref AGA_UpStep> s_Steps;
 
 	static void Add(string f, string t, int flag, string spec)
@@ -47,102 +49,96 @@ class AGA_Build
 	{
 		if (s_Steps) return s_Steps;
 		s_Steps = new array<ref AGA_UpStep>;
-		Add("WoodenCrate", "AGA_Crate_T2", 2, "WoodenPlank:10,Nail:18,MetalWire:1");
-		Add("AGA_Crate_T2", "AGA_Crate_T3", 3, "WoodenPlank:14,Nail:22,AGA_MetalPanel:1");
-		Add("AGA_Crate_T3", "AGA_Crate_T4", 3, "WoodenPlank:16,Nail:28,AGA_MetalPanel:1");
-		Add("AGA_GunRack_T1", "AGA_GunRack_T2", 2, "WoodenPlank:8,Nail:40,BurlapSack:2,AGA_MetalPanel:2");
-		Add("AGA_GunRack_T2", "AGA_GunRack_T3", 3, "WoodenPlank:16,Nail:64,MetalWire:1,Rope:1,AGA_MetalPanel:2");
-		// wyłączone: Add("AGA_GunWall_T1", "AGA_GunWall_T2", 2, "WoodenPlank:20,Nail:80,Rope:1,BurlapSack:4,MetalWire:1,AGA_MetalPanel:6");
-		// wyłączone: Add("AGA_GearStand_T1", "AGA_GearStand_T2", 2, "Rope:1,Nail:50,TannedLeather:10");
-		// wyłączone: Add("AGA_Workbench_T1", "AGA_Workbench_T2", 2, "WoodenPlank:12,BurlapSack:2,Nail:40,AGA_MetalPanel:2");
-		// wyłączone: Add("AGA_Workbench_T2", "AGA_Workbench_T3", 2, "WoodenPlank:20,BurlapSack:4,Nail:80,AGA_MetalPanel:6");
+		Add("WoodenCrate", "mmg_supplycrate_level1", 2, "WoodenPlank:10,Nail:30");
+		Add("mmg_supplycrate_level1", "mmg_supplycrate_level2", 3, "WoodenPlank:10,Nail:30");
+		Add("mmg_supplycrate_level2", "mmg_supplycrate_level3", 3, "WoodenPlank:12,Nail:40");
+		Add("mmg_craftable_gun_rack", "mmg_gun_rack_tan", 2, "Nail:30,MetalPlate:1");
+		Add("mmg_gun_rack_tan", "mmg_gun_rack_green", 3, "Nail:40,MetalPlate:1");
+		Add("mmg_gun_wall_wooden", "mmg_gun_wall_metal", 2, "Nail:40,MetalPlate:1");
+		Add("mmg_gear_stand", "AGA_GearStand2", 2, "WoodenPlank:10,Nail:30");
+		Add("mmg_old_table", "mmg_toolwagon_red", 2, "Nail:30,MetalPlate:1");
 		return s_Steps;
 	}
 
 	static AGA_UpStep StepFor(EntityAI e)
 	{
 		if (!e) return null;
+		string t = e.GetType();
 		foreach (AGA_UpStep s : Steps())
 		{
-			if (e.GetType() == s.From) return s;
+			if (t == s.From) return s;
 		}
 		return null;
-	}
-
-	static float Amount(ItemBase ib)
-	{
-		if (ib.HasQuantity()) return ib.GetQuantity();
-		return 1;
-	}
-
-	static int Have(PlayerBase p, string type)
-	{
-		array<EntityAI> items = new array<EntityAI>;
-		p.GetInventory().EnumerateInventory(InventoryTraversalType.PREORDER, items);
-		float n = 0;
-		foreach (EntityAI e : items)
-		{
-			ItemBase ib = ItemBase.Cast(e);
-			if (ib && ib.IsKindOf(type) && !ib.IsRuined()) n += Amount(ib);
-		}
-		return n;
-	}
-
-	static string Missing(PlayerBase p, AGA_UpStep s)
-	{
-		string out_txt = "";
-		for (int i = 0; i < s.Mat.Count(); i++)
-		{
-			int have = Have(p, s.Mat[i]);
-			if (have < s.Qty[i])
-			{
-				if (out_txt != "") out_txt += ", ";
-				out_txt += (s.Qty[i] - have).ToString() + "x " + Label(s.Mat[i]);
-			}
-		}
-		return out_txt;
 	}
 
 	static string Label(string type)
 	{
 		if (type == "WoodenPlank") return "planks";
 		if (type == "Nail") return "nails";
-		if (type == "MetalWire") return "metal wire";
-		if (type == "AGA_MetalPanel") return "metal panels";
-		if (type == "TannedLeather") return "tanned leather";
-		if (type == "BurlapSack") return "burlap sacks";
-		if (type == "Rope") return "rope";
+		if (type == "MetalPlate") return "metal sheet";
 		return type;
 	}
 
-	static void Consume(PlayerBase p, AGA_UpStep s)
+	static float Amount(EntityAI e)
 	{
-		array<EntityAI> items = new array<EntityAI>;
-		p.GetInventory().EnumerateInventory(InventoryTraversalType.PREORDER, items);
+		ItemBase ib = ItemBase.Cast(e);
+		if (ib && ib.HasQuantity()) return ib.GetQuantity();
+		return 1;
+	}
+
+	// ilość materiału w slotach ulepszenia obiektu
+	static float InSlots(EntityAI box, string type)
+	{
+		float n = 0;
+		if (!box || !box.GetInventory()) return 0;
+		for (int i = 0; i < box.GetInventory().AttachmentCount(); i++)
+		{
+			EntityAI a = box.GetInventory().GetAttachmentFromIndex(i);
+			if (a && !a.IsRuined() && a.IsKindOf(type)) n += Amount(a);
+		}
+		return n;
+	}
+
+	static string Missing(EntityAI box, AGA_UpStep s)
+	{
+		string txt = "";
+		for (int i = 0; i < s.Mat.Count(); i++)
+		{
+			int have = InSlots(box, s.Mat[i]);
+			if (have < s.Qty[i])
+			{
+				if (txt != "") txt += ", ";
+				txt += (s.Qty[i] - have).ToString() + "x " + Label(s.Mat[i]);
+			}
+		}
+		return txt;
+	}
+
+	static void Consume(EntityAI box, AGA_UpStep s)
+	{
 		for (int i = 0; i < s.Mat.Count(); i++)
 		{
 			float need = s.Qty[i];
-			foreach (EntityAI e : items)
+			for (int k = box.GetInventory().AttachmentCount() - 1; k >= 0 && need > 0; k--)
 			{
-				if (need <= 0) break;
-				ItemBase ib = ItemBase.Cast(e);
-				if (!ib || ib.IsRuined() || !ib.IsKindOf(s.Mat[i]) || ib.IsSetForDeletion()) continue;
-				if (ib.HasQuantity())
+				EntityAI a = box.GetInventory().GetAttachmentFromIndex(k);
+				if (!a || a.IsRuined() || !a.IsKindOf(s.Mat[i])) continue;
+				ItemBase ib = ItemBase.Cast(a);
+				if (ib && ib.HasQuantity() && ib.GetQuantity() > need)
 				{
-					float take = Math.Min(need, ib.GetQuantity());
-					ib.AddQuantity(-take, true);
-					need -= take;
+					ib.AddQuantity(-need, false);
+					need = 0;
 				}
 				else
 				{
-					need -= 1;
-					GetGame().ObjectDelete(ib);
+					need -= Amount(a);
+					GetGame().ObjectDelete(a);
 				}
 			}
 		}
 	}
 
-	// gracz we własnym terytorium o wymaganym poziomie flagi
+	// gracz we własnym terytorium
 	static TerritoryFlag OwnFlag(PlayerBase p, vector pos)
 	{
 		TerritoryFlag f = AGA_Territory.FlagAt(pos);
@@ -151,105 +147,71 @@ class AGA_Build
 		return f;
 	}
 
-	static void Upgrade(PlayerBase p, EntityAI target)
-	{
-		AGA_UpStep s = StepFor(target);
-		if (!s || !p) return;
-		TerritoryFlag f = OwnFlag(p, target.GetPosition());
-		if (!f || f.AGA_Level() < s.Flag) return;
-		if (Missing(p, s) != "") return;
-		Consume(p, s);
-		vector pos = target.GetPosition();
-		vector ori = target.GetOrientation();
-		EntityAI nw = EntityAI.Cast(GetGame().CreateObjectEx(s.To, pos, ECE_CREATEPHYSICS | ECE_KEEPHEIGHT));
-		if (!nw) return;
-		nw.SetPosition(pos);
-		nw.SetOrientation(ori);
-		array<EntityAI> moved = new array<EntityAI>;
-		target.GetInventory().EnumerateInventory(InventoryTraversalType.LEVELORDER, moved);
-		foreach (EntityAI it : moved)
-		{
-			if (!it || it == target || it.GetHierarchyParent() != target) continue;
-			if (!nw.ServerTakeEntityToInventory(FindInventoryLocationType.ATTACHMENT | FindInventoryLocationType.CARGO, it))
-				target.GetInventory().DropEntity(InventoryMode.SERVER, target, it);
-		}
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().ObjectDelete, 500, false, target);
-		AGA_Territory.Tell(p, "Upgraded: " + nw.GetDisplayName());
-		AGA_Server.Get().Log("[BAZA] " + p.GetIdentity().GetName() + " ulepszyl " + s.From + " -> " + s.To + " @ " + pos.ToString());
-	}
-
 	static bool InOwnTerritory(PlayerBase p)
 	{
 		if (!p) return false;
 		return OwnFlag(p, p.GetPosition()) != null;
 	}
 
-	static bool NearBench(vector pos, typename t, float r)
+	// podmiana obiektu na inny typ w tym samym miejscu z przeniesieniem zawartości
+	static EntityAI Swap(EntityAI old, string to)
 	{
-		array<Object> objs = new array<Object>;
-		GetGame().GetObjectsAtPosition(pos, r, objs, null);
-		foreach (Object o : objs)
+		if (!old || to == "") return null;
+		vector pos = old.GetPosition();
+		vector ori = old.GetOrientation();
+		EntityAI nw = EntityAI.Cast(GetGame().CreateObjectEx(to, pos, ECE_CREATEPHYSICS | ECE_KEEPHEIGHT));
+		if (!nw) return null;
+		nw.SetPosition(pos);
+		nw.SetOrientation(ori);
+		nw.Update();
+		ItemBase oib = ItemBase.Cast(old);
+		ItemBase nib = ItemBase.Cast(nw);
+		bool wasClosed = false;
+		if (oib && oib.IsOpen() == false && oib.ConfigGetBool("itemIsOpenable")) { wasClosed = true; oib.Open(); }
+		if (nib && nib.ConfigGetBool("itemIsOpenable")) nib.Open();
+
+		array<EntityAI> items = new array<EntityAI>;
+		old.GetInventory().EnumerateInventory(InventoryTraversalType.LEVELORDER, items);
+		foreach (EntityAI it : items)
 		{
-			if (o && o.IsInherited(t)) return true;
+			if (!it || it == old || it.GetHierarchyParent() != old) continue;
+			if (!nw.ServerTakeEntityToInventory(FindInventoryLocationType.ATTACHMENT | FindInventoryLocationType.CARGO, it))
+				old.GetInventory().DropEntity(InventoryMode.SERVER, old, it);
 		}
-		return false;
-	}
-}
-
-// ==================================================================== skrzynie
-class AGA_Crate_T2 : WoodenCrate
-{
-	override bool CanPutInCargo(EntityAI parent) { return false; }
-	override bool CanPutIntoHands(EntityAI parent) { return false; }
-	override bool IsDeployable() { return false; }
-	override bool IsTakeable() { return false; }
-}
-class AGA_Crate_T3 : AGA_Crate_T2 {}
-class AGA_Crate_T4 : AGA_Crate_T2 {}
-
-// ==================================================================== baza magazynów
-class AGA_StorageBase : DeployableContainer_Base
-{
-	int AGA_Tier() { return 1; }
-
-	// dozwolone typy w cargo i ich limity (puste = brak cargo)
-	void AGA_Rules(array<string> types, array<int> limits) {}
-
-	override bool CanPutInCargo(EntityAI parent)
-	{
-		if (AGA_Tier() > 1) return false;
-		return super.CanPutInCargo(parent) && AGA_IsEmpty();
+		if (nib && wasClosed) GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(nib.Close, 1500, false);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().ObjectDelete, 500, false, old);
+		return nw;
 	}
 
-	override bool CanPutIntoHands(EntityAI parent)
+	static void Upgrade(PlayerBase p, EntityAI target)
 	{
-		if (AGA_Tier() > 1) return false;
-		return super.CanPutIntoHands(parent) && AGA_IsEmpty();
+		AGA_UpStep s = StepFor(target);
+		if (!s || !p || target.IsSetForDeletion()) return;
+		TerritoryFlag f = OwnFlag(p, target.GetPosition());
+		if (!f || f.AGA_Level() < s.Flag) return;
+		if (Missing(target, s) != "") return;
+		Consume(target, s);
+		EntityAI nw = Swap(target, s.To);
+		if (!nw) return;
+		AGA_Territory.Tell(p, "Upgraded: " + nw.GetDisplayName());
+		AGA_Server.Get().Log("[BAZA] " + p.GetIdentity().GetName() + " ulepszyl " + s.From + " -> " + s.To + " @ " + target.GetPosition().ToString());
 	}
 
-	override bool IsTakeable()
+	// ---------------------------------------------------------------- zasady cargo z configu (aga_cargoTypes / aga_cargoLimits)
+	static bool CargoOk(EntityAI box, EntityAI item)
 	{
-		return AGA_Tier() == 1 && super.IsTakeable();
-	}
-
-	override bool IsDeployable() { return AGA_Tier() == 1; }
-
-	bool AGA_IsEmpty()
-	{
-		if (!GetInventory()) return true;
-		if (GetInventory().AttachmentCount() > 0) return false;
-		CargoBase c = GetInventory().GetCargo();
-		return !c || c.GetItemCount() == 0;
-	}
-
-	override bool CanReceiveItemIntoCargo(EntityAI item)
-	{
-		if (!super.CanReceiveItemIntoCargo(item)) return false;
-		array<string> types = new array<string>;
-		array<int> limits = new array<int>;
-		AGA_Rules(types, limits);
-		CargoBase c = GetInventory().GetCargo();
-		for (int i = 0; i < types.Count(); i++)
+		string base = "CfgVehicles " + box.GetType();
+		if (!GetGame().ConfigIsExisting(base + " aga_cargoTypes"))
+		{
+			// brak listy = cargo wolne, chyba że obiekt nie ma cargo
+			return true;
+		}
+		TStringArray types = new TStringArray;
+		TIntArray limits = new TIntArray;
+		GetGame().ConfigGetTextArray(base + " aga_cargoTypes", types);
+		GetGame().ConfigGetIntArray(base + " aga_cargoLimits", limits);
+		CargoBase c = box.GetInventory().GetCargo();
+		for (int i = 0; i < types.Count() && i < limits.Count(); i++)
 		{
 			if (!item.IsKindOf(types[i])) continue;
 			int n = 0;
@@ -266,99 +228,171 @@ class AGA_StorageBase : DeployableContainer_Base
 		return false;
 	}
 
-	override bool CanSwapItemInCargo(EntityAI child_entity, EntityAI new_entity)
+	static int Tier(EntityAI e)
 	{
-		return CanReceiveItemIntoCargo(new_entity) && super.CanSwapItemInCargo(child_entity, new_entity);
+		if (!e) return 0;
+		return e.ConfigGetInt("aga_tier");
+	}
+
+	static bool Fixed(EntityAI e)
+	{
+		return e && e.ConfigGetInt("aga_fixed") == 1;
+	}
+
+	// po ulepszeniu i dla skrzyń eventów obiektu nie da się podnieść
+	static bool Locked(EntityAI e)
+	{
+		return Fixed(e) || Tier(e) > 1;
+	}
+
+	static bool NearBench(vector pos, float r)
+	{
+		array<Object> objs = new array<Object>;
+		GetGame().GetObjectsAtPosition(pos, r, objs, null);
+		foreach (Object o : objs)
+		{
+			if (o && o.IsKindOf("mmg_toolwagon_base")) return true;
+		}
+		return false;
+	}
+
+	// stare meble ARMA-GEDON -> nowe modele (zawartość zostaje)
+	static string LegacyTarget(string t)
+	{
+		if (t == "AGA_Crate_T2") return "mmg_supplycrate_level1";
+		if (t == "AGA_Crate_T3") return "mmg_supplycrate_level2";
+		if (t == "AGA_Crate_T4") return "mmg_supplycrate_level3";
+		if (t == "AGA_GunRack_T1") return "mmg_craftable_gun_rack";
+		if (t == "AGA_GunRack_T2") return "mmg_gun_rack_tan";
+		if (t == "AGA_GunRack_T3") return "mmg_gun_rack_green";
+		if (t == "AGA_GunWall_T1") return "mmg_gun_wall_wooden";
+		if (t == "AGA_GunWall_T2") return "mmg_gun_wall_metal";
+		if (t == "AGA_GearStand_T1") return "mmg_gear_stand";
+		if (t == "AGA_GearStand_T2") return "AGA_GearStand2";
+		if (t == "AGA_Workbench_T1") return "mmg_old_table";
+		if (t == "AGA_Workbench_T2") return "mmg_toolwagon_red";
+		if (t == "AGA_Workbench_T3") return "mmg_toolwagon_red";
+		return "";
+	}
+
+	static void ConvertLegacy(EntityAI e)
+	{
+		if (!e || e.IsSetForDeletion() || e.GetHierarchyParent()) return;
+		string to = LegacyTarget(e.GetType());
+		if (to == "") return;
+		Swap(e, to);
+		AGA_Server.Get().Log("[BAZA] konwersja " + e.GetType() + " -> " + to + " @ " + e.GetPosition().ToString());
 	}
 }
 
-class AGA_GunRackBase : AGA_StorageBase {}
-class AGA_GunRack_T1 : AGA_GunRackBase {}
-class AGA_GunRack_T2 : AGA_GunRackBase
+// ==================================================================== stare klasy (konwertowane przy wczytaniu)
+class AGA_Crate_T2 : WoodenCrate
 {
-	override int AGA_Tier() { return 2; }
-	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("AmmoBox"); limits.Insert(2); }
+	override bool CanPutInCargo(EntityAI parent) { return false; }
+	override bool CanPutIntoHands(EntityAI parent) { return false; }
+	override bool IsTakeable() { return false; }
+	override void AfterStoreLoad()
+	{
+		super.AfterStoreLoad();
+		if (GetGame().IsServer()) GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Build.ConvertLegacy, 3000, false, this);
+	}
 }
-class AGA_GunRack_T3 : AGA_GunRackBase
-{
-	override int AGA_Tier() { return 3; }
-	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("AmmoBox"); limits.Insert(3); types.Insert("Pistol_Base"); limits.Insert(3); }
-}
+class AGA_Crate_T3 : AGA_Crate_T2 {}
+class AGA_Crate_T4 : AGA_Crate_T2 {}
 
-// Gun wall, gear stand i workbench – tymczasowo wyłączone (model powodował crash klienta).
-// Istniejące egzemplarze są usuwane przy wczytaniu.
-class AGA_RemovedStorage : AGA_StorageBase
+class AGA_StorageBase : DeployableContainer_Base
 {
+	override bool CanPutInCargo(EntityAI parent) { return false; }
+	override bool CanPutIntoHands(EntityAI parent) { return false; }
+	override bool IsTakeable() { return false; }
 	override void EEInit()
 	{
 		super.EEInit();
-		if (GetGame().IsServer())
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Remove, 100, false);
-	}
-
-	void AGA_Remove()
-	{
-		GetGame().ObjectDelete(this);
+		if (GetGame().IsServer()) GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Build.ConvertLegacy, 3000, false, this);
 	}
 }
-
-class AGA_GunWallBase : AGA_RemovedStorage {}
+class AGA_GunRackBase : AGA_StorageBase {}
+class AGA_GunRack_T1 : AGA_GunRackBase {}
+class AGA_GunRack_T2 : AGA_GunRackBase {}
+class AGA_GunRack_T3 : AGA_GunRackBase {}
+class AGA_GunWallBase : AGA_StorageBase {}
 class AGA_GunWall_T1 : AGA_GunWallBase {}
-class AGA_GunWall_T2 : AGA_GunWallBase
-{
-	override int AGA_Tier() { return 2; }
-	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("Grenade_Base"); limits.Insert(8); }
-}
-
-class AGA_GearStandBase : AGA_RemovedStorage {}
+class AGA_GunWall_T2 : AGA_GunWallBase {}
+class AGA_GearStandBase : AGA_StorageBase {}
 class AGA_GearStand_T1 : AGA_GearStandBase {}
-class AGA_GearStand_T2 : AGA_GearStandBase
-{
-	override int AGA_Tier() { return 2; }
-}
+class AGA_GearStand_T2 : AGA_GearStandBase {}
+class AGA_WorkbenchBase : AGA_StorageBase {}
+class AGA_Workbench_T1 : AGA_WorkbenchBase {}
+class AGA_Workbench_T2 : AGA_WorkbenchBase {}
+class AGA_Workbench_T3 : AGA_WorkbenchBase {}
+class AGA_MetalPanel : ItemBase {}
 
-class AGA_WorkbenchBase : AGA_RemovedStorage {}
-class AGA_Workbench_T1 : AGA_WorkbenchBase
+// ==================================================================== zachowanie mebli MMG
+modded class mmg_storage_placeable_base
 {
-	override void AGA_Rules(array<string> types, array<int> limits)
+	override bool CanPutInCargo(EntityAI parent)
 	{
-		types.Insert("Shovel"); limits.Insert(1);
-		types.Insert("FieldShovel"); limits.Insert(1);
-		types.Insert("WoodAxe"); limits.Insert(1);
-		types.Insert("FirefighterAxe"); limits.Insert(1);
-		types.Insert("Pickaxe"); limits.Insert(1);
-		types.Insert("Sledgehammer"); limits.Insert(1);
-		types.Insert("Hammer"); limits.Insert(1);
-		types.Insert("Nail"); limits.Insert(2);
-		types.Insert("WoodenPlank"); limits.Insert(2);
+		if (AGA_Build.Locked(this)) return false;
+		return super.CanPutInCargo(parent);
+	}
+
+	override bool CanPutIntoHands(EntityAI parent)
+	{
+		if (AGA_Build.Locked(this)) return false;
+		return super.CanPutIntoHands(parent);
+	}
+
+	override bool IsTakeable()
+	{
+		if (AGA_Build.Locked(this)) return false;
+		return super.IsTakeable();
+	}
+
+	override bool CanReceiveItemIntoCargo(EntityAI item)
+	{
+		if (!super.CanReceiveItemIntoCargo(item)) return false;
+		return AGA_Build.CargoOk(this, item);
+	}
+
+	override bool CanSwapItemInCargo(EntityAI child_entity, EntityAI new_entity)
+	{
+		if (!super.CanSwapItemInCargo(child_entity, new_entity)) return false;
+		return AGA_Build.CargoOk(this, new_entity);
 	}
 }
-class AGA_Workbench_T2 : AGA_WorkbenchBase
+
+modded class mmg_storage_openable_noLock_base
 {
-	override int AGA_Tier() { return 2; }
-	override void AGA_Rules(array<string> types, array<int> limits)
+	override bool CanPutInCargo(EntityAI parent)
 	{
-		types.Insert("Hatchet"); limits.Insert(1);
-		types.Insert("Shovel"); limits.Insert(1);
-		types.Insert("FieldShovel"); limits.Insert(1);
-		types.Insert("WoodAxe"); limits.Insert(1);
-		types.Insert("FirefighterAxe"); limits.Insert(1);
-		types.Insert("Pickaxe"); limits.Insert(1);
-		types.Insert("HandSaw"); limits.Insert(1);
-		types.Insert("Hacksaw"); limits.Insert(1);
-		types.Insert("Pliers"); limits.Insert(1);
-		types.Insert("Screwdriver"); limits.Insert(1);
-		types.Insert("Sledgehammer"); limits.Insert(1);
-		types.Insert("Nail"); limits.Insert(3);
-		types.Insert("WoodenPlank"); limits.Insert(3);
+		if (AGA_Build.Locked(this)) return false;
+		return super.CanPutInCargo(parent);
+	}
+
+	override bool CanPutIntoHands(EntityAI parent)
+	{
+		if (AGA_Build.Locked(this)) return false;
+		return super.CanPutIntoHands(parent);
+	}
+
+	override bool IsTakeable()
+	{
+		if (AGA_Build.Locked(this)) return false;
+		return super.IsTakeable();
 	}
 }
-class AGA_Workbench_T3 : AGA_Workbench_T2
+
+// natywne ulepszenie MMG (młotek, tylko pusta skrzynia, bez flagi) – zastąpione naszym
+modded class ActionUpgradeSupplyCrate_1to2
 {
-	override int AGA_Tier() { return 3; }
+	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item) { return false; }
+}
+modded class ActionUpgradeSupplyCrate_2to3
+{
+	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item) { return false; }
 }
 
-// naprawa do stanu idealnego przy workbenchu poziomu 3
+// naprawa do stanu idealnego przy workbenchu tier 2 (wózek narzędziowy)
 modded class ItemBase
 {
 	override bool CanBeRepairedToPristine()
@@ -367,14 +401,11 @@ modded class ItemBase
 		vector pos = GetPosition();
 		EntityAI root = GetHierarchyRoot();
 		if (root) pos = root.GetPosition();
-		return AGA_Build.NearBench(pos, AGA_Workbench_T3, 4);
+		return AGA_Build.NearBench(pos, 4);
 	}
 }
 
-// ==================================================================== metalowe panele
-class AGA_MetalPanel : ItemBase {}
-
-// ==================================================================== akcja ulepszenia (młotek w rękach)
+// ==================================================================== akcja ulepszenia (siekiera w rękach)
 class AGA_ActionUpgradeCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
@@ -391,6 +422,7 @@ class AGA_ActionUpgrade : ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_ASSEMBLE;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 		m_Text = "Upgrade";
 	}
 
@@ -402,7 +434,7 @@ class AGA_ActionUpgrade : ActionContinuousBase
 
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
 	{
-		if (!item || !item.IsKindOf("Hammer") || !target) return false;
+		if (!item || !target || player.IsPlacingLocal()) return false;
 		EntityAI e = EntityAI.Cast(target.GetObject());
 		if (!e || e.GetHierarchyParent()) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);
@@ -414,14 +446,11 @@ class AGA_ActionUpgrade : ActionContinuousBase
 			AGA_Territory.Msg("This upgrade requires a level " + s.Flag.ToString() + " flag pole.");
 			return false;
 		}
-		if (!GetGame().IsDedicatedServer())
+		string miss = AGA_Build.Missing(e, s);
+		if (miss != "")
 		{
-			string miss = AGA_Build.Missing(player, s);
-			if (miss != "")
-			{
-				AGA_Territory.Msg("Upgrade needs: " + miss + " (in your inventory).");
-				return false;
-			}
+			AGA_Territory.Msg("Put into the upgrade slots: " + miss + ".");
+			return false;
 		}
 		m_Text = "Upgrade to " + GetGame().ConfigGetTextOut("CfgVehicles " + s.To + " displayName");
 		return true;
@@ -431,11 +460,11 @@ class AGA_ActionUpgrade : ActionContinuousBase
 	{
 		EntityAI e = EntityAI.Cast(action_data.m_Target.GetObject());
 		AGA_Build.Upgrade(action_data.m_Player, e);
-		MiscGameplayFunctions.DealAbsoluteDmg(action_data.m_MainItem, 2);
+		MiscGameplayFunctions.DealAbsoluteDmg(action_data.m_MainItem, 4);
 	}
 }
 
-modded class Hammer
+modded class Hatchet
 {
 	override void SetActions()
 	{
@@ -478,61 +507,25 @@ class AGA_RecipeSimple extends RecipeBase
 		m_ResultSetHealth[0] = -1;
 		m_ResultInheritsHealth[0] = -1;
 		m_ResultInheritsColor[0] = -1;
-		m_ResultToInventory[0] = -1;
+		m_ResultToInventory[0] = -2;
 		m_ResultUseSoftSkills[0] = false;
 		m_ResultReplacesIngredient[0] = -1;
 	}
 }
 
-// meble bazy: tylko we własnym terytorium
-class AGA_RecipeBaseItem extends AGA_RecipeSimple
+// gun rack bez półproduktu "gun rack planks"
+class AGA_CraftGunRack extends AGA_RecipeSimple
 {
-	override bool CanDo(ItemBase ingredients[], PlayerBase player)
-	{
-		return AGA_Build.InOwnTerritory(player);
-	}
+	override void Init() { m_Name = "Craft gun rack"; Two("WoodenPlank", 10, "Nail", 30, "mmg_craftable_gun_rack"); }
 }
 
-class AGA_CraftGunRack extends AGA_RecipeBaseItem
-{
-	override void Init() { m_Name = "Craft gun rack"; Two("WoodenPlank", 5, "Nail", 15, "AGA_GunRack_T1"); }
-}
-class AGA_CraftGunWall extends AGA_RecipeBaseItem
-{
-	override void Init() { m_Name = "Craft gun wall"; Two("WoodenPlank", 5, "Nail", 15, "AGA_GunWall_T1"); }
-}
-class AGA_CraftGearStand extends AGA_RecipeBaseItem
-{
-	override void Init() { m_Name = "Craft gear stand"; Two("WoodenPlank", 5, "Nail", 20, "AGA_GearStand_T1"); }
-}
-class AGA_CraftWorkbench extends AGA_RecipeBaseItem
-{
-	override void Init() { m_Name = "Craft workbench"; Two("WoodenPlank", 10, "Nail", 20, "AGA_Workbench_T1"); }
-}
-
-class AGA_CraftMetalPanels extends AGA_RecipeSimple
-{
-	override void Init()
-	{
-		m_Name = "Cut into metal panels";
-		Two("MetalPlate", -1, "Hacksaw", -1, "AGA_MetalPanel");
-		m_IngredientAddQuantity[0] = 0;
-		m_IngredientDestroy[0] = true;
-		m_IngredientAddQuantity[1] = 0;
-		m_IngredientAddHealth[1] = -4;
-		m_ResultSetQuantity[0] = 4;
-	}
-}
-
-class AGA_CraftMetalSheet extends AGA_RecipeSimple
-{
-	override void Init()
-	{
-		m_Name = "Weld into metal sheet";
-		Two("AGA_MetalPanel", 6, "Blowtorch", -1, "MetalPlate");
-		m_IngredientAddQuantity[1] = 0;
-	}
-}
+// receptury MMG spoza budowania ARMA-GEDON – wyłączone
+modded class craft_mmg_craftable_tent_kit { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
+modded class craft_mmg_wall_shelf { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
+modded class craft_mmg_gun_wall_kit_metal { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
+modded class craft_mmg_supplycrate_level1 { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
+modded class craft_mmg_gun_rack_planks { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
+modded class craft_mmg_craftable_gun_rack { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
 
 modded class PluginRecipesManagerBase
 {
@@ -540,7 +533,5 @@ modded class PluginRecipesManagerBase
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new AGA_CraftGunRack);
-		RegisterRecipe(new AGA_CraftMetalPanels);
-		RegisterRecipe(new AGA_CraftMetalSheet);
 	}
 }

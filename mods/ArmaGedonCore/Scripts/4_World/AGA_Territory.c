@@ -283,12 +283,12 @@ class AGA_Territory
 
 	static bool NeedsTerritory(EntityAI item)
 	{
-		return item.IsInherited(FenceKit) || item.IsInherited(WatchtowerKit) || item.IsInherited(WoodenCrate) || item.IsInherited(AGA_StorageBase);
+		return item.IsInherited(FenceKit) || item.IsInherited(WatchtowerKit) || BaseCat(item, true) != "";
 	}
 
 	static bool ZoneLimited(EntityAI item)
 	{
-		return item.IsInherited(TerritoryFlagKit) || item.IsInherited(KitBase) || item.IsInherited(TentBase) || item.IsInherited(WoodenCrate);
+		return item.IsInherited(TerritoryFlagKit) || item.IsInherited(KitBase) || item.IsInherited(TentBase) || BaseCat(item, true) != "";
 	}
 
 	static int CountNear(TerritoryFlag flag, typename t)
@@ -319,12 +319,55 @@ class AGA_Territory
 		return n;
 	}
 
-	static bool AGA_LimitOk(EntityAI item, TerritoryFlag flag, typename kind, int max, string label, out string msg)
+	// kategoria mebla bazy (limity per baza); kits = czy liczyć zestawy do rozstawienia
+	static string BaseCat(EntityAI e, bool kits)
 	{
-		if (!item.IsInherited(kind)) return true;
-		if (CountNear(flag, kind) < max) return true;
-		msg = "Storage limit reached: max " + max.ToString() + " " + label + " per base.";
-		return false;
+		if (!e) return "";
+		if (e.IsKindOf("WoodenCrate") && !e.IsKindOf("AGA_LootCrate")) return "crate";
+		if (e.IsKindOf("mmg_supplycrate_lvl1_base") || e.IsKindOf("mmg_supplycrate_lvl2_base") || e.IsKindOf("mmg_supplycrate_lvl3_base")) return "crate";
+		if (e.IsKindOf("mmg_craftable_gun_rack_base") || e.IsKindOf("mmg_gun_rack_base")) return "rack";
+		if (e.IsKindOf("mmg_gun_wall_base")) return "wall";
+		if (e.IsKindOf("mmg_gear_stand_base")) return "stand";
+		if (e.IsKindOf("mmg_old_table_base") || e.IsKindOf("mmg_toolwagon_base")) return "bench";
+		if (!kits) return "";
+		if (e.IsKindOf("mmg_gun_wall_kit_wooden") || e.IsKindOf("mmg_gun_wall_kit_metal")) return "wall";
+		if (e.IsKindOf("mmg_gear_stand_kit")) return "stand";
+		if (e.IsKindOf("mmg_toolwagon_kit")) return "bench";
+		return "";
+	}
+
+	static int CatMax(string c)
+	{
+		if (c == "crate") return MAX_CRATES;
+		if (c == "rack") return 2;
+		if (c == "wall") return 1;
+		if (c == "stand") return 2;
+		if (c == "bench") return 1;
+		return 99;
+	}
+
+	static string CatLabel(string c)
+	{
+		if (c == "crate") return "crates";
+		if (c == "rack") return "gun racks";
+		if (c == "wall") return "gun wall";
+		if (c == "stand") return "gear stands";
+		if (c == "bench") return "workbench";
+		return c;
+	}
+
+	static int CountCat(TerritoryFlag flag, string c, EntityAI except)
+	{
+		array<Object> objs = new array<Object>;
+		GetGame().GetObjectsAtPosition(flag.GetPosition(), RADIUS, objs, null);
+		int n = 0;
+		foreach (Object o : objs)
+		{
+			EntityAI e = EntityAI.Cast(o);
+			if (!e || e == except || e.IsHologram() || e.GetHierarchyParent()) continue;
+			if (BaseCat(e, false) == c) n++;
+		}
+		return n;
 	}
 
 	static bool CanPlace(EntityAI item, Man player, vector pos, out string msg)
@@ -372,15 +415,12 @@ class AGA_Territory
 				msg = "You are not allowed to build in this territory.";
 				return false;
 			}
-			if (item.IsInherited(WoodenCrate) && CountNear(flag, WoodenCrate) >= MAX_CRATES)
+			string cat = BaseCat(item, true);
+			if (cat != "" && CountCat(flag, cat, item) >= CatMax(cat))
 			{
-				msg = "Storage limit reached: max " + MAX_CRATES.ToString() + " crates per base.";
+				msg = "Storage limit reached: max " + CatMax(cat).ToString() + " " + CatLabel(cat) + " per base.";
 				return false;
 			}
-			if (!AGA_LimitOk(item, flag, AGA_GunRackBase, 2, "gun racks", msg)) return false;
-			if (!AGA_LimitOk(item, flag, AGA_GunWallBase, 1, "gun wall", msg)) return false;
-			if (!AGA_LimitOk(item, flag, AGA_GearStandBase, 2, "gear stands", msg)) return false;
-			if (!AGA_LimitOk(item, flag, AGA_WorkbenchBase, 1, "workbench", msg)) return false;
 			if (item.IsInherited(Fireplace) && CountNear(flag, Fireplace) >= MAX_FIREPLACES)
 			{
 				msg = "Limit reached: max " + MAX_FIREPLACES.ToString() + " fireplace per base.";

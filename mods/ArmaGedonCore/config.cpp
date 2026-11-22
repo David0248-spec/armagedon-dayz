@@ -2,10 +2,10 @@ class CfgPatches
 {
 	class ArmaGedonCore
 	{
-		units[] = {"AGA_TimedExplosive", "AGA_MetalPanel", "AGA_GunRack_T1", "AGA_GunWall_T1", "AGA_GearStand_T1", "AGA_Workbench_T1"};
+		units[] = {"AGA_TimedExplosive", "AGA_GearStand2", "AGA_EvWeapons", "AGA_EvArmy", "AGA_EvMedic"};
 		weapons[] = {};
 		requiredVersion = 0.1;
-		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow", "DZ_Weapons_Explosives", "DZ_Gear_Tools", "DZ_Sounds_Effects", "JM_CF_Scripts", "GDZ_Codelock", "DZ_Gear_Camping"};
+		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow", "DZ_Weapons_Explosives", "DZ_Gear_Tools", "DZ_Sounds_Effects", "JM_CF_Scripts", "GDZ_Codelock", "DZ_Gear_Camping", "mmg_storage"};
 	};
 };
 
@@ -883,7 +883,23 @@ class CfgVehicles
 		physLayer = "item_small";
 	};
 	class Wreck_UH1Y;
-	class WoodenCrate;
+	class DeployableContainer_Base;
+	class WoodenCrate: DeployableContainer_Base
+	{
+		aga_tier = 1;
+		attachments[] = {"woodenplank_upgrade_x10","nail_upgrade_x30"};
+		class GUIInventoryAttachmentsProps
+		{
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x30"};
+				icon = "cat_bb_material";
+				view_index = 1;
+			};
+		};
+	};
 	class AGA_SmokeColumn: Wreck_UH1Y
 	{
 		scope = 1;
@@ -898,6 +914,8 @@ class CfgVehicles
 		hiddenSelectionsTextures[] = {};
 		weight = 50000;
 		itemsCargoSize[] = {10,6};
+		attachments[] = {};
+		class GUIInventoryAttachmentsProps {};
 	};
 	class AGA_LootCrateMil: AGA_LootCrate
 	{
@@ -1119,6 +1137,338 @@ class CfgVehicles
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		itemsCargoSize[] = {10,10};
+	};
+	// ================================================================ meble bazy (MMG Base Storage) – tiery
+	class mmg_supplycrate_lvl1_base;
+	class mmg_supplycrate_lvl2_base;
+	class mmg_supplycrate_lvl3_base;
+	class mmg_supplycrate_level1: mmg_supplycrate_lvl1_base
+	{
+		scope = 2;
+		aga_tier = 2;
+		displayName = "Storage Crate (Tier 2)";
+		descriptionShort = "Reinforced storage crate. 100 slots. Put 10 planks and 30 nails into the upgrade slots and use a hatchet to upgrade (level 3 flag pole).";
+	};
+	class mmg_supplycrate_level2: mmg_supplycrate_lvl2_base
+	{
+		scope = 2;
+		aga_tier = 3;
+		displayName = "Storage Crate (Tier 3)";
+		descriptionShort = "Large storage crate. 150 slots. Put 12 planks and 40 nails into the upgrade slots and use a hatchet to upgrade (level 3 flag pole).";
+		itemsCargoSize[] = {10,15};
+		class Cargo
+		{
+			itemsCargoSize[] = {10,15};
+		};
+	};
+	class mmg_supplycrate_level3: mmg_supplycrate_lvl3_base
+	{
+		scope = 2;
+		aga_tier = 4;
+		displayName = "Storage Crate (Tier 4)";
+		descriptionShort = "Fully upgraded storage crate. 200 slots.";
+		itemsCargoSize[] = {10,20};
+		class Cargo
+		{
+			itemsCargoSize[] = {10,20};
+		};
+	};
+
+	class mmg_craftable_gun_rack_base;
+	class mmg_craftable_gun_rack: mmg_craftable_gun_rack_base
+	{
+		scope = 2;
+		aga_tier = 1;
+		displayName = "Gun Rack (Tier 1)";
+		descriptionShort = "Wooden gun rack. Holds 2 rifles. Put 30 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
+		attachments[] = {"Shoulder1","Shoulder2","nail_upgrade_x30","Material_MetalSheets"};
+		itemsCargoSize[] = {0,0};
+		class Cargo
+		{
+			itemsCargoSize[] = {0,0};
+		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Rifle_Storage
+			{
+				name = "Rifles";
+				description = "";
+				attachmentSlots[] = {"Shoulder1","Shoulder2"};
+				icon = "shoulderleft";
+				view_index = 1;
+			};
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"nail_upgrade_x30","Material_MetalSheets"};
+				icon = "cat_bb_material";
+				view_index = 2;
+			};
+		};
+	};
+	class mmg_gun_rack_base;
+	class mmg_gun_rack_tan: mmg_gun_rack_base
+	{
+		scope = 2;
+		aga_tier = 2;
+		displayName = "Gun Rack (Tier 2)";
+		descriptionShort = "Metal gun rack. Holds 4 rifles and 2 ammo boxes. Put 40 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 3 flag pole).";
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","nail_upgrade_x40","Material_MetalSheets"};
+		aga_cargoTypes[] = {"AmmoBox"};
+		aga_cargoLimits[] = {2};
+		itemsCargoSize[] = {10,5};
+		class Cargo
+		{
+			itemsCargoSize[] = {10,5};
+		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Rifle_Storage
+			{
+				name = "Rifles";
+				description = "";
+				attachmentSlots[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+				icon = "shoulderleft";
+				view_index = 1;
+			};
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"nail_upgrade_x40","Material_MetalSheets"};
+				icon = "cat_bb_material";
+				view_index = 2;
+			};
+		};
+	};
+	class mmg_gun_rack_green: mmg_gun_rack_base
+	{
+		scope = 2;
+		aga_tier = 3;
+		displayName = "Gun Rack (Tier 3)";
+		descriptionShort = "Military gun rack. Holds 4 rifles, 3 ammo boxes and 3 pistols.";
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+		aga_cargoTypes[] = {"AmmoBox","Pistol_Base"};
+		aga_cargoLimits[] = {3,3};
+		itemsCargoSize[] = {10,6};
+		class Cargo
+		{
+			itemsCargoSize[] = {10,6};
+		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Rifle_Storage
+			{
+				name = "Rifles";
+				description = "";
+				attachmentSlots[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+				icon = "shoulderleft";
+				view_index = 1;
+			};
+		};
+	};
+
+	class mmg_gun_wall_base;
+	class mmg_gun_wall_wooden: mmg_gun_wall_base
+	{
+		scope = 2;
+		aga_tier = 1;
+		displayName = "Gun Wall (Tier 1)";
+		descriptionShort = "Wooden gun wall. Holds 4 rifles. Put 40 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","nail_upgrade_x40","Material_MetalSheets"};
+		itemsCargoSize[] = {0,0};
+		class Cargo
+		{
+			itemsCargoSize[] = {0,0};
+		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Rifle_Storage
+			{
+				name = "Rifles";
+				description = "";
+				attachmentSlots[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+				icon = "shoulderleft";
+				view_index = 1;
+			};
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"nail_upgrade_x40","Material_MetalSheets"};
+				icon = "cat_bb_material";
+				view_index = 2;
+			};
+		};
+	};
+	class mmg_gun_wall_metal: mmg_gun_wall_base
+	{
+		scope = 2;
+		aga_tier = 2;
+		displayName = "Gun Wall (Tier 2)";
+		descriptionShort = "Metal gun wall. Holds 8 rifles and 8 grenades.";
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","Shoulder5","shoulder6","Shoulder7","Shoulder8"};
+		aga_cargoTypes[] = {"Grenade_Base"};
+		aga_cargoLimits[] = {8};
+		itemsCargoSize[] = {8,4};
+		class Cargo
+		{
+			itemsCargoSize[] = {8,4};
+		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Rifle_Storage_left
+			{
+				name = "Rifles Left Side";
+				description = "";
+				attachmentSlots[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+				icon = "shoulderleft";
+				view_index = 1;
+			};
+			class Rifle_Storage_right
+			{
+				name = "Rifles Right Side";
+				description = "";
+				attachmentSlots[] = {"Shoulder5","shoulder6","Shoulder7","Shoulder8"};
+				icon = "shoulderleft";
+				view_index = 2;
+			};
+		};
+	};
+
+	class mmg_gear_stand_base;
+	class mmg_gear_stand: mmg_gear_stand_base
+	{
+		scope = 2;
+		aga_tier = 1;
+		displayName = "Gear Stand (Tier 1)";
+		descriptionShort = "Holds headgear and a vest. Put 10 planks and 30 nails into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
+		attachments[] = {"Headgear","Vest","woodenplank_upgrade_x10","nail_upgrade_x30"};
+		itemsCargoSize[] = {0,0};
+		class Cargo
+		{
+			itemsCargoSize[] = {0,0};
+		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Slots
+			{
+				name = "Loadout";
+				description = "";
+				attachmentSlots[] = {"Headgear","Vest"};
+				icon = "body";
+				view_index = 1;
+			};
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x30"};
+				icon = "cat_bb_material";
+				view_index = 2;
+			};
+		};
+	};
+	class AGA_GearStand2: mmg_gear_stand
+	{
+		scope = 2;
+		aga_tier = 2;
+		displayName = "Gear Stand (Tier 2)";
+		descriptionShort = "Holds a full outfit.";
+		attachments[] = {"Headgear","Mask","Eyewear","Vest","Body","Gloves","Back","Hips","Legs","Feet"};
+		class GUIInventoryAttachmentsProps
+		{
+			class Slots
+			{
+				name = "Loadout";
+				description = "";
+				attachmentSlots[] = {"Headgear","Mask","Eyewear","Vest","Body","Gloves","Back","Hips","Legs","Feet"};
+				icon = "body";
+				view_index = 1;
+			};
+		};
+	};
+
+	class mmg_old_table_base;
+	class mmg_old_table: mmg_old_table_base
+	{
+		scope = 2;
+		aga_tier = 1;
+		displayName = "Workbench (Tier 1)";
+		descriptionShort = "Tool storage: axe, sledgehammer, pickaxe, shovel, a hammer, nails and planks. Put 30 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
+		attachments[] = {"Axe1","SledgeHammer1","Pickaxe1","Shovel1","nail_upgrade_x30","Material_MetalSheets"};
+		aga_cargoTypes[] = {"Hammer","Nail","WoodenPlank"};
+		aga_cargoLimits[] = {1,2,2};
+		itemsCargoSize[] = {10,5};
+		class Cargo
+		{
+			itemsCargoSize[] = {10,5};
+		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Storage
+			{
+				name = "Tools";
+				description = "";
+				attachmentSlots[] = {"Axe1","SledgeHammer1","Pickaxe1","Shovel1"};
+				icon = "shoulderleft";
+				view_index = 1;
+			};
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"nail_upgrade_x30","Material_MetalSheets"};
+				icon = "cat_bb_material";
+				view_index = 2;
+			};
+		};
+	};
+	class mmg_toolwagon_base;
+	class mmg_toolwagon_red: mmg_toolwagon_base
+	{
+		scope = 2;
+		aga_tier = 2;
+		displayName = "Workbench (Tier 2)";
+		descriptionShort = "Tool wagon. Stores tools, nails and planks. Items repaired next to it can reach pristine condition.";
+		attachments[] = {"nailbox1","hammer1","hatchet1","pliers1","screwdriver1"};
+		aga_cargoTypes[] = {"Shovel","FieldShovel","WoodAxe","FirefighterAxe","Pickaxe","Sledgehammer","HandSaw","Hacksaw","Hatchet","Hammer","Pliers","Screwdriver","Nail","WoodenPlank"};
+		aga_cargoLimits[] = {1,1,1,1,1,1,1,1,1,1,1,1,3,3};
+		itemsCargoSize[] = {10,10};
+		class Cargo
+		{
+			itemsCargoSize[] = {10,10};
+		};
+	};
+
+	// ================================================================ skrzynie eventów (nie do podniesienia)
+	class mmg_weapon_crate_wood;
+	class AGA_EvWeapons: mmg_weapon_crate_wood
+	{
+		scope = 2;
+		aga_fixed = 1;
+		displayName = "Military Weapon Crate";
+		descriptionShort = "A heavy military crate. Open it and search it, it is too heavy to carry.";
+		weight = 90000;
+	};
+	class mmg_army_box_green;
+	class AGA_EvArmy: mmg_army_box_green
+	{
+		scope = 2;
+		aga_fixed = 1;
+		displayName = "Military Supply Box";
+		descriptionShort = "A heavy military box. Open it and search it, it is too heavy to carry.";
+		weight = 90000;
+	};
+	class mmg_army_box_medic;
+	class AGA_EvMedic: mmg_army_box_medic
+	{
+		scope = 2;
+		aga_fixed = 1;
+		displayName = "Medical Supply Box";
+		descriptionShort = "A heavy medical box. Open it and search it, it is too heavy to carry.";
+		weight = 90000;
 	};
 	class MetalPlate;
 	class AGA_MetalPanel: MetalPlate
