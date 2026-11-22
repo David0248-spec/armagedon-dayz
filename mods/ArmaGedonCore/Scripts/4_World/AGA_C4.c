@@ -473,8 +473,7 @@ modded class PluginRecipesManagerBase
 	override void RegisterRecipies()
 	{
 		super.RegisterRecipies();
-		RegisterRecipe(new AGA_CraftTimedExplosive);
-		RegisterRecipe(new AGA_AttachClockToExplosive);
+		// C4 z budzikiem wyłączone – na serwerze zostaje improwizowany ładunek
 	}
 }
 

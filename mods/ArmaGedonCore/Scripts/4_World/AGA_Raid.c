@@ -112,7 +112,7 @@ class AGA_RaidDmg
 		string a = ammo;
 		a.ToLower();
 		if (a.IndexOf("plastic") >= 0) return 2;
-		if (a.IndexOf("improvised") >= 0) return 3;
+		if (a.IndexOf("improvised") >= 0) return 2;
 		if (a.IndexOf("claymore") >= 0) { if (metal) return 15; return 10; }
 		if (a.IndexOf("landmine") >= 0) { if (metal) return 60; return 50; }
 		if (a.IndexOf("grenade") >= 0 || a.IndexOf("rgd") >= 0 || a.IndexOf("m67") >= 0) return 20;

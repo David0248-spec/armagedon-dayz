@@ -174,6 +174,23 @@ class AGA_Territory
 	static const int MAX_CRATES = 5;
 	static const int MAX_FIREPLACES = 1;
 	static const int MAX_VEHICLES = 2;
+	static const int MAX_GATES = 5;
+
+	static int GatesNear(EntityAI near)
+	{
+		TerritoryFlag flag = FlagAt(near.GetPosition());
+		vector c = near.GetPosition();
+		if (flag) c = flag.GetPosition();
+		array<Object> objs = new array<Object>;
+		GetGame().GetObjectsAtPosition(c, RADIUS, objs, null);
+		int n = 0;
+		foreach (Object o : objs)
+		{
+			Fence fc = Fence.Cast(o);
+			if (fc && fc.GetConstruction() && fc.GetConstruction().IsPartConstructed("wall_gate")) n++;
+		}
+		return n;
+	}
 	static const float LIFE_L1 = 432000;   // 5 dni
 	static const float LIFE_L2 = 604800;   // 7 dni
 
@@ -975,6 +992,20 @@ modded class ActionBuildPart
 			AGA_Territory.Msg(msg);
 			return false;
 		}
+		// limit bram na bazę (KarmaKrew: max 5 bram/warstw)
+		ConstructionActionData cad = player.GetConstructionActionData();
+		ConstructionPart part;
+		if (cad) part = cad.GetCurrentBuildPart();
+		if (part && bb.IsInherited(Fence))
+		{
+			string pn = part.GetPartName();
+			pn.ToLower();
+			if (pn.IndexOf("gate") >= 0 && AGA_Territory.GatesNear(bb) >= AGA_Territory.MAX_GATES)
+			{
+				AGA_Territory.Msg("Gate limit reached: max " + AGA_Territory.MAX_GATES.ToString() + " gates per base.");
+				return false;
+			}
+		}
 		return true;
 	}
 }
@@ -987,6 +1018,15 @@ modded class ActionDismantlePart
 		Object o = target.GetObject();
 		if (!o) return true;
 		string msg;
+		// cudza flaga: tylko poziom 1 i tylko narzędziem typu siekiera (KarmaKrew)
+		TerritoryFlag tf = TerritoryFlag.Cast(o);
+		if (tf && tf.AGA_Gid() != 0 && tf.AGA_Gid() != player.AGA_Gid())
+		{
+			bool axe = item && (item.IsKindOf("Hatchet") || item.IsKindOf("WoodAxe") || item.IsKindOf("FirefighterAxe") || item.IsKindOf("Axe"));
+			if (tf.AGA_Level() == 1 && axe) return true;
+			AGA_Territory.Msg("Only a level 1 flag pole of another base can be dismantled, with an axe.");
+			return false;
+		}
 		if (!AGA_Territory.CanDismantleAt(player, o.GetPosition(), msg))
 		{
 			AGA_Territory.Msg(msg);

@@ -54,6 +54,19 @@ def fix_type(m):
         nb1 = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', nb1)
         if nb1 != block: changed += 1
         block = nb1
+    # stałe ilości i dodatkowe tiery (np. słabsze automaty w bazach wojskowych niższych tierów)
+    SETN = cfg.get('set_nominal', {}); TADD = cfg.get('tier_add', {})
+    if name in TADD:
+        for t in TADD[name]:
+            if '<value name="%s"/>' % t not in block and '<value name="%s" />' % t not in block and '<value name=' in block:
+                block = re.sub(r'(<value name="Tier\d"\s*/>)', r'\1<value name="%s"/>' % t, block, count=1)
+                changed += 1
+    if name in SETN:
+        n0, m0 = SETN[name]
+        block = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
+        block = re.sub(r'<min>\d+</min>', '<min>%d</min>' % m0, block)
+        changed += 1
+        return block
     if mult == 1.0: return block
     if mult < 1.0 and int((re.search(r'<nominal>(\d+)</nominal>', block) or [0,'0'])[1]) <= 1: return block
     def scale(tag, b):

@@ -106,8 +106,10 @@
     "WoodenCrate": 604800
   },
   "removed": [
+    "AGA_TimedExplosive",
     "CombinationLock",
-    "CombinationLock4"
+    "CombinationLock4",
+    "Plastic_Explosive"
   ],
   "_opis_gracze": "Mnozniki pod 100-115 graczy (pazdziernik/listopad 2026).",
   "phase1_weapon_mult": 1.0,
@@ -141,5 +143,102 @@
     "CZ527": "Mag_CZ527_5rnd",
     "Ruger1022": "Mag_Ruger1022_15Rnd",
     "Winchester70": ""
+  },
+  "set_nominal": {
+    "AK74": [
+      18,
+      12
+    ],
+    "AKS74U": [
+      16,
+      10
+    ],
+    "M16A2": [
+      12,
+      7
+    ],
+    "AKM": [
+      10,
+      6
+    ],
+    "AK101": [
+      9,
+      5
+    ],
+    "M4A1": [
+      4,
+      2
+    ],
+    "FAL": [
+      6,
+      3
+    ],
+    "SKS": [
+      16,
+      10
+    ],
+    "Mag_AK74_30Rnd": [
+      55,
+      35
+    ],
+    "Mag_STANAG_30Rnd": [
+      28,
+      16
+    ],
+    "Mag_AKM_30Rnd": [
+      18,
+      10
+    ],
+    "Mag_AK101_30Rnd": [
+      14,
+      8
+    ],
+    "Mag_FAL_20Rnd": [
+      10,
+      6
+    ],
+    "Ammo_545x39": [
+      60,
+      35
+    ],
+    "Ammo_556x45": [
+      40,
+      24
+    ],
+    "Ammo_762x39": [
+      60,
+      35
+    ]
+  },
+  "tier_add": {
+    "AKS74U": [
+      "Tier2"
+    ],
+    "AK74": [
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "M16A2": [
+      "Tier2"
+    ],
+    "AK101": [
+      "Tier2"
+    ],
+    "AKM": [
+      "Tier3"
+    ],
+    "Mag_AK74_30Rnd": [
+      "Tier2"
+    ],
+    "Mag_STANAG_30Rnd": [
+      "Tier2"
+    ],
+    "Ammo_545x39": [
+      "Tier2"
+    ],
+    "Ammo_556x45": [
+      "Tier2"
+    ]
   }
 }
