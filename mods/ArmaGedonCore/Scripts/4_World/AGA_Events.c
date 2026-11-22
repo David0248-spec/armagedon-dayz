@@ -979,6 +979,8 @@ class AGA_Events
 		else if (e.Kind == "HUNTER") name = "Oboz mysliwych";
 		else if (e.Kind == "CIVIL") name = "Oboz cywilow";
 		else if (e.Kind == "BUILD") name = "Plac budowy";
+		else if (e.Kind == "MILCONVOY") name = "Kolumna wojskowa";
+		else if (e.Kind == "POLICE") name = "Posterunek policji";
 		return "[EVENT] " + name + " " + n.ToString() + " (T" + e.Tier.ToString() + ")";
 	}
 
