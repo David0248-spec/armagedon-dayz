@@ -61,12 +61,16 @@ def fix_type(m):
         if rr and int(rr.group(1)) > mr:
             block = block.replace(rr.group(0), '<restock>%d</restock>' % mr, 1)
     # stałe ilości i dodatkowe tiery (np. słabsze automaty w bazach wojskowych niższych tierów)
-    SETN = cfg.get('set_nominal', {}); TADD = cfg.get('tier_add', {})
-    if name in TADD:
-        for t in TADD[name]:
-            if '<value name="%s"/>' % t not in block and '<value name="%s" />' % t not in block and '<value name=' in block:
-                block = re.sub(r'(<value name="Tier\d"\s*/>)', r'\1<value name="%s"/>' % t, block, count=1)
-                changed += 1
+    SETN = cfg.get('set_nominal', {}); TSET = cfg.get('tier_set', {})
+    if name in TSET:
+        vals = ''.join('<value name="%s"/>' % t for t in TSET[name])
+        b2 = re.sub(r'\s*<value name="Tier\d"\s*/>', '', block)
+        um = list(re.finditer(r'<usage name="[^"]+"\s*/>', b2))
+        if um:
+            k = um[-1].end()
+            b2 = b2[:k] + '\n\t\t' + vals + b2[k:]
+            if b2 != block: changed += 1
+            block = b2
     if name in SETN:
         n0, m0 = SETN[name]
         block = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)

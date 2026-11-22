@@ -263,37 +263,6 @@
       3
     ]
   },
-  "tier_add": {
-    "AKS74U": [
-      "Tier2"
-    ],
-    "AK74": [
-      "Tier2",
-      "Tier3",
-      "Tier4"
-    ],
-    "M16A2": [
-      "Tier2"
-    ],
-    "AK101": [
-      "Tier2"
-    ],
-    "AKM": [
-      "Tier3"
-    ],
-    "Mag_AK74_30Rnd": [
-      "Tier2"
-    ],
-    "Mag_STANAG_30Rnd": [
-      "Tier2"
-    ],
-    "Ammo_545x39": [
-      "Tier2"
-    ],
-    "Ammo_556x45": [
-      "Tier2"
-    ]
-  },
   "globals": {
     "ZombieMaxCount": "1400",
     "AnimalMaxCount": "260",
@@ -303,5 +272,127 @@
     "LootProxyPlacement": "1",
     "RestartSpawn": "100"
   },
-  "max_restock": 600
+  "max_restock": 600,
+  "tier_set": {
+    "MP5K": [
+      "Tier1",
+      "Tier2"
+    ],
+    "CZ61": [
+      "Tier1",
+      "Tier2"
+    ],
+    "UMP45": [
+      "Tier1",
+      "Tier2",
+      "Tier3"
+    ],
+    "PP19": [
+      "Tier2",
+      "Tier3"
+    ],
+    "Saiga": [
+      "Tier2",
+      "Tier3"
+    ],
+    "SKS": [
+      "Tier2",
+      "Tier3"
+    ],
+    "AKS74U": [
+      "Tier2",
+      "Tier3"
+    ],
+    "AK74": [
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "M16A2": [
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "Vikhr": [
+      "Tier3",
+      "Tier4"
+    ],
+    "AK101": [
+      "Tier3",
+      "Tier4"
+    ],
+    "AKM": [
+      "Tier3",
+      "Tier4"
+    ],
+    "M14": [
+      "Tier3",
+      "Tier4"
+    ],
+    "VSS": [
+      "Tier3",
+      "Tier4"
+    ],
+    "SVD": [
+      "Tier4"
+    ],
+    "ASVAL": [
+      "Tier4"
+    ],
+    "LAR": [
+      "Tier4"
+    ],
+    "SV98": [
+      "Tier4"
+    ],
+    "M249": [
+      "Tier4"
+    ],
+    "Mag_MP5_15Rnd": [
+      "Tier1",
+      "Tier2",
+      "Tier3"
+    ],
+    "Mag_MP5_30Rnd": [
+      "Tier2",
+      "Tier3"
+    ],
+    "Mag_UMP_25Rnd": [
+      "Tier1",
+      "Tier2",
+      "Tier3"
+    ],
+    "Mag_CZ61_20Rnd": [
+      "Tier1",
+      "Tier2"
+    ],
+    "Mag_AK74_30Rnd": [
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "Mag_STANAG_30Rnd": [
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "Mag_AK101_30Rnd": [
+      "Tier3",
+      "Tier4"
+    ],
+    "Mag_AKM_30Rnd": [
+      "Tier3",
+      "Tier4"
+    ],
+    "Ammo_545x39": [
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "Ammo_556x45": [
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ]
+  }
 }
