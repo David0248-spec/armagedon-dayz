@@ -3,12 +3,14 @@
 // Nie rusza: przedmiotów w ekwipunku/pojemnikach, baz, skrzyń, namiotów, beczek, pojazdów, pułapek.
 class AGA_LootReset
 {
+	static bool s_Pending;
+
 	static void Check()
 	{
 		string f = "$profile:ArmaGedonCore/loot_reset.flag";
 		if (!FileExist(f)) return;
 		DeleteFile(f);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Run, 60000, false);
+		s_Pending = true;
 	}
 
 	static bool Keep(ItemBase ib)
@@ -25,6 +27,8 @@ class AGA_LootReset
 
 	static void Run()
 	{
+		if (!s_Pending) return;
+		s_Pending = false;
 		array<Object> objs = new array<Object>;
 		GetGame().GetObjectsAtPosition3D(Vector(7680, 0, 7680), 11000, objs, null);
 		int n = 0;

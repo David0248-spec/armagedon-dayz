@@ -742,6 +742,7 @@ class AGA_Territory
 	// przypisanie grup do flag po starcie (po pozycji) + porządki
 	static void Restore()
 	{
+		AGA_LootReset.Run();
 		array<TerritoryFlag> fl5 = Flags();
 		for (int fi5 = 0; fi5 < fl5.Count(); fi5++)
 		{
