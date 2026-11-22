@@ -10,7 +10,8 @@ const int AGA_RPC_INVIS_SYNC  = 0x41470108; // serwer -> wszyscy: lista niewidzi
 const int AGA_RPC_SHOT        = 0x41470109; // serwer -> admini: strzał (skąd, dokąd, kto)
 const int AGA_RPC_LOGS        = 0x4147010A; // klient -> serwer: prośba o logi
 const int AGA_RPC_LOGS_RES    = 0x4147010B; // serwer -> klient: logi
-const int AGA_RPC_FREEZE      = 0x4147010C; // serwer -> gracz: zamrożenie (bool)
+const int AGA_RPC_FREEZE      = 0x4147010C;
+const int AGA_RPC_CAM = 0x41470110;    // gracz -> serwer: raport kamery
 
 // typy akcji
 const int AGA_ACT_TP_POS      = 1;

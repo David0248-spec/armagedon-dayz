@@ -23,6 +23,13 @@ modded class PlayerBase
 				case AGA_RPC_LOGS:
 					AGA_Server.Get().OnLogs(this, sender);
 					break;
+				case AGA_RPC_CAM:
+				{
+					float camDist;
+					if (ctx.Read(camDist) && !AGA_Server.Get().IsStaff(sender))
+						AGA_Server.Get().OnCamReport(sender, camDist);
+					break;
+				}
 				case AGA_RPC_CLOG:
 				{
 					string msg;

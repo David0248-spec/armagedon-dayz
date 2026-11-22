@@ -598,7 +598,7 @@ class AGA_Events
 		if (Chance(0.4)) GiveFrom(c3, extra, 1);
 		DropFrom(e, ground, 6, -9, 9, -55, -18);
 		// tylko wojskowe zombie + szansa na opancerzonych
-		array<string> mil = {"ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_PatrolNormal_PautRev", "ZmbM_usSoldier_normal_Woodland"};
+		array<string> mil = {"AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_PatrolNormal_PautRev", "ZmbM_usSoldier_normal_Woodland"};
 		Zeds(e, mil, 6 + e.Tier, 12, 45);
 		if (Chance(0.6)) PlateZed(e, 15, 40);
 		if (Chance(0.25)) PlateZed(e, 15, 40);
@@ -627,7 +627,7 @@ class AGA_Events
 			if (Chance(0.8)) GiveGun(c, mg2);
 			GiveFrom(c, mgear, 2);
 			DropFrom(e, mgear, 4, -8, 8, -8, 8);
-			array<string> mz = {"ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland"};
+			array<string> mz = {"AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland"};
 			Zeds(e, mz, 3 + e.Tier, 8, 30);
 			if (e.Tier >= 3 && Chance(0.3)) PlateZed(e, 10, 25);
 		}

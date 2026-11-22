@@ -3,7 +3,7 @@
 import json, os, re, shutil, sys
 mis = os.path.expanduser('~/dayz/mpmissions/dayzOffline.chernarusplus')
 cfg = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ce', 'economy.json')))
-# --- fazy wipe'a (jak KarmaKrew): 1 = tyg. 1-2, 2 = tyg. 3-4, 3 = tyg. 5+ ---
+# --- fazy wipe'a: 1 = tyg. 1-2, 2 = tyg. 3-4, 3 = tyg. 5+ ---
 import datetime
 _days = (datetime.date.today() - datetime.date.fromisoformat(cfg.get('wipe_start', '2026-11-22'))).days
 PHASE = 1 if _days < 14 else (2 if _days < 28 else 3)

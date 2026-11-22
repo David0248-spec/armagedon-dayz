@@ -198,8 +198,48 @@ class AGA_Server
 		return "?";
 	}
 
+	protected ref array<string> m_VPPSuper;
+
+	// admin z naszej listy albo superadmin VPP
+	bool IsStaff(PlayerIdentity id)
+	{
+		if (!id) return false;
+		if (IsAdmin(id)) return true;
+		if (!m_VPPSuper)
+		{
+			m_VPPSuper = new array<string>;
+			FileHandle fh = OpenFile("$profile:VPPAdminTools/Permissions/SuperAdmins/SuperAdmins.txt", FileMode.READ);
+			if (fh)
+			{
+				string line;
+				while (FGets(fh, line) >= 0)
+				{
+					line.Trim();
+					if (line != "") m_VPPSuper.Insert(line);
+				}
+				CloseFile(fh);
+			}
+		}
+		return m_VPPSuper.Find(id.GetPlainId()) >= 0;
+	}
+
+	// kamera gracza daleko od postaci (freecam / exploit kamery)
+	void OnCamReport(PlayerIdentity id, float dist)
+	{
+		string msg = "[ANTYCHEAT] kamera " + Math.Round(dist).ToString() + " m od postaci: " + id.GetName() + " (" + id.GetPlainId() + ")";
+		Log(msg);
+		array<Man> players = new array<Man>;
+		GetGame().GetPlayers(players);
+		foreach (Man m : players)
+		{
+			if (m && m.GetIdentity() && IsStaff(m.GetIdentity()))
+				NotificationSystem.SendNotificationToPlayerIdentityExtended(m.GetIdentity(), 8, "ANTYCHEAT", msg, "set:dayz_gui image:icon_info");
+		}
+	}
+
 	void RaidTick()
 	{
+		AGA_Stamina.Save();
 		AGA_Raid.Tick();
 		AfkTick();
 		AGA_Events.Tick();

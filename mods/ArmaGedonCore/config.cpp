@@ -40,7 +40,7 @@ class CfgMods
 	};
 };
 
-// --- balans broni/amunicji/mapy (wartości jak KarmaKrew) ---
+// --- balans broni, amunicji i mapy ARMA-GEDON ---
 class Mode_Safe;
 class Mode_Single;
 class Mode_SemiAuto;
@@ -750,6 +750,21 @@ class CfgWorlds
 	};
 class CfgVehicles
 {
+	class ZmbM_eastSoldier_normal_Navy;
+	class DamageSystem;
+	class AG_ZmbM_Spetsnaz: ZmbM_eastSoldier_normal_Navy
+	{
+		class DamageSystem: DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints = 230;
+				};
+			};
+		};
+	};
 };
 	class CombinationLock;
 	class CodeLock: CombinationLock
