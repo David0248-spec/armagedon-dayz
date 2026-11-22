@@ -24,6 +24,8 @@ while read -r id name; do
     d=$(dirname "$f"); b=$(basename "$f"); l=$(echo "$b" | tr 'A-Z' 'a-z')
     [ "$b" != "$l" ] && mv -f "$f" "$d/$l"
   done
+  # mody odwołujące się do "Anims" wielką literą (MMG)
+  [ -d "$DAYZ/$name/anims" ] && ln -sfn anims "$DAYZ/$name/Anims"
   cp -f "$DAYZ/$name"/keys/*.bikey $DAYZ/keys/ 2>/dev/null || true
   echo "OK: $name"
 done < $REPO/server/mods.txt
