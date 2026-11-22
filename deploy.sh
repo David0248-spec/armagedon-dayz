@@ -9,6 +9,7 @@ fi
 git reset -q --hard origin/main
 [ -d ~/dayz/profiles/ArmaGedonAdmin ] && [ ! -d ~/dayz/profiles/ArmaGedonCore ] && mv ~/dayz/profiles/ArmaGedonAdmin ~/dayz/profiles/ArmaGedonCore || true
 rm -rf ~/dayz/@ArmaGedonAdmin ~/dayz/@ArmaGedonCore && cp -r dist/@ArmaGedonCore ~/dayz/
+bash server/weapons_pack.sh || echo 'UWAGA: paczka broni nie dodana'
 mkdir -p ~/dayz/keys && cp -f dist/keys/*.bikey ~/dayz/keys/ 2>/dev/null || true
 bash server/setup_ce.sh || true
 # VPP Admin Tools: superadmini
@@ -26,7 +27,7 @@ grep -q '^serverTimeAcceleration' ~/dayz/serverDZ.cfg && sed -i 's/^serverTimeAc
 grep -q '^vppDisablePassword' ~/dayz/serverDZ.cfg || echo 'vppDisablePassword = 1;' >> ~/dayz/serverDZ.cfg
 tmux new-session -d -s dayz "cd ~/dayz && while true; do bash ~/armagedon-dayz/server/setup_ce.sh >/tmp/setup_ce.log 2>&1; ./DayZServer -config=serverDZ.cfg -port=2302 -profiles=profiles '-mod=$MODS' -dologs -adminlog -netlog -freezecheck; echo RESTART; sleep 10; done"
 # paczka Workshop: wysyłana tylko gdy zmienił się mod
-SUM=$(sha1sum dist/@ArmaGedonCore/addons/*.pbo | sha1sum | cut -c1-40)
+SUM=$(sha1sum ~/dayz/@ArmaGedonCore/addons/*.pbo | sha1sum | cut -c1-40)
 if [ "$SUM" != "$(cat ~/.ag_ws_sum 2>/dev/null)" ]; then
   bash server/publish_workshop.sh > ~/ws_publish.log 2>&1 && echo "$SUM" > ~/.ag_ws_sum && echo "WORKSHOP: zaktualizowano paczke Arma-Gedon"
 fi

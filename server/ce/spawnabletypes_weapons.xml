@@ -1,0 +1,181 @@
+	<type name="AEK971">
+		<attachments chance="0.50">
+			<item name="Mag_AK74_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="AN94">
+		<attachments chance="0.50">
+			<item name="Mag_AK74_45Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="AN94_Suppressed">
+		<attachments chance="0.50">
+			<item name="Mag_AK74_45Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="APS">
+		<attachments chance="0.50">
+			<item name="Mag_APS_20Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="AWM">
+		<attachments chance="0.50">
+			<item name="Mag_AWM_5rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="G36">
+		<attachments chance="1.00">
+			<item name="G36Optic" chance="1.00"/>
+		</attachments>
+		<attachments chance="0.50">
+			<item name="Mag_G36_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="G36C">
+		<attachments chance="0.50">
+			<item name="Mag_G36_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="Glock18C">
+		<attachments chance="0.50">
+			<item name="Mag_Glock_15Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="JD_Groza_762">
+		<attachments chance="0.50">
+			<item name="Mag_AKM_Palm30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="KK_ADAR">
+		<attachments chance="0.50">
+			<item name="Mag_STANAG_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="KK_FN_SPR_A3G">
+		<attachments chance="0.50">
+			<item name="Mag_fn_spr_a3g_5rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="KK_M76_Zastava">
+		<attachments chance="0.50">
+			<item name="Mag_M76_10rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="KK_PP19">
+		<attachments chance="0.50">
+			<item name="Mag_PP19_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="KK_RPK_762x39">
+		<attachments chance="0.50">
+			<item name="Mag_AKM_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="KK_SR2m">
+		<attachments chance="0.50">
+			<item name="Mag_SR2_30rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="Kedr">
+		<attachments chance="0.50">
+			<item name="Mag_Kedr_20Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="LugerP08">
+		<attachments chance="0.50">
+			<item name="Mag_LugerP08_8Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="M16A4">
+		<attachments chance="0.50">
+			<item name="Mag_STANAG_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="M92">
+		<attachments chance="0.50">
+			<item name="Mag_M92_15Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="MK12Mod1">
+		<attachments chance="0.50">
+			<item name="Mag_MK12Mod1_20Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="MakarovPM">
+		<attachments chance="0.50">
+			<item name="Mag_MakarovPM_8Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="PB">
+		<attachments chance="0.50">
+			<item name="Mag_PB_8Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="PPSH41">
+		<attachments chance="0.50">
+			<item name="Mag_PPSH41_35Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="RPK74">
+		<attachments chance="0.50">
+			<item name="Mag_AK74_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="SA58">
+		<attachments chance="0.50">
+			<item name="Mag_AKM_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="SA58P">
+		<attachments chance="0.50">
+			<item name="Mag_AKM_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="SVT40">
+		<attachments chance="0.50">
+			<item name="Mag_SVT40_10Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="SV_98">
+		<attachments chance="1.00">
+			<item name="SV98Optic" chance="1.00"/>
+		</attachments>
+		<attachments chance="0.50">
+			<item name="Mag_SV_98_10Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="Saiga9">
+		<attachments chance="0.50">
+			<item name="Mag_PP19_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="TT_33">
+		<attachments chance="0.50">
+			<item name="Mag_TT_33_8Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="VBB_FAMAS">
+		<attachments chance="0.50">
+			<item name="Mag_FAMAS_25Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="VEPR_SOK94">
+		<attachments chance="0.50">
+			<item name="Mag_VEPR_SOK94_10rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="Vepr_KM">
+		<attachments chance="0.50">
+			<item name="Mag_AKM_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="sz_AKS74UN">
+		<attachments chance="0.50">
+			<item name="Mag_AK74_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>
+	<type name="sz_AKS74UN_Tactical">
+		<attachments chance="0.50">
+			<item name="Mag_AK74_30Rnd" chance="1.00"/>
+		</attachments>
+	</type>

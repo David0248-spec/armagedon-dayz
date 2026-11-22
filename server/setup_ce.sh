@@ -16,6 +16,7 @@ cp -f ~/dayz/@*/keys/*.bikey ~/dayz/keys/ 2>/dev/null || true
 python3 ~/armagedon-dayz/server/mod_types.py
 cp -f ~/armagedon-dayz/server/ce/types_helis.xml $CE/types_helis.xml
 cp -f ~/armagedon-dayz/server/ce/types_aga.xml $CE/types_aga.xml
+cp -f ~/armagedon-dayz/server/ce/types_weapons.xml $CE/types_weapons.xml
 # wpis w cfgeconomycore.xml (odtwarzany za każdym razem)
 python3 - "$MIS" <<'PY'
 import sys, os, re, glob
@@ -39,13 +40,13 @@ def patch(fname, block_file, closing):
     p = os.path.join(mis, fname)
     s = open(p).read()
     s = re.sub(r'\s*<!-- ARMAGEDON-START -->.*?<!-- ARMAGEDON-END -->', '', s, flags=re.S)
-    block = open(os.path.join(src, block_file)).read()
+    block = ''.join(open(os.path.join(src, b)).read() for b in block_file.split('+'))
     s = s.replace(closing, '\t<!-- ARMAGEDON-START -->\n' + block + '\t<!-- ARMAGEDON-END -->\n' + closing)
     open(p, 'w').write(s)
     print('patched', fname)
 patch('db/events.xml', 'events_helis.xml', '</events>')
 patch('cfgeventspawns.xml', 'eventspawns_helis.xml', '</eventposdef>')
-patch('cfgspawnabletypes.xml', 'spawnabletypes_helis.xml', '</spawnabletypes>')
+patch('cfgspawnabletypes.xml', 'spawnabletypes_helis.xml+spawnabletypes_weapons.xml', '</spawnabletypes>')
 # typy helikopterów do listy plików CE
 p = os.path.join(mis, 'cfgeconomycore.xml')
 s = open(p).read()

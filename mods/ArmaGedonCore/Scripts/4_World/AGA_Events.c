@@ -651,7 +651,7 @@ class AGA_Events
 		if (Chance(0.5)) OnTop(s3, top.GetRandomElement());
 		// skrzynie zaopatrzeniowe (do przeszukania, nie do zabrania)
 		array<string> guns = {"M4A1|Mag_STANAG_30Rnd", "AKM|Mag_AKM_30Rnd", "AK74|Mag_AK74_30Rnd", "FAL|Mag_FAL_20Rnd", "AK101|Mag_AK101_30Rnd", "SKS|Ammo_762x39"};
-		array<string> rare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd", "M249|Mag_STANAG_60Rnd"};
+		array<string> rare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd", "M249|Mag_STANAG_60Rnd", "M24|Ammo_308Win", "G36|Mag_G36_30Rnd", "AEK971|Mag_AK74_30Rnd", "AN94|Mag_AK74_45Rnd", "KK_M76_Zastava|Mag_M76_10rnd", "MK12Mod1|Mag_MK12Mod1_20Rnd", "AWM|Mag_AWM_5rnd", "RPK74|Mag_AK74_30Rnd", "KK_FN_SPR_A3G|Mag_fn_spr_a3g_5rnd"};
 		array<string> gear = {"PlateCarrierVest", "BallisticHelmet_Green", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "AssaultBag_Green", "TacticalGloves_Green", "MilitaryBelt", "TTSKOJacket_Camo", "TTSKOPants", "SmershVest", "UKAssVest_Olive", "Mich2001Helmet", "DAC_TacticalShirt_Green", "DAC_TacticalPants_Green", "DAC_FieldJacket_Green", "DAC_CargoPants_Green", "DAC_BallisticHelmet_Multitone", "DAC_PlateCarrierVest_Multitone", "DAC_TacticalBagCoyoteBag_Multitone", "ColdWarJacket_Splinter", "ColdWarPants_Strichtarn", "ColdWarTop_DPM"};
 		array<string> extra = {"ACOGOptic", "PSO1Optic", "KobraOptic", "M68Optic", "M4_Suppressor", "AK_Suppressor", "NVGoggles", "M67Grenade", "RGD5Grenade", "Mag_STANAG_60Rnd", "AD_ACOG", "AD_RMR", "AD_MRS", "AD_PVS4"};
 		array<string> ground = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_AK74_30Rnd", "Ammo_556x45", "Ammo_762x39", "Ammo_545x39", "Ammo_308Win", "BallisticHelmet_Green", "MilitaryBoots_Black", "BandageDressing", "Canteen", "M67Grenade", "TTSKOPants", "GorkaHelmet"};
@@ -698,7 +698,7 @@ class AGA_Events
 			GiveGun(c, mg2);
 			if (Chance(0.35)) Give(c, "M67Grenade");
 			if (Chance(0.08)) Give(c, "NVGoggles");
-			array<string> mrare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd"};
+			array<string> mrare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd", "M24|Ammo_308Win", "G36|Mag_G36_30Rnd", "G36C|Mag_G36_30Rnd", "AN94|Mag_AK74_45Rnd", "M16A4|Mag_STANAG_30Rnd", "KK_SR2m|Mag_SR2_30rnd"};
 			if (e.Variant == "MIL" && Chance(0.25)) GiveGun(c, mrare);
 			GiveFrom(c, mgear, 2);
 			DropFrom(e, mgear, 4, -8, 8, -8, 8);
@@ -762,7 +762,7 @@ class AGA_Events
 		GiveFrom(c2, basic, 3);
 		DropFrom(e, basic, 4, -3, 5, -18, 14);
 		if (Chance(0.2)) Give(c2, nbc.GetRandomElement());
-		array<string> police = {"MP5K|Mag_MP5_30Rnd", "Mp133Shotgun|Ammo_12gaPellets", "FNX45|Mag_FNX45_15Rnd", "Glock19|Mag_Glock_15Rnd"};
+		array<string> police = {"MP5K|Mag_MP5_30Rnd", "Mp133Shotgun|Ammo_12gaPellets", "FNX45|Mag_FNX45_15Rnd", "Glock19|Mag_Glock_15Rnd", "KS23|Ammo_4gaFlechette", "Kedr|Mag_Kedr_20Rnd", "M1014|Ammo_12gaPellets", "KK_PP19|Mag_PP19_30Rnd"};
 		if (Chance(0.4)) GiveGun(c1, police);
 		if (Chance(0.1)) Give(c2, "Grenade_ChemGas");
 		array<string> doc = {"ZmbM_DoctorFat", "ZmbF_NurseFat", "ZmbF_DoctorSkinny", "ZmbM_ParamedicNormal_Red", "ZmbM_ParamedicNormal_Blue", "ZmbF_ParamedicNormal_Red", "ZmbF_ParamedicNormal_Blue"};

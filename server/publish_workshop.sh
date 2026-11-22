@@ -5,7 +5,9 @@ REPO=~/armagedon-dayz
 STAGE=~/ag_workshop
 IDFILE=~/.ag_workshop_id
 rm -rf $STAGE && mkdir -p $STAGE/addons
-cp $REPO/dist/@ArmaGedonCore/addons/*.pbo $STAGE/addons/
+cp ~/dayz/@ArmaGedonCore/addons/*.pbo $STAGE/addons/
+cp ~/dayz/@ArmaGedonCore/addons/*.bisign $STAGE/addons/ 2>/dev/null || true
+mkdir -p $STAGE/keys && cp ~/dayz/@ArmaGedonCore/keys/*.bikey $STAGE/keys/ 2>/dev/null || true
 cp $REPO/workshop/mod.cpp $STAGE/
 ID=0
 [ -f $IDFILE ] && ID=$(cat $IDFILE)

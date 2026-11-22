@@ -1,5 +1,8 @@
 class CfgPatches
 {
+	// zgodnosc paczki broni (zgoda autorow) - zastepcze nazwy wymaganych dodatkow
+	class KK_Sounds { units[] = {}; weapons[] = {}; requiredVersion = 0.1; requiredAddons[] = {"DZ_Data"}; };
+	class KK_Ammo_Balancer { units[] = {}; weapons[] = {}; requiredVersion = 0.1; requiredAddons[] = {"DZ_Data"}; };
 	class ArmaGedonCore
 	{
 		units[] = {"AGA_TimedExplosive", "AGA_GearStand2", "AGA_EvWeapons", "AGA_EvArmy", "AGA_EvMedic"};
