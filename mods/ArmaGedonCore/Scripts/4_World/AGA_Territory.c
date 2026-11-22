@@ -796,6 +796,7 @@ class AGA_Territory
 
 	static void Init()
 	{
+		if (GetGame().IsServer()) AGA_LootReset.Check();
 		Db();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Restore, 15000, false);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Cleanup, 600000, false);
