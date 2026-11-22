@@ -82,6 +82,9 @@
     "Watchtower": 604800,
     "WoodenCrate": 604800
   },
-  "removed": [],
+  "removed": [
+    "CombinationLock",
+    "CombinationLock4"
+  ],
   "_opis_gracze": "Mnozniki pod 100-115 graczy (pazdziernik/listopad 2026)."
 }

@@ -14,7 +14,11 @@ class AGA_LootCrate extends WoodenCrate
 	override bool CanPutIntoHands(EntityAI parent) { return false; }
 	override bool CanBeSplit() { return false; }
 	override bool IsHeavyBehaviour() { return true; }
+	override bool IsTakeable() { return false; }
+	override bool IsDeployable() { return false; }
 }
+class AGA_LootCrateMil extends AGA_LootCrate {}
+class AGA_LootCrateMed extends AGA_LootCrate {}
 
 class AGA_Event
 {
@@ -303,6 +307,8 @@ class AGA_Events
 			}
 			if (kind == "HUNTER")
 			{
+				if (!s.Contains("conifer") && !s.Contains("broadleaf") && !s.Contains("forest")) continue;
+				if (NearRoad(q, 90)) continue;
 				if (!Flat(q, 9, 0.6) || !Flat(q, 5, 0.3)) continue;
 				Scan(q, 45, trees, nt, nb);
 				if (nt < 8 || trees < 14) continue;
@@ -312,6 +318,25 @@ class AGA_Events
 			}
 		}
 		return vector.Zero;
+	}
+
+	static bool NearRoad(vector p, float r)
+	{
+		foreach (vector v : s_Roads)
+		{
+			float dx = v[0] - p[0];
+			float dz = v[2] - p[2];
+			if (dx * dx + dz * dz < r * r) return true;
+		}
+		for (int a = 0; a < 8; a++)
+		{
+			float ang = a * 45 * Math.DEG2RAD;
+			float x = p[0] + Math.Sin(ang) * 20;
+			float z = p[2] + Math.Cos(ang) * 20;
+			string t = SurfAt(x, z);
+			if (t.Contains("concrete") || t.Contains("gravel") || t.Contains("asphalt")) return true;
+		}
+		return false;
 	}
 
 	// ---------------- osadzanie obiektów ----------------
@@ -425,9 +450,18 @@ class AGA_Events
 		return GetGame().ConfigIsExisting("CfgVehicles " + c) || GetGame().ConfigIsExisting("CfgWeapons " + c) || GetGame().ConfigIsExisting("CfgMagazines " + c);
 	}
 
+	static string CrateClass(AGA_Event e)
+	{
+		if (e.Kind == "PLANE") return "AGA_LootCrateMil";
+		if (e.Kind == "CONVOY") return "AGA_LootCrateMed";
+		if (e.Kind == "HELI" && e.Variant == "MIL") return "AGA_LootCrateMil";
+		if (e.Kind == "HELI" && e.Variant == "MED") return "AGA_LootCrateMed";
+		return "AGA_LootCrate";
+	}
+
 	static EntityAI LootCrate(AGA_Event e, float right, float fwd)
 	{
-		EntityAI c = EntityAI.Cast(Put(e, "AGA_LootCrate", right, fwd, Math.RandomFloat(-20, 20), 0));
+		EntityAI c = EntityAI.Cast(Put(e, CrateClass(e), right, fwd, Math.RandomFloat(-20, 20), 0));
 		if (c) e.Crates.Insert(c);
 		return c;
 	}
@@ -444,14 +478,39 @@ class AGA_Events
 		for (int i = 0; i < n; i++) Give(c, pool.GetRandomElement());
 	}
 
-	// broń + pasujący magazynek/amunicja ("Bron|Mag")
+	// broń leży na ziemi obok skrzyni (z kolbą/łożem z presetów CE), magazynki/amunicja w skrzyni ("Bron|Mag")
 	static void GiveGun(EntityAI c, array<string> pool)
 	{
 		string pick = pool.GetRandomElement();
 		array<string> parts = new array<string>;
 		pick.Split("|", parts);
-		Give(c, parts[0]);
+		if (c)
+		{
+			vector ori = c.GetOrientation();
+			vector side = Vector(ori[0] + 90, 0, 0).AnglesToVector();
+			vector p = c.GetPosition() + side * Math.RandomFloat(1.1, 1.6);
+			DropAt(p, parts[0]);
+		}
 		if (parts.Count() > 1) { Give(c, parts[1]); Give(c, parts[1]); }
+	}
+
+	// przedmiot położony na ziemi (bez lewitowania); broń dostaje dodatki z presetów
+	static EntityAI DropAt(vector p, string cls)
+	{
+		if (!Valid(cls)) return null;
+		p[1] = GetGame().SurfaceY(p[0], p[2]);
+		EntityAI it = EntityAI.Cast(GetGame().CreateObjectEx(cls, p, ECE_PLACE_ON_SURFACE | ECE_EQUIP_ATTACHMENTS));
+		if (!it) return null;
+		it.SetOrientation(Vector(Math.RandomFloat(0, 360), 0, 0));
+		it.PlaceOnSurface();
+		vector mm[2];
+		it.ClippingInfo(mm);
+		vector lo = mm[0];
+		vector q = it.GetPosition();
+		q[1] = GetGame().SurfaceY(q[0], q[2]) - lo[1] + 0.01;
+		it.SetPosition(q);
+		it.SetLifetime(5400);
+		return it;
 	}
 
 	static void DropFrom(AGA_Event e, array<string> pool, int n, float r0, float r1, float f0, float f1)
@@ -484,11 +543,7 @@ class AGA_Events
 	// przedmiot na ziemi – fizyka sama go położy
 	static void Drop(AGA_Event e, string cls, float right, float fwd)
 	{
-		if (!Valid(cls)) return;
-		vector p = Off(e, right, fwd);
-		p[1] = p[1] + 0.25;
-		EntityAI it = EntityAI.Cast(GetGame().CreateObjectEx(cls, p, ECE_CREATEPHYSICS));
-		if (it) it.SetLifetime(5400);
+		DropAt(Off(e, right, fwd), cls);
 	}
 
 	// ---------------- zombie ----------------
@@ -696,20 +751,25 @@ class AGA_Events
 	// obóz myśliwych na leśnej polanie
 	static void BuildHunter(AGA_Event e)
 	{
+		// polana w lesie: ognisko z siedziskami, namiot maskujący, stół, stojak na broń, ambona z paśnikiem
 		Fire(e, 0, 0);
-		Put(e, "StaticObj_Mil_CamoNet_Side_east", 4.5, 2, -90, 0);
+		Put(e, "StaticObj_Misc_Timbers_Log1", -2.2, 0.4, 80, 0.12);
+		Put(e, "StaticObj_Misc_Timbers_Log2", 2.3, -0.6, 100, 0.12);
+		Put(e, "StaticObj_Misc_Chair_Camp1", 0.6, 2.4, 190, 0.02);
+		Put(e, "StaticObj_Mil_CamoNet_Tent2", -6, 5, 15, 0);
+		Object bx = Put(e, "StaticObj_Misc_Table_Camp", 3.8, 3, -20, 0.02);
+		Put(e, "StaticObj_Misc_Chair_Camp2", 3.6, 1.6, 10, 0.02);
+		Put(e, "StaticObj_Misc_Gunrack", -3.5, 7.5, 20, 0.02);
 		Put(e, "StaticObj_Misc_WoodPile_Forest1", -1, -4.5, 10, 0.05);
-		Put(e, "Land_Misc_FireBarrel_Green", 2.5, -3, 0, 0.05);
-		Object bx = Put(e, "StaticObj_Misc_BoxWooden", -4, 2, 30, 0.02);
-		Put(e, "StaticObj_Misc_Pallet", 3.5, 4.5, 15, 0.02);
-		Put(e, "StaticObj_Misc_WoodPile_Forest2", -5.5, -1.5, 75, 0.05);
-		Put(e, "StaticObj_Mil_CamoNet_Side_east", -5, 5, 180, 0);
+		Put(e, "StaticObj_Misc_FeedRack", 9, -6, 40, 0.05);
+		Put(e, "StaticObj_Forest_DeerSkeleton_Full", 6.5, -3.5, 120, 0.02);
+		Put(e, "StaticObj_Forest_DeerSkeleton_Skull", 4.6, 4.4, 60, 0);
 		array<string> guns = {"Mosin9130", "CZ527", "Izh18", "Winchester70", "Izh43Shotgun"};
 		array<string> ammo = {"Ammo_762x54", "Ammo_308Win", "Ammo_22", "Ammo_12gaPellets", "Ammo_12gaSlug", "Mag_CZ527_5rnd"};
 		array<string> wear = {"HuntingJacket_Autumn", "HuntingJacket_Brown", "HunterPants_Autumn", "HunterPants_Brown", "BoonieHat_DPM", "HuntingBag", "WoolGloves_Green", "Uncuepa_HuntingBag_Woodland", "Uncuepa_HunterPants_maroon", "Uncuepa_HuntingJacket_White", "Poncho_Green", "Fingerless_Gloves_Wool_Grey"};
 		array<string> misc = {"HuntingKnife", "Compass", "Rope", "Canteen", "Matchbox", "DeerSteakMeat", "Binoculars", "HuntingOptic", "AD_MosinMount"};
 		array<string> hg = {"Mosin9130|Ammo_762x54", "CZ527|Mag_CZ527_5rnd", "Izh18|Ammo_762x39", "Winchester70|Ammo_308Win", "Izh43Shotgun|Ammo_12gaPellets", "Ruger1022|Mag_Ruger1022_15Rnd"};
-		EntityAI c = LootCrate(e, 3.2, 2.5);
+		EntityAI c = LootCrate(e, -5.5, 2.5);
 		if (Chance(0.65)) GiveGun(c, hg); else GiveFrom(c, ammo, 1);
 		GiveFrom(c, wear, 2);
 		GiveFrom(c, misc, 1);
@@ -772,7 +832,7 @@ class AGA_Events
 		Put(e, "StaticObj_PalletTrolley_01_yellow_F", 1, 6, 30, 0.02);
 		Put(e, "StaticObj_Misc_ConcretePipe_Gate", -7, -12, 10, 0.05);
 		Put(e, "Land_Misc_FireBarrel_Yellow", 12, 3, 0, 0.05);
-		array<string> mats = {"NailBox", "WoodenPlank", "MetalPlate", "MetalWire", "Rope", "BarbedWire", "CombinationLock"};
+		array<string> mats = {"NailBox", "WoodenPlank", "MetalPlate", "MetalWire", "Rope", "BarbedWire", "CodeLock"};
 		array<string> tools = {"Hammer", "Shovel", "Pliers", "Hacksaw", "HandSaw", "Hatchet", "Crowbar", "Pickaxe"};
 		array<string> wear = {"ConstructionHelmet_Orange", "ConstructionHelmet_Yellow", "ReflexVest", "WorkingBoots_Yellow", "WorkingGloves_Yellow", "Overalls_Blue", "Overalls_Gray", "Uncuepa_FirefightersHelmet_PowerPlant"};
 		EntityAI c1 = LootCrate(e, 4, 2);

@@ -29,7 +29,7 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
     before = len(names(s))
     s = re.sub(r'\s*<type name="([^"]+)">.*?</type>', lambda m: '' if m.group(1) in vanilla else m.group(0), s, flags=re.S)
     # Code Lock – dostępny, ale nie na każdym kroku
-    s = re.sub(r'(<type name="CodeLock">.*?<nominal>)\d+(</nominal>.*?<min>)\d+(</min>)', r'\g<1>60\g<2>30\g<3>', s, flags=re.S)
+    s = re.sub(r'(<type name="CodeLock">.*?<nominal>)\d+(</nominal>.*?<min>)\d+(</min>)', r'\g<1>80\g<2>40\g<3>', s, flags=re.S)
     s = re.sub(r'(<type name="CodeLock">.*?)(</type>)', lambda m: m.group(1) + ('' if 'usage name="Town"' in m.group(1) else '\t<usage name="Town"/>\n\t') + m.group(2), s, count=1, flags=re.S)
     open(f, 'w').write(s)
     print('mod types %s: %d -> %d' % (os.path.basename(f), before, len(names(s))))

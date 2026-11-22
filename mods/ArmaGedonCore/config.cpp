@@ -894,7 +894,21 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Supply crate";
 		descriptionShort = "A heavy crate left behind at the site. Search it, it is too heavy to carry.";
+		model = "\\DZ\\structures_bliss\\residential\\Misc\\Misc_WoodenCrate.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
 		weight = 50000;
+		itemsCargoSize[] = {10,6};
+	};
+	class AGA_LootCrateMil: AGA_LootCrate
+	{
+		displayName = "Military crate";
+		model = "\\DZ\\structures\\furniture\\Cases\\metalcrate\\metalcrate.p3d";
+	};
+	class AGA_LootCrateMed: AGA_LootCrate
+	{
+		displayName = "Medical case";
+		model = "\\DZ\\structures\\furniture\\Cases\\metalcase\\metalcase_01.p3d";
 	};
 	class BaseBuildingBase;
 	class TerritoryFlag: BaseBuildingBase
