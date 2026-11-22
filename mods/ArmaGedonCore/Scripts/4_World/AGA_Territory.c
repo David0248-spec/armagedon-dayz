@@ -320,7 +320,6 @@ class AGA_Territory
 		msg = "";
 		PlayerBase pb = PlayerBase.Cast(player);
 		if (!pb || !item || IsRaidItem(item)) return true;
-		if (pb.AGA_IsStaff()) return true;
 
 		if (ZoneLimited(item))
 		{
@@ -335,6 +334,8 @@ class AGA_Territory
 				return false;
 			}
 		}
+
+		if (pb.AGA_IsStaff()) return true;
 
 		if (item.IsInherited(TerritoryFlagKit))
 		{

@@ -912,6 +912,17 @@ class CfgVehicles
 	class BaseBuildingBase;
 	class TerritoryFlag: BaseBuildingBase
 	{
+		class GUIInventoryAttachmentsProps
+		{
+			class Support
+			{
+				attachmentSlots[] = {"Material_FPole_WoodenLog", "Material_FPole_Rope"};
+			};
+			class Pole
+			{
+				attachmentSlots[] = {"Material_FPole_Stones", "Material_FPole_WoodenLog2", "Material_FPole_Nails"};
+			};
+		};
 		class Construction
 		{
 			class totem

@@ -88,6 +88,8 @@ modded class MissionGameplay
 	protected bool m_AGA_RecipesDone;
 
 	protected bool m_AGA_PDown;
+	protected ref AGA_GroupMenu m_AGA_GroupMenu;
+	protected ref AGA_RulesMenu m_AGA_RulesMenu;
 
 	void MissionGameplay()
 	{
@@ -119,7 +121,8 @@ modded class MissionGameplay
 			return;
 		}
 		if (cur) return;
-		GetGame().GetUIManager().ShowScriptedMenu(new AGA_GroupMenu(), null);
+		m_AGA_GroupMenu = new AGA_GroupMenu();
+		GetGame().GetUIManager().ShowScriptedMenu(m_AGA_GroupMenu, null);
 	}
 
 	void AGA_OnRecipes(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -146,9 +149,10 @@ modded class MissionGameplay
 		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
 		if (!p || !p.IsAlive()) return;
 		m_AGA_RulesTimer += timeslice;
-		if (m_AGA_RulesTimer < 20 || GetGame().GetUIManager().GetMenu()) return;
+		if (m_AGA_RulesTimer < 1.5 || GetGame().GetUIManager().GetMenu()) return;
 		m_AGA_RulesShown = true;
-		GetGame().GetUIManager().ShowDialog(AGA_RULES_TITLE, AGA_RULES_TEXT, 7701, DBT_OK, DBB_OK, DMT_INFO, null);
+		m_AGA_RulesMenu = new AGA_RulesMenu();
+		GetGame().GetUIManager().ShowScriptedMenu(m_AGA_RulesMenu, null);
 	}
 }
 

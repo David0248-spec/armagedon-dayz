@@ -17,11 +17,13 @@ class AGA_GroupMenu extends UIScriptedMenu
 	{
 		super.OnShow();
 		GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
+		GetGame().GetUIManager().ShowUICursor(true);
 	}
 
 	override void OnHide()
 	{
 		super.OnHide();
+		GetGame().GetUIManager().ShowUICursor(false);
 		GetGame().GetMission().PlayerControlEnable(false);
 		if (s_Open == this) s_Open = null;
 	}
@@ -103,5 +105,41 @@ class AGA_GroupMenu extends UIScriptedMenu
 		super.Update(timeslice);
 		UAInput back = GetUApi().GetInputByName("UAUIBack");
 		if (back && back.LocalPress()) Close();
+	}
+}
+
+// ARMA-GEDON – regulamin po pojawieniu się postaci
+class AGA_RulesMenu extends UIScriptedMenu
+{
+	override Widget Init()
+	{
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets("ArmaGedonCore/GUI/layouts/aga_rules.layout");
+		MultilineTextWidget body = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("Body"));
+		if (body) body.SetText(AGA_RULES_TEXT);
+		return layoutRoot;
+	}
+
+	override void OnShow()
+	{
+		super.OnShow();
+		GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
+		GetGame().GetUIManager().ShowUICursor(true);
+	}
+
+	override void OnHide()
+	{
+		super.OnHide();
+		GetGame().GetUIManager().ShowUICursor(false);
+		GetGame().GetMission().PlayerControlEnable(false);
+	}
+
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		if (w && (w.GetName() == "Accept" || w.GetName() == "Accept_bg" || w.GetName() == "Accept_txt"))
+		{
+			Close();
+			return true;
+		}
+		return false;
 	}
 }

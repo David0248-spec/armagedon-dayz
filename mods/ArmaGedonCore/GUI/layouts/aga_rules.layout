@@ -1,0 +1,161 @@
+FrameWidgetClass AGA_Rules {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass Dim {
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   ignorepointer 1
+   color 0 0 0 0.6
+   style rover_sim_colorable
+  }
+  PanelWidgetClass Win {
+   position 0.24 0.08
+   size 0.52 0.84
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   ignorepointer 0
+   color 0.047 0.051 0.059 0.97
+   style rover_sim_colorable
+   {
+    PanelWidgetClass Head {
+     position 0 0
+     size 1 0.11
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.031 0.034 0.04 1
+     style rover_sim_colorable
+     {
+      TextWidgetClass Brand {
+       position 0.035 0.08
+       size 0.6 0.5
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.91 0.89 0.82 1
+       text "ARMA-GEDON"
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 26
+       "text halign" left
+       "text valign" center
+      }
+      TextWidgetClass Sub {
+       position 0.035 0.55
+       size 0.6 0.35
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.79 0.72 0.54 1
+       text "SERVER RULES  //  READ BEFORE YOU PLAY"
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 13
+       "text halign" left
+       "text valign" center
+      }
+     }
+    }
+    PanelWidgetClass Accent {
+     position 0 0.11
+     size 1 0.005
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.70 0.15 0.12 1
+     style rover_sim_colorable
+    }
+    MultilineTextWidgetClass Body {
+     position 0.035 0.14
+     size 0.93 0.74
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.86 0.87 0.84 1
+     font "gui/fonts/metron22"
+     "exact text" 1
+     "exact text size" 15
+     "text halign" left
+     "text valign" top
+     "line spacing" 3
+    }
+    TextWidgetClass Foot {
+     position 0.035 0.9
+     size 0.6 0.06
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.55 0.58 0.63 1
+     text "Breaking the rules = ban. Questions: Discord / ticket."
+     font "gui/fonts/metron22"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" left
+     "text valign" center
+    }
+    ButtonWidgetClass Accept {
+     position 0.68 0.895
+     size 0.285 0.07
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     color 1 1 1 1
+     style Default
+     {
+      PanelWidgetClass Accept_bg {
+       position 0 0
+       size 1 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.42 0.12 0.10 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Accept_txt {
+       position 0 0
+       size 1 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text "I UNDERSTAND"
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+   }
+  }
+ }
+}
