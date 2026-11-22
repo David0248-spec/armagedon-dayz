@@ -980,7 +980,6 @@ class CfgVehicles
 		attachments[] = {};
 		descriptionShort = "Flag pole kit. Place it to claim a territory (30 m). Upgrade it at the flag: level 2 - 1 log and 1 rope, level 3 - 6 logs, 60 nails and 16 stones.";
 	};
-	class WoodenCrate;
 	class AGA_Crate_T2: WoodenCrate
 	{
 		scope = 2;
