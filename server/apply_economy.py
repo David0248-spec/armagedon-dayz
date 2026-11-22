@@ -21,9 +21,18 @@ def pristine(rel):
 # --- types.xml ---
 p, s = pristine('db/types.xml')
 changed = 0
+EZ = cfg.get('enable_zero')
 def fix_type(m):
     global changed
     block = m.group(0); name = m.group(1)
+    # wyłączone w vanilli (nominal 0), ale z miejscem spawnu – włącz z małą ilością
+    if EZ and name not in REMOVED and re.search(r'<nominal>0</nominal>', block) and '<usage name=' in block \
+            and 'crafted="1"' not in block and 'deloot="1"' not in block and not name.startswith(('Sawedoff', 'Wreck', 'Land_', 'Static')):
+        cm = re.search(r'<category name="([^"]+)"', block)
+        n0 = EZ.get(cm.group(1) if cm else 'default', EZ['default'])
+        block = re.sub(r'<nominal>0</nominal>', '<nominal>%d</nominal>' % n0, block)
+        block = re.sub(r'<min>0</min>', '<min>%d</min>' % max(1, n0 // 2), block)
+        changed += 1
     if name in LIFE:
         nb0 = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % LIFE[name], block)
         if nb0 != block: changed += 1

@@ -60,12 +60,6 @@
   },
   "wipe_start": "2026-11-22",
   "phase1_removed": [
-    "NVGoggles",
-    "GhillieSuit_Woodland",
-    "GhillieSuit_Mossy",
-    "GhillieSuit_Tan",
-    "GhillieSuit_Winter",
-    "PlateCarrierVest",
     "M18SmokeGrenade_Red_Contaminated"
   ],
   "build_items": [
@@ -455,5 +449,10 @@
     ]
   },
   "weapon_variants": true,
-  "stock_chance": 1.0
+  "stock_chance": 1.0,
+  "enable_zero": {
+    "weapons": 3,
+    "clothes": 4,
+    "default": 3
+  }
 }
