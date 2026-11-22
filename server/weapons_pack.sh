@@ -1,6 +1,6 @@
 #!/bin/bash
-# Paczka broni (KK.pbo, VBB_Weapons.pbo, ca_weapons.pbo) - uzyta za zgoda administracji zrodlowej paczki.
-# Pobiera paczke zrodlowa z Workshopu (bez ladowania jej na serwerze) i dokleja 3 pliki z bronia do @ArmaGedonCore.
+# ArmaGedonWeapons - paczka broni uzyta za zgoda administracji zrodlowej paczki.
+# Pobiera paczke zrodlowa z Workshopu (bez ladowania jej na serwerze) i dokleja 3 pliki z bronia do @ArmaGedonCore jako ArmaGedonWeapons_*.pbo.
 set -e
 SRC_ID=2864245850
 DST=~/dayz/@ArmaGedonCore
@@ -11,11 +11,14 @@ if [ ! -d "$WS/$SRC_ID" ] || [ "$1" = "update" ]; then
   [ -d ~/Steam/steamapps/workshop/content/221100/$SRC_ID ] && WS=~/Steam/steamapps/workshop/content/221100
 fi
 mkdir -p $DST/addons $DST/keys
-for p in kk.pbo vbb_weapons.pbo ca_weapons.pbo; do
+# u nas pliki nazywaja sie ArmaGedonWeapons_*
+rm -f $DST/addons/kk.pbo* $DST/addons/vbb_weapons.pbo* $DST/addons/ca_weapons.pbo*
+for pair in kk.pbo:armagedonweapons_core.pbo vbb_weapons.pbo:armagedonweapons_vbb.pbo ca_weapons.pbo:armagedonweapons_ca.pbo; do
+  p=${pair%%:*}; n=${pair##*:}
   f=$(find "$WS/$SRC_ID" -maxdepth 2 -type f -iname "$p" | head -1)
   [ -z "$f" ] && { echo "BRAK $p"; exit 1; }
-  cp -f "$f" "$DST/addons/$p"
-  for s in "$f".*.bisign; do [ -f "$s" ] && cp -f "$s" "$DST/addons/$p.$(basename "$s" | sed 's/^.*\.pbo\.//' | tr 'A-Z' 'a-z')"; done
-  echo "BRON: $p $(du -h "$DST/addons/$p" | cut -f1)"
+  cp -f "$f" "$DST/addons/$n"
+  s=$(ls "$f".*.bisign 2>/dev/null | head -1); [ -n "$s" ] && cp -f "$s" "$DST/addons/$n.armagedonweapons.bisign"
+  echo "ArmaGedonWeapons: $n $(du -h "$DST/addons/$n" | cut -f1)"
 done
-find "$WS/$SRC_ID" -iname '*.bikey' -exec cp -f {} $DST/keys/ \; -exec cp -f {} ~/dayz/keys/ \; 2>/dev/null || true
+k=$(find "$WS/$SRC_ID" -iname '*.bikey' | head -1); [ -n "$k" ] && cp -f "$k" $DST/keys/ArmaGedonWeapons.bikey && cp -f "$k" ~/dayz/keys/ArmaGedonWeapons.bikey || true
