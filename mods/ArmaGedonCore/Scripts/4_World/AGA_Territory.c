@@ -255,20 +255,13 @@ class AGA_Territory
 		return "";
 	}
 
-	// nazwa nawierzchni drogi (warstwa dróg) w punkcie, "" gdy brak
+	// drogi asfaltowe i szutrowe (nawierzchnia terenu pod drogą); polne drogi mają tę samą nawierzchnię co pola
 	static string RoadSurface(vector pos)
 	{
-		SurfaceDetectionParameters prm = new SurfaceDetectionParameters();
-		SurfaceDetectionResult res = new SurfaceDetectionResult();
-		prm.type = SurfaceDetectionType.Roadway;
-		prm.position = Vector(pos[0], GetGame().SurfaceY(pos[0], pos[2]) + 1.0, pos[2]);
-		prm.rsd = RoadSurfaceDetection.CLOSEST;
-		if (!GetGame().GetSurface(prm, res) || !res.surface || res.object) return "";
-		string road = res.surface.GetEntryName();
-		string ground;
-		GetGame().SurfaceGetType(pos[0], pos[2], ground);
-		if (road == ground) return "";
-		return road;
+		string t;
+		GetGame().SurfaceGetType(pos[0], pos[2], t);
+		if (t.IndexOf("concrete") >= 0 || t.IndexOf("asphalt") >= 0 || t.IndexOf("gravel") >= 0) return t;
+		return "";
 	}
 
 	static bool OnRoad(vector pos)
