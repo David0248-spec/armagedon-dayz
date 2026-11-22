@@ -405,12 +405,11 @@ class AGA_Territory
 			return true;
 		}
 
-		if (pb.AGA_IsStaff()) return true;
-
+		// także admin: na cudzym (lub niczyim) terytorium nie stawia się niczego
 		TerritoryFlag flag = FlagAt(pos);
 		if (flag)
 		{
-			if (flag.AGA_Gid() != 0 && flag.AGA_Gid() != pb.AGA_Gid())
+			if (flag.AGA_Gid() == 0 || flag.AGA_Gid() != pb.AGA_Gid())
 			{
 				msg = "You are not allowed to build in this territory.";
 				return false;
@@ -441,14 +440,14 @@ class AGA_Territory
 	static bool CanBuildAt(PlayerBase pb, vector pos, out string msg)
 	{
 		msg = "";
-		if (!pb || pb.AGA_IsStaff()) return true;
+		if (!pb) return true;
 		TerritoryFlag flag = FlagAt(pos);
 		if (!flag)
 		{
 			msg = "Building requires a flag pole! Combine a sharpened stick with a rag.";
 			return false;
 		}
-		if (flag.AGA_Gid() != 0 && flag.AGA_Gid() != pb.AGA_Gid())
+		if (flag.AGA_Gid() == 0 || flag.AGA_Gid() != pb.AGA_Gid())
 		{
 			msg = "You are not allowed to build in this territory.";
 			return false;
@@ -1011,9 +1010,9 @@ modded class Fence
 		if (!super.CanReceiveAttachment(attachment, slotId)) return false;
 		if (!attachment || !attachment.IsInherited(CodeLock) || GetGame().IsDedicatedServer()) return true;
 		PlayerBase me = PlayerBase.Cast(GetGame().GetPlayer());
-		if (!me || me.AGA_IsStaff()) return true;
+		if (!me) return true;
 		TerritoryFlag flag = AGA_Territory.FlagAt(GetPosition());
-		if (!flag || (flag.AGA_Gid() != 0 && flag.AGA_Gid() != me.AGA_Gid()))
+		if (!flag || flag.AGA_Gid() == 0 || flag.AGA_Gid() != me.AGA_Gid())
 		{
 			AGA_Territory.Msg("A code lock can only be attached in your own territory.");
 			return false;

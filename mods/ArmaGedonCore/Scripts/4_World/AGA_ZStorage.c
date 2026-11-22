@@ -145,7 +145,7 @@ class AGA_Build
 	{
 		TerritoryFlag f = AGA_Territory.FlagAt(pos);
 		if (!f || !p) return null;
-		if (!p.AGA_IsStaff() && f.AGA_Gid() != p.AGA_Gid()) return null;
+		if (f.AGA_Gid() == 0 || f.AGA_Gid() != p.AGA_Gid()) return null;
 		return f;
 	}
 
