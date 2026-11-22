@@ -49,14 +49,14 @@ class AGA_Build
 	{
 		if (s_Steps) return s_Steps;
 		s_Steps = new array<ref AGA_UpStep>;
-		Add("WoodenCrate", "mmg_supplycrate_level1", 2, "WoodenPlank:10,Nail:30");
-		Add("mmg_supplycrate_level1", "mmg_supplycrate_level2", 3, "WoodenPlank:10,Nail:30");
-		Add("mmg_supplycrate_level2", "mmg_supplycrate_level3", 3, "WoodenPlank:12,Nail:40");
-		Add("mmg_craftable_gun_rack", "mmg_gun_rack_tan", 2, "Nail:30,MetalPlate:1");
-		Add("mmg_gun_rack_tan", "mmg_gun_rack_green", 3, "Nail:40,MetalPlate:1");
-		Add("mmg_gun_wall_wooden", "mmg_gun_wall_metal", 2, "Nail:40,MetalPlate:1");
-		Add("mmg_gear_stand", "AGA_GearStand2", 2, "WoodenPlank:10,Nail:30");
-		Add("mmg_old_table", "mmg_toolwagon_red", 2, "Nail:30,MetalPlate:1");
+		Add("WoodenCrate", "mmg_supplycrate_level1", 2, "WoodenPlank:10,Nail:40,MetalWire:1");
+		Add("mmg_supplycrate_level1", "mmg_supplycrate_level2", 3, "WoodenPlank:20,Nail:70,MetalWire:1,MetalPlate:2");
+		Add("mmg_supplycrate_level2", "mmg_supplycrate_level3", 3, "WoodenPlank:22,Nail:70,MetalWire:1,MetalPlate:4");
+		Add("mmg_craftable_gun_rack", "mmg_gun_rack_tan", 2, "Nail:40,MetalPlate:2,MetalWire:1");
+		Add("mmg_gun_rack_tan", "mmg_gun_rack_green", 3, "Nail:70,MetalPlate:4,MetalWire:1");
+		Add("mmg_gun_wall_wooden", "mmg_gun_wall_metal", 2, "WoodenPlank:10,Nail:70,MetalPlate:4,MetalWire:1");
+		Add("mmg_gear_stand", "AGA_GearStand2", 2, "WoodenPlank:10,Nail:40,Rope:1");
+		Add("mmg_old_table", "mmg_toolwagon_red", 2, "WoodenPlank:10,Nail:70,MetalPlate:3,MetalWire:1");
 		return s_Steps;
 	}
 
@@ -75,7 +75,9 @@ class AGA_Build
 	{
 		if (type == "WoodenPlank") return "planks";
 		if (type == "Nail") return "nails";
-		if (type == "MetalPlate") return "metal sheet";
+		if (type == "MetalPlate") return "metal sheets";
+		if (type == "MetalWire") return "metal wire";
+		if (type == "Rope") return "rope";
 		return type;
 	}
 
@@ -370,13 +372,13 @@ modded class mmg_storage_placeable_base
 {
 	override bool CanPutInCargo(EntityAI parent)
 	{
-		if (AGA_Build.Locked(this)) return false;
+		if (AGA_Build.Locked(this) || !AGA_Build.IsEmptyBox(this)) return false;
 		return super.CanPutInCargo(parent);
 	}
 
 	override bool CanPutIntoHands(EntityAI parent)
 	{
-		if (AGA_Build.Locked(this)) return false;
+		if (AGA_Build.Locked(this) || !AGA_Build.IsEmptyBox(this)) return false;
 		return super.CanPutIntoHands(parent);
 	}
 
@@ -403,13 +405,13 @@ modded class mmg_storage_openable_noLock_base
 {
 	override bool CanPutInCargo(EntityAI parent)
 	{
-		if (AGA_Build.Locked(this)) return false;
+		if (AGA_Build.Locked(this) || !AGA_Build.IsEmptyBox(this)) return false;
 		return super.CanPutInCargo(parent);
 	}
 
 	override bool CanPutIntoHands(EntityAI parent)
 	{
-		if (AGA_Build.Locked(this)) return false;
+		if (AGA_Build.Locked(this) || !AGA_Build.IsEmptyBox(this)) return false;
 		return super.CanPutIntoHands(parent);
 	}
 
@@ -417,6 +419,22 @@ modded class mmg_storage_openable_noLock_base
 	{
 		if (AGA_Build.Locked(this)) return false;
 		return super.IsTakeable();
+	}
+}
+
+// drewniana skrzynia – przenoszenie tylko pustej
+modded class WoodenCrate
+{
+	override bool CanPutIntoHands(EntityAI parent)
+	{
+		if (!AGA_Build.IsEmptyBox(this)) return false;
+		return super.CanPutIntoHands(parent);
+	}
+
+	override bool CanPutInCargo(EntityAI parent)
+	{
+		if (!AGA_Build.IsEmptyBox(this)) return false;
+		return super.CanPutInCargo(parent);
 	}
 }
 

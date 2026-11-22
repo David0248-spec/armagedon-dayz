@@ -887,14 +887,14 @@ class CfgVehicles
 	class WoodenCrate: Container_Base
 	{
 		aga_tier = 1;
-		attachments[] = {"woodenplank_upgrade_x10","nail_upgrade_x30"};
+		attachments[] = {"woodenplank_upgrade_x10","nail_upgrade_x40","Material_MetalWire"};
 		class GUIInventoryAttachmentsProps
 		{
 			class UpgradeMaterials
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x30"};
+				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x40","Material_MetalWire"};
 				icon = "cat_bb_material";
 				view_index = 1;
 			};
@@ -1146,15 +1146,55 @@ class CfgVehicles
 	{
 		scope = 2;
 		aga_tier = 2;
+		attachments[] = {"woodenlog1","woodenplank1","woodenplank2","firewood1","nails1","nails2","woodenplank_upgrade_x10","woodenplank_upgrade_x12","nail_upgrade_x30","nail_upgrade_x40","Material_MetalWire","Material_MetalSheets"};
+		class GUIInventoryAttachmentsProps
+		{
+			class Supply
+			{
+				name = "Supplies";
+				description = "";
+				attachmentSlots[] = {"woodenlog1","woodenplank1","woodenplank2","firewood1","nails1","nails2"};
+				icon = "cat_bb_material";
+				view_index = 1;
+			};
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"woodenplank_upgrade_x10","woodenplank_upgrade_x12","nail_upgrade_x30","nail_upgrade_x40","Material_MetalWire","Material_MetalSheets"};
+				icon = "cat_bb_material";
+				view_index = 2;
+			};
+		};
 		displayName = "Storage Crate (Tier 2)";
-		descriptionShort = "Reinforced storage crate. 100 slots. Put 10 planks and 30 nails into the upgrade slots and use a hatchet to upgrade (level 3 flag pole).";
+		descriptionShort = "Reinforced storage crate. 100 slots. Upgrade (level 3 flag pole): 20 planks, 70 nails, 1 metal wire, 2 metal sheets in Upgrade Materials, then use a hatchet.";
 	};
 	class mmg_supplycrate_level2: mmg_supplycrate_lvl2_base
 	{
 		scope = 2;
 		aga_tier = 3;
+		attachments[] = {"woodenlog1","woodenlog2","woodenplank1","woodenplank2","woodenplank3","firewood1","nails1","nails2","nails3","woodenplank_upgrade_x10","woodenplank_upgrade_x12","nail_upgrade_x30","nail_upgrade_x40","Material_MetalWire","Material_MetalSheets"};
+		class GUIInventoryAttachmentsProps
+		{
+			class Supply
+			{
+				name = "Supplies";
+				description = "";
+				attachmentSlots[] = {"woodenlog1","woodenlog2","woodenplank1","woodenplank2","woodenplank3","firewood1","nails1","nails2","nails3"};
+				icon = "cat_bb_material";
+				view_index = 1;
+			};
+			class UpgradeMaterials
+			{
+				name = "Upgrade Materials";
+				description = "";
+				attachmentSlots[] = {"woodenplank_upgrade_x10","woodenplank_upgrade_x12","nail_upgrade_x30","nail_upgrade_x40","Material_MetalWire","Material_MetalSheets"};
+				icon = "cat_bb_material";
+				view_index = 2;
+			};
+		};
 		displayName = "Storage Crate (Tier 3)";
-		descriptionShort = "Large storage crate. 150 slots. Put 12 planks and 40 nails into the upgrade slots and use a hatchet to upgrade (level 3 flag pole).";
+		descriptionShort = "Large storage crate. 150 slots. Upgrade (level 3 flag pole): 22 planks, 70 nails, 1 metal wire, 4 metal sheets in Upgrade Materials, then use a hatchet.";
 		itemsCargoSize[] = {10,15};
 		class Cargo
 		{
@@ -1180,8 +1220,8 @@ class CfgVehicles
 		scope = 2;
 		aga_tier = 1;
 		displayName = "Gun Rack (Tier 1)";
-		descriptionShort = "Wooden gun rack. Holds 2 rifles. Put 30 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
-		attachments[] = {"Shoulder1","Shoulder2","nail_upgrade_x30","Material_MetalSheets"};
+		descriptionShort = "Wooden gun rack. Holds 2 rifles. Upgrade (level 2 flag pole): 40 nails, 2 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
+		attachments[] = {"Shoulder1","Shoulder2","nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 		itemsCargoSize[] = {0,0};
 		class Cargo
 		{
@@ -1201,7 +1241,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"nail_upgrade_x30","Material_MetalSheets"};
+				attachmentSlots[] = {"nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1213,8 +1253,8 @@ class CfgVehicles
 		scope = 2;
 		aga_tier = 2;
 		displayName = "Gun Rack (Tier 2)";
-		descriptionShort = "Metal gun rack. Holds 4 rifles and 2 ammo boxes. Put 40 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 3 flag pole).";
-		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","nail_upgrade_x40","Material_MetalSheets"};
+		descriptionShort = "Metal gun rack. Holds 4 rifles and 2 ammo boxes. Upgrade (level 3 flag pole): 70 nails, 4 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","nail_upgrade_x30","nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 		aga_cargoTypes[] = {"AmmoBox"};
 		aga_cargoLimits[] = {2};
 		itemsCargoSize[] = {10,5};
@@ -1236,7 +1276,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"nail_upgrade_x40","Material_MetalSheets"};
+				attachmentSlots[] = {"nail_upgrade_x30","nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1275,8 +1315,8 @@ class CfgVehicles
 		scope = 2;
 		aga_tier = 1;
 		displayName = "Gun Wall (Tier 1)";
-		descriptionShort = "Wooden gun wall. Holds 4 rifles. Put 40 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
-		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","nail_upgrade_x40","Material_MetalSheets"};
+		descriptionShort = "Wooden gun wall. Holds 4 rifles. Upgrade (level 2 flag pole): 10 planks, 70 nails, 4 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","woodenplank_upgrade_x10","nail_upgrade_x30","nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 		itemsCargoSize[] = {0,0};
 		class Cargo
 		{
@@ -1296,7 +1336,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"nail_upgrade_x40","Material_MetalSheets"};
+				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x30","nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1343,8 +1383,8 @@ class CfgVehicles
 		scope = 2;
 		aga_tier = 1;
 		displayName = "Gear Stand (Tier 1)";
-		descriptionShort = "Holds headgear and a vest. Put 10 planks and 30 nails into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
-		attachments[] = {"Headgear","Vest","woodenplank_upgrade_x10","nail_upgrade_x30"};
+		descriptionShort = "Holds headgear and a vest. Upgrade (level 2 flag pole): 10 planks, 40 nails, 1 rope in Upgrade Materials, then use a hatchet.";
+		attachments[] = {"Headgear","Vest","woodenplank_upgrade_x10","nail_upgrade_x40","Material_FPole_Rope"};
 		itemsCargoSize[] = {0,0};
 		class Cargo
 		{
@@ -1364,7 +1404,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x30"};
+				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x40","Material_FPole_Rope"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1396,8 +1436,8 @@ class CfgVehicles
 		scope = 2;
 		aga_tier = 1;
 		displayName = "Workbench (Tier 1)";
-		descriptionShort = "Tool storage: axe, sledgehammer, pickaxe, shovel, a hammer, nails and planks. Put 30 nails and a metal sheet into the upgrade slots and use a hatchet to upgrade (level 2 flag pole).";
-		attachments[] = {"Axe1","SledgeHammer1","Pickaxe1","Shovel1","nail_upgrade_x30","Material_MetalSheets"};
+		descriptionShort = "Tool storage: axe, sledgehammer, pickaxe, shovel, a hammer, nails and planks. Upgrade (level 2 flag pole): 10 planks, 70 nails, 3 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
+		attachments[] = {"Axe1","SledgeHammer1","Pickaxe1","Shovel1","woodenplank_upgrade_x10","nail_upgrade_x30","nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 		aga_cargoTypes[] = {"Hammer","Nail","WoodenPlank"};
 		aga_cargoLimits[] = {1,2,2};
 		itemsCargoSize[] = {10,5};
@@ -1419,7 +1459,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"nail_upgrade_x30","Material_MetalSheets"};
+				attachmentSlots[] = {"woodenplank_upgrade_x10","nail_upgrade_x30","nail_upgrade_x40","Material_MetalSheets","Material_MetalWire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
