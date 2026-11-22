@@ -9,6 +9,7 @@ _days = (datetime.date.today() - datetime.date.fromisoformat(cfg.get('wipe_start
 PHASE = 1 if _days < 14 else (2 if _days < 28 else 3)
 RARE = set(cfg.get('phase1_removed', []))
 BUILD = cfg.get('build_items', [])
+LIFE = cfg.get('lifetime', {})
 os.makedirs(os.path.expanduser('~/dayz/profiles/ArmaGedonCore'), exist_ok=True)
 open(os.path.expanduser('~/dayz/profiles/ArmaGedonCore/phase.txt'), 'w').write(str(PHASE))
 print('faza wipe: %d (dzien %d)' % (PHASE, _days + 1))
@@ -22,6 +23,10 @@ changed = 0
 def fix_type(m):
     global changed
     block = m.group(0); name = m.group(1)
+    if name in LIFE:
+        nb0 = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % LIFE[name], block)
+        if nb0 != block: changed += 1
+        block = nb0
     mult = 1.0
     cat = re.search(r'<category name="([^"]+)"', block)
     if cat: mult = cfg['category_mult'].get(cat.group(1), 1.0)

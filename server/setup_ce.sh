@@ -2,6 +2,7 @@
 # Dołącza types.xml z modów do ekonomii (CE) misji + kopiuje klucze modów
 set -e
 python3 ~/armagedon-dayz/server/apply_economy.py
+python3 ~/armagedon-dayz/server/gen_nobuild.py
 MIS=~/dayz/mpmissions/dayzOffline.chernarusplus
 CE=$MIS/armagedon_ce
 mkdir -p $CE
