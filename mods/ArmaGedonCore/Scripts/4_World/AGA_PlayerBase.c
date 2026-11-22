@@ -3,7 +3,7 @@ modded class PlayerBase
 {
 	// walka: strzał albo trafienie przez gracza w ostatnich 60 s
 	protected int m_AGA_CombatUntil;
-	void AGA_MarkCombat() { m_AGA_CombatUntil = GetGame().GetTime() + 60000; }
+	void AGA_MarkCombat() { m_AGA_CombatUntil = GetGame().GetTime() + 600000; } // 10 min od ostatniego kontaktu
 	bool AGA_InCombat() { return GetGame().GetTime() < m_AGA_CombatUntil; }
 
 

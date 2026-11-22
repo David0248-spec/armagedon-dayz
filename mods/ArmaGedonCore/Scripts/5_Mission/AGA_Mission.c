@@ -6,6 +6,7 @@ modded class MissionServer
 		super.OnInit();
 		AGA_Server.Get();
 		AGA_Server.Get().Log("VPP sync: aktywny");
+		AGA_Recipes.Apply(AGA_Recipes.Cfg().Disabled);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_SyncVPP, 20000, true);
 	}
 
@@ -51,6 +52,7 @@ modded class MissionServer
 	// wylogowanie w trakcie walki: dłuższy licznik i wpis do logu
 	override void OnClientDisconnectedEvent(PlayerIdentity identity, PlayerBase player, int logoutTime, bool authFailed)
 	{
+		if (identity) AGA_Link.Forget(identity.GetPlainId());
 		if (!authFailed && player && player.IsAlive() && player.AGA_InCombat())
 		{
 			if (logoutTime < 60) logoutTime = 60;
@@ -63,6 +65,8 @@ modded class MissionServer
 	override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity)
 	{
 		super.InvokeOnConnect(player, identity);
+		if (identity && AGA_Recipes.Cfg().Disabled.Count() > 0)
+			GetRPCManager().SendRPC("AGA", "AGA_OnRecipes", new Param1<array<string>>(AGA_Recipes.Cfg().Disabled), true, identity);
 		if (identity)
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().WelcomeInfo, 25000, false, identity.GetPlainId());
 		if (identity && AGA_Server.Get().IsBanned(identity.GetPlainId()))
@@ -77,6 +81,21 @@ modded class MissionGameplay
 {
 	protected bool m_AGA_RulesShown;
 	protected float m_AGA_RulesTimer;
+	protected bool m_AGA_RecipesDone;
+
+	void MissionGameplay()
+	{
+		GetRPCManager().AddRPC("AGA", "AGA_OnRecipes", this, SingleplayerExecutionType.Client);
+	}
+
+	void AGA_OnRecipes(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		if (m_AGA_RecipesDone) return;
+		Param1<array<string>> data;
+		if (!ctx.Read(data) || !data.param1) return;
+		m_AGA_RecipesDone = true;
+		AGA_Recipes.Apply(data.param1);
+	}
 
 	override void OnUpdate(float timeslice)
 	{

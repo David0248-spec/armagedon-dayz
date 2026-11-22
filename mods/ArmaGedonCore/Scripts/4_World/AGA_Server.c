@@ -38,6 +38,13 @@ class AGA_Server
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(RaidTick, 60000, true);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ProbeHeliSpots, 90000, false);
 		AGA_Raid.Cfg();
+		GetRPCManager().AddRPC("AGA", "AGA_Report", this, SingleplayerExecutionType.Server);
+	}
+
+	void AGA_Report(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		if (type != CallType.Server) return;
+		AGA_Link.OnReport(ctx, sender);
 	}
 
 	void LoadConfig()

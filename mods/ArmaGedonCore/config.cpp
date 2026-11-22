@@ -2,10 +2,10 @@ class CfgPatches
 {
 	class ArmaGedonCore
 	{
-		units[] = {};
+		units[] = {"AGA_TimedExplosive"};
 		weapons[] = {};
 		requiredVersion = 0.1;
-		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow"};
+		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow", "DZ_Weapons_Explosives", "DZ_Gear_Tools", "DZ_Sounds_Effects", "JM_CF_Scripts", "GDZ_Codelock"};
 	};
 };
 
@@ -907,5 +907,71 @@ class CfgVehicles
 		displayName = "Supply crate";
 		descriptionShort = "A heavy crate left behind at the site. Search it, it is too heavy to carry.";
 		weight = 50000;
+	};
+	class ExplosivesBase;
+	class Plastic_Explosive: ExplosivesBase
+	{
+		attachments[] = {"TriggerRemoteDetonator_Receiver", "TriggerAlarmClock"};
+		class GUIInventoryAttachmentsProps
+		{
+			class Trigger
+			{
+				name = "#STR_CfgVehicles_AlarmClock0";
+				description = "";
+				attachmentSlots[] = {"TriggerAlarmClock"};
+				icon = "cat_bb_attachments";
+				view_index = 1;
+			};
+		};
+	};
+	class AGA_TimedExplosive: Plastic_Explosive
+	{
+		scope = 2;
+		displayName = "Timed Plastic Explosive";
+		descriptionShort = "Plastic explosive wired to an alarm clock. Once armed it detonates after a short countdown. Can be defused with pliers.";
+		attachments[] = {"TriggerAlarmClock"};
+	};
+};
+
+class CfgSlots
+{
+	class Slot_TriggerAlarmClock
+	{
+		name = "TriggerAlarmClock";
+		displayName = "#STR_CfgVehicles_AlarmClock0";
+		ghostIcon = "set:dayz_inventory image:cat_bb_attachments";
+	};
+};
+
+class CfgSoundShaders
+{
+	class baseCharacter_SoundShader;
+	class AGA_TimerTick_SoundShader: baseCharacter_SoundShader
+	{
+		samples[] = {{"DZ\sounds\Characters\actions\items\kitchentimer\Kitchen_Timer_Ticking_Loop_01", 1}};
+		volume = 4;
+		range = 70;
+	};
+};
+
+class CfgSound3DProcessors
+{
+	class AGA_TimerTick_3DProcessingType
+	{
+		type = "panner";
+		innerRange = 35;
+		range = 70;
+		rangeCurve = "Smooth1Curve";
+	};
+};
+
+class CfgSoundSets
+{
+	class baseCharacter_SoundSet;
+	class AGA_TimerTick_SoundSet: baseCharacter_SoundSet
+	{
+		soundShaders[] = {"AGA_TimerTick_SoundShader"};
+		sound3DProcessingType = "AGA_TimerTick_3DProcessingType";
+		volumeCurve = "Smooth1Curve";
 	};
 };
