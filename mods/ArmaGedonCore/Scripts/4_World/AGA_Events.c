@@ -86,7 +86,7 @@ class AGA_Events
 		return false;
 	}
 
-	static string Surface(float x, float z)
+	static string SurfAt(float x, float z)
 	{
 		string t;
 		GetGame().SurfaceGetType3D(x, GetGame().SurfaceY(x, z) + 1.5, z, t);
@@ -160,7 +160,7 @@ class AGA_Events
 		{
 			vector p = RandomLand();
 			if (p == vector.Zero || !FarFromOthers(p)) continue;
-			string s = Surface(p[0], p[2]);
+			string s = SurfAt(p[0], p[2]);
 			int trees;
 			float nt, nb;
 			if (kind == "PLANE")
@@ -220,8 +220,11 @@ class AGA_Events
 	{
 		vector mm[2];
 		if (!o.GetCollisionBox(mm)) o.ClippingInfo(mm);
-		float halfL = Math.Max(0.6, (mm[1][2] - mm[0][2]) * 0.4);
-		float halfW = Math.Max(0.6, (mm[1][0] - mm[0][0]) * 0.4);
+		vector bmin = mm[0];
+		vector bmax = mm[1];
+		float halfL = Math.Max(0.6, (bmax[2] - bmin[2]) * 0.4);
+		float halfW = Math.Max(0.6, (bmax[0] - bmin[0]) * 0.4);
+		float lift = 0 - bmin[1] - sink;
 		vector f = Vector(yaw, 0, 0).AnglesToVector();
 		vector r = Vector(yaw + 90, 0, 0).AnglesToVector();
 		vector pf = pos + f * halfL;
@@ -244,7 +247,7 @@ class AGA_Events
 		// najniższy z punktów podparcia – brak szpar pod obiektem
 		float ground = Math.Min(Math.Min(pf[1], pb[1]), Math.Min(pr[1], pl[1]));
 		ground = (ground + yc) * 0.5;
-		mat[3] = Vector(pos[0], ground, pos[2]) + up * (-mm[0][1] - sink);
+		mat[3] = Vector(pos[0], ground, pos[2]) + up * lift;
 		o.SetTransform(mat);
 		o.Update();
 	}
