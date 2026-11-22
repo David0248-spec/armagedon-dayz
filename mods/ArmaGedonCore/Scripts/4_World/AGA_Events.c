@@ -515,7 +515,7 @@ class AGA_Events
 					c.ServerTakeEntityToCargo(gun);
 			}
 		}
-		if (parts.Count() > 1) { Give(c, parts[1]); Give(c, parts[1]); }
+		if (parts.Count() > 1) { Give(c, parts[1]); Give(c, parts[1]); if (Chance(0.5)) Give(c, parts[1]); }
 	}
 
 	// przedmiot położony na ziemi (bez lewitowania); broń dostaje dodatki z presetów
@@ -656,10 +656,11 @@ class AGA_Events
 		array<string> extra = {"ACOGOptic", "PSO1Optic", "KobraOptic", "M68Optic", "M4_Suppressor", "AK_Suppressor", "NVGoggles", "M67Grenade", "RGD5Grenade", "Mag_STANAG_60Rnd", "AD_ACOG", "AD_RMR", "AD_MRS", "AD_PVS4"};
 		array<string> ground = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_AK74_30Rnd", "Ammo_556x45", "Ammo_762x39", "Ammo_545x39", "Ammo_308Win", "BallisticHelmet_Green", "MilitaryBoots_Black", "BandageDressing", "Canteen", "M67Grenade", "TTSKOPants", "GorkaHelmet"};
 		EntityAI c1 = LootCrate(e, -3, -30);
-		if (Chance(0.15)) GiveGun(c1, rare); else GiveGun(c1, guns);
-		GiveFrom(c1, gear, 1);
+		GiveGun(c1, guns);
+		if (Chance(0.25)) GiveGun(c1, rare);
+		GiveFrom(c1, gear, 2);
 		EntityAI c2 = LootCrate(e, 5, -44);
-		if (Chance(0.6)) GiveGun(c2, guns);
+		GiveGun(c2, guns);
 		GiveFrom(c2, gear, 2);
 		GiveFrom(c2, extra, 1);
 		EntityAI c3 = LootCrate(e, -7, -50);
@@ -694,9 +695,11 @@ class AGA_Events
 			array<string> mgear = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Ammo_556x45", "Ammo_762x39", "BallisticHelmet_Green", "MilitaryBoots_Black", "TacticalGloves_Green", "AssaultBag_Green", "PlateCarrierVest", "BandageDressing", "M67Grenade", "DAC_TacticalShirt_Tan", "DAC_TacticalPants_Tan", "DAC_BoonieHat_Green", "ColdWarJacket_Oblaky", "ColdWarPants_Jigsaw"};
 			array<string> mg2 = {"M4A1|Mag_STANAG_30Rnd", "AKM|Mag_AKM_30Rnd", "AK74|Mag_AK74_30Rnd", "SKS|Ammo_762x39", "UMP45|Mag_UMP_25Rnd", "MP5K|Mag_MP5_30Rnd"};
 			c = LootCrate(e, 6, -5);
-			if (Chance(0.8)) GiveGun(c, mg2);
+			GiveGun(c, mg2);
+			if (Chance(0.35)) Give(c, "M67Grenade");
+			if (Chance(0.08)) Give(c, "NVGoggles");
 			array<string> mrare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd"};
-			if (e.Variant == "MIL" && Chance(0.2)) GiveGun(c, mrare);
+			if (e.Variant == "MIL" && Chance(0.25)) GiveGun(c, mrare);
 			GiveFrom(c, mgear, 2);
 			DropFrom(e, mgear, 4, -8, 8, -8, 8);
 			array<string> mz = {"AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland"};
@@ -759,6 +762,8 @@ class AGA_Events
 		GiveFrom(c2, basic, 3);
 		DropFrom(e, basic, 4, -3, 5, -18, 14);
 		if (Chance(0.2)) Give(c2, nbc.GetRandomElement());
+		array<string> police = {"MP5K|Mag_MP5_30Rnd", "Mp133Shotgun|Ammo_12gaPellets", "FNX45|Mag_FNX45_15Rnd", "Glock19|Mag_Glock_15Rnd"};
+		if (Chance(0.4)) GiveGun(c1, police);
 		if (Chance(0.1)) Give(c2, "Grenade_ChemGas");
 		array<string> doc = {"ZmbM_DoctorFat", "ZmbF_NurseFat", "ZmbF_DoctorSkinny", "ZmbM_ParamedicNormal_Red", "ZmbM_ParamedicNormal_Blue", "ZmbF_ParamedicNormal_Red", "ZmbF_ParamedicNormal_Blue"};
 		Zeds(e, doc, 4 + e.Tier, 6, 28);
