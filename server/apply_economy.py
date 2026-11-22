@@ -54,6 +54,12 @@ def fix_type(m):
         nb1 = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', nb1)
         if nb1 != block: changed += 1
         block = nb1
+    # szybsze odnawianie: restock maks. 10 min
+    mr = cfg.get('max_restock')
+    if mr:
+        rr = re.search(r'<restock>(\d+)</restock>', block)
+        if rr and int(rr.group(1)) > mr:
+            block = block.replace(rr.group(0), '<restock>%d</restock>' % mr, 1)
     # stałe ilości i dodatkowe tiery (np. słabsze automaty w bazach wojskowych niższych tierów)
     SETN = cfg.get('set_nominal', {}); TADD = cfg.get('tier_add', {})
     if name in TADD:
