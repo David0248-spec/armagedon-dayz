@@ -265,6 +265,38 @@
     "FAMAS": [
       8,
       4
+    ],
+    "LeeEnfield": [
+      10,
+      5
+    ],
+    "MP18": [
+      6,
+      3
+    ],
+    "Luger": [
+      8,
+      4
+    ],
+    "SCARL": [
+      2,
+      1
+    ],
+    "SCARH": [
+      2,
+      1
+    ],
+    "Flaregun": [
+      10,
+      5
+    ],
+    "M79": [
+      4,
+      2
+    ],
+    "Mp133Shotgun": [
+      30,
+      18
     ]
   },
   "globals": {
@@ -405,6 +437,31 @@
     "Mag_FAMAS_25Rnd": [
       "Tier3",
       "Tier4"
+    ],
+    "Mp133Shotgun": [
+      "Tier1",
+      "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "M79": [
+      "Tier3",
+      "Tier4"
+    ],
+    "Luger": [
+      "Tier1",
+      "Tier2"
+    ],
+    "SCARL": [
+      "Tier4"
+    ],
+    "LeeEnfield": [
+      "Tier2",
+      "Tier3"
+    ],
+    "MP18": [
+      "Tier2",
+      "Tier3"
     ]
   }
 }
