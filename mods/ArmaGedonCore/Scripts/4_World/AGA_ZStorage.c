@@ -311,6 +311,42 @@ class AGA_Build
 		return best;
 	}
 
+	// diagnostyka po stronie gracza (co 3 s, tylko z toporkiem przy meblu) -> log serwera [DIAG]
+	static int s_DiagT;
+	static void Diag(PlayerBase p, ActionTarget target)
+	{
+		if (GetGame().IsDedicatedServer() || !p) return;
+		int now = GetGame().GetTime();
+		if (now - s_DiagT < 3000) return;
+		string txt = "";
+		Object tob = null;
+		if (target) tob = target.GetObject();
+		if (tob) txt += "target=" + tob.GetType(); else txt += "target=none";
+		if (target && target.GetParent()) txt += " parent=" + target.GetParent().GetType();
+		EntityAI e = Nearest(p, target);
+		if (!e)
+		{
+			array<Object> objs = new array<Object>;
+			GetGame().GetObjectsAtPosition(p.GetPosition(), 3.0, objs, null);
+			string near = "";
+			foreach (Object o : objs) { if (o && (o.GetType().IndexOf("mmg_") == 0 || o.IsKindOf("WoodenCrate"))) near += o.GetType() + " "; }
+			if (near == "") return;
+			txt += " nearest=NONE around=" + near;
+		}
+		else
+		{
+			txt += " nearest=" + e.GetType();
+			AGA_UpStep st = StepFor(e);
+			if (!st) txt += " step=NONE";
+			TerritoryFlag f = AGA_Territory.FlagAt(e.GetPosition());
+			if (!f) txt += " flag=NONE";
+			else txt += " flagGid=" + f.AGA_Gid().ToString() + " myGid=" + p.AGA_Gid().ToString() + " lvl=" + f.AGA_Level().ToString();
+			if (st) txt += " blocker='" + Blocker(p, e, st) + "'";
+		}
+		s_DiagT = now;
+		GetRPCManager().SendRPC("AGA", "AGA_GroupCmd", new Param2<string, string>("diag", txt), true);
+	}
+
 	// co blokuje ulepszenie ("" = można)
 	static string Blocker(PlayerBase p, EntityAI e, AGA_UpStep s)
 	{
@@ -544,6 +580,7 @@ class AGA_ActionUpgrade : ActionContinuousBase
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
 	{
 		if (!item || player.IsPlacingLocal()) return false;
+		AGA_Build.Diag(player, target);
 		EntityAI e = AGA_Build.Nearest(player, target);
 		if (!e) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);

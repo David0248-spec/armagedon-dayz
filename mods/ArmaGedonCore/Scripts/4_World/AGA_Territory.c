@@ -876,6 +876,11 @@ class AGA_Territory
 		PlayerBase p = AGA_Server.Get().FindPlayer(sender.GetPlainId());
 		if (!p) return;
 		string cmd = data.param1;
+		if (cmd == "diag")
+		{
+			AGA_Server.Get().Log("[DIAG] " + sender.GetName() + ": " + data.param2);
+			return;
+		}
 		if (cmd == "kick") Kick(p, data.param2);
 		else if (cmd == "leave") Leave(p);
 		else if (cmd == "disband") DisbandOwn(p);
