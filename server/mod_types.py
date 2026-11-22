@@ -31,6 +31,17 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
     # Code Lock – dostępny, ale nie na każdym kroku
     s = re.sub(r'(<type name="CodeLock">.*?<nominal>)\d+(</nominal>.*?<min>)\d+(</min>)', r'\g<1>80\g<2>40\g<3>', s, flags=re.S)
     s = re.sub(r'(<type name="CodeLock">.*?)(</type>)', lambda m: m.group(1) + ('' if 'usage name="Town"' in m.group(1) else '\t<usage name="Town"/>\n\t') + m.group(2), s, count=1, flags=re.S)
+    # stałe ilości z economy.json także dla typów z modów (np. broń z Advanced Weapon Scopes)
+    SETN = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ce', 'economy.json'))).get('set_nominal', {})
+    def _setn(m):
+        b = m.group(0); n = m.group(1)
+        if n not in SETN: return b
+        b = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % SETN[n][0], b)
+        b = re.sub(r'<min>\d+</min>', '<min>%d</min>' % SETN[n][1], b)
+        if 'usage name="Military"' not in b:
+            b = b.replace('</type>', '\t<usage name="Military"/>\n\t\t<value name="Tier2"/>\n\t\t<value name="Tier3"/>\n\t\t<value name="Tier4"/>\n\t</type>')
+        return b
+    s = re.sub(r'<type name="([^"]+)">.*?</type>', _setn, s, flags=re.S)
     open(f, 'w').write(s)
     print('mod types %s: %d -> %d' % (os.path.basename(f), before, len(names(s))))
 
