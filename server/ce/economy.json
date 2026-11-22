@@ -281,6 +281,10 @@
     "Mp133Shotgun": [
       45,
       27
+    ],
+    "AntiChemInjector": [
+      4,
+      2
     ]
   },
   "globals": {
@@ -454,5 +458,17 @@
     "weapons": 3,
     "clothes": 4,
     "default": 3
+  },
+  "add_usage": {
+    "AntiChemInjector": {
+      "usage": [
+        "Medic",
+        "Military"
+      ],
+      "tiers": [
+        "Tier3",
+        "Tier4"
+      ]
+    }
   }
 }
