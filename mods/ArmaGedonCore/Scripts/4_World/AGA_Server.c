@@ -205,7 +205,7 @@ class AGA_Server
 		AGA_Events.Tick();
 	}
 
-	// wyrzucanie AFK po 15 minutach bez ruchu (admini pominięci)
+	// wyrzucanie AFK po 10 minutach bez ruchu (admini pominięci)
 	void AfkTick()
 	{
 		array<Man> players = new array<Man>;
@@ -221,9 +221,9 @@ class AGA_Server
 				mins = m_AfkMin.Get(id) + 1;
 			m_AfkPos.Set(id, now);
 			m_AfkMin.Set(id, mins);
-			if (mins == 13)
-				NotificationSystem.SendNotificationToPlayerIdentityExtended(pb.GetIdentity(), 10, "AFK WARNING", "You will be kicked in 2 minutes for being AFK.", "set:dayz_gui image:icon_info");
-			if (mins >= 15)
+			if (mins == 8)
+				NotificationSystem.SendNotificationToPlayerIdentityExtended(pb.GetIdentity(), 10, "AFK WARNING", "You will be kicked in 2 minutes for being AFK (10 min limit).", "set:dayz_gui image:icon_info");
+			if (mins >= 10)
 			{
 				Log("AFK kick: " + Who(pb));
 				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(DoKick, 500, false, id);
@@ -247,7 +247,7 @@ class AGA_Server
 	{
 		PlayerBase p = FindPlayer(steamId);
 		if (!p || !p.GetIdentity()) return;
-		NotificationSystem.SendNotificationToPlayerIdentityExtended(p.GetIdentity(), 20, "SERVER RULES", "1. No cheats, exploits or glitching into bases.  2. No racism or toxic behaviour.  3. Raid only during raid hours.  4. No combat logging.  5. Max 1 base per group, build reasonably.  6. Admin decisions are final. AFK > 15 min = kick.", "set:dayz_gui image:icon_info");
+		NotificationSystem.SendNotificationToPlayerIdentityExtended(p.GetIdentity(), 20, "SERVER RULES", "1. No cheats, exploits or glitching into bases.  2. No racism or toxic behaviour.  3. Raid only during raid hours.  4. No combat logging.  5. Max 1 base per group, build reasonably.  6. Admin decisions are final. AFK > 10 min = kick.", "set:dayz_gui image:icon_info");
 	}
 
 	// jednorazowa sonda: płaskie, wolne miejsca na lotniskach pod spawn helikopterów
