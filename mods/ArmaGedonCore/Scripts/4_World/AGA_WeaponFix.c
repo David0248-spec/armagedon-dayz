@@ -11,3 +11,19 @@ modded class AK_Suppressor545
 		return (t.Contains("aek971") || t.Contains("an94") || t.Contains("aks74un"));
 	}
 }
+
+// M249 z gry bazowej nie ma zainicjalizowanego FSM - powoduje bledy i crashe klientow. Usuwamy kazda sztuke (swiat i ekwipunki).
+modded class Weapon_Base
+{
+	override void EEInit()
+	{
+		super.EEInit();
+		if (GetGame().IsServer() && GetType() == "M249")
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_RemoveBroken, 500, false);
+	}
+
+	void AGA_RemoveBroken()
+	{
+		if (!IsPendingDeletion()) GetGame().ObjectDelete(this);
+	}
+}
