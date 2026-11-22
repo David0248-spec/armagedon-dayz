@@ -679,7 +679,8 @@ class AGA_UpgradeRecipe extends RecipeBase
 		EntityAI e = Furn(ingredients);
 		if (!e || e.GetHierarchyParent()) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);
-		return s && AGA_Build.Blocker(player, e, s) == "";
+		if (!s) return false;
+		return AGA_Build.Blocker(player, e, s) == "";
 	}
 
 	override void Do(ItemBase ingredients[], PlayerBase player, array<ItemBase> results, float specialty_weight)
