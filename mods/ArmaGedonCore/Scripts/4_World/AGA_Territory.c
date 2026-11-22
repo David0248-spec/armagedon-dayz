@@ -257,9 +257,10 @@ class AGA_Territory
 
 	static bool OnRoad(vector pos)
 	{
-		float ground = GetGame().SurfaceY(pos[0], pos[2]);
-		float road = GetGame().SurfaceRoadY(pos[0], pos[2]);
-		return road > ground + 0.005;
+		string t;
+		GetGame().SurfaceGetType(pos[0], pos[2], t);
+		t.ToLower();
+		return t.IndexOf("asphalt") >= 0 || t.IndexOf("asf") >= 0 || t.IndexOf("concrete") >= 0 || t.IndexOf("road") >= 0;
 	}
 
 	// ---------------------------------------------------------------- stawianie przedmiotów
