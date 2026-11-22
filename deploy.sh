@@ -20,6 +20,8 @@ MODS=$(grep -v '^#' server/mods.txt | awk 'NF==2 {print $2}' | while read m; do 
 MODS="${MODS}@ArmaGedonCore"
 echo "MODY: $MODS"
 sed -i 's/^maxPlayers.*/maxPlayers = 100;/' ~/dayz/serverDZ.cfg
+# czas x2 jak na KarmaKrew
+grep -q '^serverTimeAcceleration' ~/dayz/serverDZ.cfg && sed -i 's/^serverTimeAcceleration.*/serverTimeAcceleration = 2;/' ~/dayz/serverDZ.cfg || echo 'serverTimeAcceleration = 2;' >> ~/dayz/serverDZ.cfg
 # VPP: dostęp tylko po SteamID z SuperAdmins (bez hasła) - na życzenie właściciela
 grep -q '^vppDisablePassword' ~/dayz/serverDZ.cfg || echo 'vppDisablePassword = 1;' >> ~/dayz/serverDZ.cfg
 tmux new-session -d -s dayz "cd ~/dayz && while true; do ./DayZServer -config=serverDZ.cfg -port=2302 -profiles=profiles '-mod=$MODS' -dologs -adminlog -netlog -freezecheck; echo RESTART; sleep 10; done"
