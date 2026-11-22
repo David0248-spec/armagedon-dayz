@@ -87,8 +87,13 @@ for w, mag in cfg.get('weapon_mags', {}).items():
     m = re.search(r'<type name="%s">(.*?)</type>' % re.escape(w), s, flags=re.S)
     att = '\t\t<attachments chance="%.2f">\n\t\t\t<item name="%s" chance="1.00" />\n\t\t</attachments>\n' % (ch, mag)
     if m:
-        if 'Mag_' in m.group(1): continue
-        s = s[:m.end() - len('</type>')] + att + '\t</type>' + s[m.end():]
+        body = m.group(1)
+        if 'Mag_' in body:
+            nb = re.sub(r'<attachments chance="[\d.]+">(\s*<item name="Mag_)', lambda q: '<attachments chance="%.2f">%s' % (ch, q.group(1)), body)
+            if nb == body: continue
+            s = s[:m.start(1)] + nb + s[m.end(1):]
+        else:
+            s = s[:m.end() - len('</type>')] + att + '\t</type>' + s[m.end():]
     else:
         s = s.replace('</spawnabletypes>', '\t<type name="%s">\n%s\t</type>\n</spawnabletypes>' % (w, att))
     added += 1
