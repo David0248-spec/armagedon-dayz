@@ -500,6 +500,11 @@ class AGA_Events
 		Object s2 = Put(e, "StaticObj_Misc_WoodenCrate_3x", 6, -28, -40, 0.02);
 		Object s3 = Put(e, "StaticObj_Misc_BoxWooden", -2, -37, 70, 0.02);
 		Put(e, "StaticObj_Misc_Pallets1", 8, -41, 15, 0.02);
+		Put(e, "StaticObj_Misc_Pallets2", -8, -36, -30, 0.02);
+		Put(e, "StaticObj_Misc_WoodenCrate_3x", 12, -22, 60, 0.02);
+		Put(e, "StaticObj_Misc_BoxWooden", -10, -46, 15, 0.02);
+		Put(e, "StaticObj_Misc_BoxWooden", 0, -55, 120, 0.02);
+		Fire(e, -11, -33);
 		array<string> top = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_AK74_30Rnd", "Ammo_556x45", "Ammo_762x39", "Ammo_545x39", "BandageDressing", "Canteen", "M67Grenade"};
 		OnTop(s1, top.GetRandomElement());
 		OnTop(s2, top.GetRandomElement());
@@ -537,6 +542,9 @@ class AGA_Events
 			e.Variant = "_MIL";
 			array<string> mw = {"Wreck_UH1Y", "Wreck_Mi8_Crashed"};
 			PutAny(e, mw, 0, 0, 0, 0.3);
+			Object hs = Put(e, "StaticObj_Misc_WoodenCrate_3x", -7, -6, 40, 0.02);
+			Put(e, "StaticObj_Misc_BoxWooden", 9, 3, -25, 0.02);
+			OnTop(hs, "Ammo_556x45");
 			array<string> mguns = {"M4A1", "AKM", "AK74", "SKS", "Mosin9130", "UMP45"};
 			array<string> mgear = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Ammo_556x45", "Ammo_762x39", "BallisticHelmet_Green", "MilitaryBoots_Black", "TacticalGloves_Green", "AssaultBag_Green", "PlateCarrierVest", "BandageDressing", "M67Grenade"};
 			c = LootCrate(e, 6, -5);
@@ -551,6 +559,7 @@ class AGA_Events
 		{
 			e.Variant = "_CIV";
 			Put(e, "Land_Wreck_Mi8_Civilian", 0, 0, 0, 0.3);
+			Put(e, "StaticObj_Misc_BoxWooden", -7, -5, 30, 0.02);
 			Smoke(e, 2, 1);
 			array<string> cl = {"Hoodie_Blue", "Jeans_Blue", "HikingBootsLow_Black", "MountainBag_Green", "TunaCan", "BakedBeansCan", "WaterBottle", "Flashlight", "Battery9V", "Binoculars", "CZ75", "Mag_CZ75_15Rnd", "Ammo_9x19", "Compass", "Matchbox"};
 			c = LootCrate(e, 7, -4);
@@ -563,6 +572,8 @@ class AGA_Events
 		{
 			e.Variant = "_MED";
 			Put(e, "Wreck_UH1Y", 0, 0, 0, 0.3);
+			Object mb = Put(e, "StaticObj_Misc_BoxWooden", -6, -5, 20, 0.02);
+			OnTop(mb, "BandageDressing");
 			array<string> md = {"BandageDressing", "BandageDressing", "Morphine", "Epinephrine", "SalineBagIV", "BloodBagIV", "BloodTestKit", "FirstAidKit", "TetracyclineAntibiotics", "PainkillerTablets", "CharcoalTablets", "DisinfectantSpray", "SurgicalGloves_Blue", "MedicalScrubsShirt_Green"};
 			c = LootCrate(e, 6, -5);
 			GiveFrom(c, md, 3);
@@ -585,6 +596,12 @@ class AGA_Events
 		array<string> escort = {"Land_Wreck_UAZ_Aban1_Police", "Land_Wreck_Uaz", "Land_Wreck_Volha_Police"};
 		PutAny(e, escort, -0.6, -18, 9, 0.15);
 		Smoke(e, -0.3, 11);
+		Put(e, "StaticObj_Misc_BagFence_Round", -6, -24, 0, 0);
+		Put(e, "StaticObj_Misc_BagFence_3m", 6, 18, 90, 0);
+		Put(e, "Land_Misc_FireBarrel_Red", 5.5, -12, 0, 0.05);
+		Object rb = Put(e, "StaticObj_Misc_BoxWooden", 5, 8, 35, 0.02);
+		Put(e, "StaticObj_Misc_Pallet", 5.5, -3, 70, 0.02);
+		OnTop(rb, "BandageDressing");
 		array<string> basic = {"BandageDressing", "BandageDressing", "Rag", "PainkillerTablets", "CharcoalTablets", "TetracyclineAntibiotics", "VitaminBottle", "DisinfectantAlcohol", "Morphine", "Epinephrine", "SalineBagIV", "BloodTestKit", "SurgicalGloves_Blue", "SurgicalMask", "FirstAidKit", "Iodine"};
 		array<string> nbc = {"NBCGlovesGray", "NBCBootsGray", "NBCHoodGray", "NBCPantsGray", "NBCJacketGray", "GasMask"};
 		EntityAI c1 = LootCrate(e, 4.5, 2);
@@ -607,6 +624,8 @@ class AGA_Events
 		Put(e, "Land_Misc_FireBarrel_Green", 2.5, -3, 0, 0.05);
 		Object bx = Put(e, "StaticObj_Misc_BoxWooden", -4, 2, 30, 0.02);
 		Put(e, "StaticObj_Misc_Pallet", 3.5, 4.5, 15, 0.02);
+		Put(e, "StaticObj_Misc_WoodPile_Forest2", -5.5, -1.5, 75, 0.05);
+		Put(e, "StaticObj_Mil_CamoNet_Side_east", -5, 5, 180, 0);
 		array<string> guns = {"Mosin9130", "CZ527", "Izh18", "Winchester70", "Izh43Shotgun"};
 		array<string> ammo = {"Ammo_762x54", "Ammo_308Win", "Ammo_22", "Ammo_12gaPellets", "Ammo_12gaSlug", "Mag_CZ527_5rnd"};
 		array<string> wear = {"HuntingJacket_Autumn", "HuntingJacket_Brown", "HunterPants_Autumn", "HunterPants_Brown", "BoonieHat_DPM", "HuntingBag", "WoolGloves_Green"};
@@ -632,6 +651,10 @@ class AGA_Events
 		Fire(e, 0, 0);
 		Put(e, "StaticObj_Misc_WoodPile1", -3, -4, 30, 0.05);
 		Put(e, "Land_Misc_FireBarrel_Blue", 3.5, -2.5, 0, 0.05);
+		Put(e, "Land_Wreck_Trailer_Closed", -12, -7, 120, 0.1);
+		Put(e, "Land_Misc_FireBarrel_Yellow", -6, 8, 0, 0.05);
+		Put(e, "StaticObj_Misc_WoodPile2", 5, -6, 60, 0.05);
+		Put(e, "StaticObj_Misc_Pallets2", 9, -1, 20, 0.02);
 		Object bx = Put(e, "StaticObj_Misc_BoxWooden", -1.5, -6, 10, 0.02);
 		array<string> food = {"TunaCan", "BakedBeansCan", "SpaghettiCan", "PeachesCan", "SardinesCan", "WaterBottle", "SodaCan_Cola", "Canteen"};
 		array<string> stuff = {"Hoodie_Blue", "Jeans_Blue", "AthleticShoes_Black", "WoolCoat_Black", "Sweater_Gray", "Matchbox", "Flashlight", "Battery9V", "Rag", "KitchenKnife", "CanOpener", "Hatchet", "SewingKit", "TaloonBag_Blue"};
@@ -659,6 +682,14 @@ class AGA_Events
 		Put(e, "StaticObj_Misc_Pallets2", -1, 11, 10, 0.02);
 		Put(e, "StaticObj_Misc_WoodPile1", 3, -8, 5, 0.03);
 		Put(e, "Land_Misc_Toilet_Mobile", -10, -6, 160, 0.02);
+		Put(e, "Land_Misc_Toilet_Mobile", -11.5, -6, 160, 0.02);
+		array<string> trk = {"Land_Wreck_Truck02_Yellow", "Land_Wreck_Truck02_White", "Land_wreck_truck01_aban1_orange"};
+		PutAny(e, trk, -14, 14, 110, 0.15);
+		Put(e, "StaticObj_Misc_Pipes", 5, 14, 5, 0.03);
+		Put(e, "StaticObj_Misc_Pallets3", -5, 13, 45, 0.02);
+		Put(e, "StaticObj_PalletTrolley_01_yellow_F", 1, 6, 30, 0.02);
+		Put(e, "StaticObj_Misc_ConcretePipe_Gate", -7, -12, 10, 0.05);
+		Put(e, "Land_Misc_FireBarrel_Yellow", 12, 3, 0, 0.05);
 		array<string> mats = {"NailBox", "WoodenPlank", "MetalPlate", "MetalWire", "Rope", "BarbedWire", "CombinationLock"};
 		array<string> tools = {"Hammer", "Shovel", "Pliers", "Hacksaw", "HandSaw", "Hatchet", "Crowbar", "Pickaxe"};
 		array<string> wear = {"ConstructionHelmet_Orange", "ConstructionHelmet_Yellow", "ReflexVest", "WorkingBoots_Yellow", "WorkingGloves_Yellow", "Overalls_Blue", "Overalls_Gray"};
