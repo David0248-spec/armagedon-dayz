@@ -73,8 +73,8 @@ def fix_type(m):
     SETN = cfg.get('set_nominal', {}); TSET = cfg.get('tier_set', {})
     AU = cfg.get('add_usage', {})
     if name in AU: block = block.replace('deloot="1"', 'deloot="0"')
-    if name in AU and '<usage name=' not in block:
-        tags = ''.join('<usage name="%s"/>' % u for u in AU[name]['usage']) + ''.join('<value name="%s"/>' % t for t in AU[name].get('tiers', []))
+    if name in AU:
+        tags = ''.join('<usage name="%s"/>' % u for u in AU[name]['usage'] if 'usage name="%s"' % u not in block) + ''.join('<value name="%s"/>' % t for t in AU[name].get('tiers', []) if 'value name="%s"' % t not in block)
         block = block.replace('</type>', '\t' + tags + '\n\t</type>')
         changed += 1
     if name in TSET:
