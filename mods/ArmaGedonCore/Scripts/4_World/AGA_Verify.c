@@ -63,7 +63,12 @@ class AGA_Verify
 		string uid = id.GetPlainId();
 		AGA_Server.Get().Log("[WERYFIKACJA] kick " + uid + ": nie zaliczona przed wejsciem");
 		Forget(uid);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().DisconnectPlayer, 300, false, id, uid);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(DropNow, 300, false, id, uid);
+	}
+
+	static void DropNow(PlayerIdentity id, string uid)
+	{
+		if (id) GetGame().DisconnectPlayer(id, uid);
 	}
 
 	// klient zglasza gotowosc (menu zarejestrowane) – wyslij pytanie ponownie
