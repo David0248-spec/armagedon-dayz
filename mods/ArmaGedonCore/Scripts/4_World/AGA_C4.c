@@ -324,7 +324,7 @@ class AGA_AttachClockToExplosive extends RecipeBase
 	override void Init()
 	{
 		m_Name = "Attach alarm clock";
-		m_IsInstaRecipe = true;
+		m_IsInstaRecipe = false;
 		m_AnimationLength = 1;
 		m_MinDamageIngredient[0] = -1;
 		m_MaxDamageIngredient[0] = 3;

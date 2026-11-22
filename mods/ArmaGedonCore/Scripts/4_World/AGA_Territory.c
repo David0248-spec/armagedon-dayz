@@ -170,8 +170,8 @@ modded class TerritoryFlag
 class AGA_Territory
 {
 	static const float RADIUS = 30;
-	static const int LIMIT = 8;
-	static const int MAX_CRATES = 6;
+	static const int LIMIT = 5;
+	static const int MAX_CRATES = 5;
 	static const int MAX_FIREPLACES = 1;
 	static const int MAX_VEHICLES = 2;
 	static const float LIFE_L1 = 432000;   // 5 dni
@@ -378,7 +378,7 @@ class AGA_Territory
 				return false;
 			}
 			if (!AGA_LimitOk(item, flag, AGA_GunRackBase, 2, "gun racks", msg)) return false;
-			if (!AGA_LimitOk(item, flag, AGA_GunWallBase, 2, "gun walls", msg)) return false;
+			if (!AGA_LimitOk(item, flag, AGA_GunWallBase, 1, "gun wall", msg)) return false;
 			if (!AGA_LimitOk(item, flag, AGA_GearStandBase, 2, "gear stands", msg)) return false;
 			if (!AGA_LimitOk(item, flag, AGA_WorkbenchBase, 1, "workbench", msg)) return false;
 			if (item.IsInherited(Fireplace) && CountNear(flag, Fireplace) >= MAX_FIREPLACES)

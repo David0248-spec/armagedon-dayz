@@ -1,29 +1,29 @@
 {
   "_opis": "Vanilla+ : blisko vanilli, lekko łatwiej. Mnożniki nominal/min (1.0 = vanilla). Nazwa nadpisuje kategorię.",
   "category_mult": {
-    "weapons": 1.05,
-    "explosives": 0.9,
-    "tools": 1.05,
-    "food": 1.1,
-    "containers": 0.6,
-    "clothes": 1.0,
-    "lootdispatch": 1.0
+    "weapons": 1.35,
+    "explosives": 1.0,
+    "tools": 1.35,
+    "food": 1.45,
+    "containers": 0.75,
+    "clothes": 1.3,
+    "lootdispatch": 1.25
   },
   "name_mult": {
-    "Mag_": 1.1,
-    "Ammo_": 1.1,
-    "AmmoBox": 1.05,
-    "Bandage": 1.1,
-    "SparkPlug": 1.25,
-    "GlowPlug": 1.25,
-    "CarBattery": 1.25,
-    "TruckBattery": 1.25,
-    "CarRadiator": 1.2,
-    "HeadlightH7": 1.2,
-    "Wheel": 1.2,
-    "TireRepairKit": 1.2,
-    "CanisterGasoline": 1.2,
-    "NailBox": 1.1,
+    "Mag_": 1.45,
+    "Ammo_": 1.45,
+    "AmmoBox": 1.35,
+    "Bandage": 1.35,
+    "SparkPlug": 1.45,
+    "GlowPlug": 1.45,
+    "CarBattery": 1.45,
+    "TruckBattery": 1.45,
+    "CarRadiator": 1.45,
+    "HeadlightH7": 1.45,
+    "Wheel": 1.45,
+    "TireRepairKit": 1.45,
+    "CanisterGasoline": 1.45,
+    "NailBox": 1.35,
     "SeaChest": 0.5,
     "WoodenCrate": 0.5,
     "Barrel_Blue": 0.3,
@@ -36,14 +36,14 @@
     "PartyTent": 0.5
   },
   "event_nominal": {
-    "StaticHeliCrash": 3,
-    "VehicleCivilianSedan": 1.15,
-    "VehicleOffroadHatchback": 1.15,
-    "VehicleHatchback02": 1.15,
-    "VehicleSedan02": 1.15,
-    "VehicleOffroad02": 1.15,
-    "VehicleTruck01": 1.15,
-    "VehicleBoat": 1.1
+    "StaticHeliCrash": 4,
+    "VehicleCivilianSedan": 1.35,
+    "VehicleOffroadHatchback": 1.35,
+    "VehicleHatchback02": 1.35,
+    "VehicleSedan02": 1.35,
+    "VehicleOffroad02": 1.35,
+    "VehicleTruck01": 1.35,
+    "VehicleBoat": 1.35
   },
   "wipe_start": "2026-11-22",
   "phase1_removed": [
@@ -82,5 +82,6 @@
     "Watchtower": 604800,
     "WoodenCrate": 604800
   },
-  "removed": []
+  "removed": [],
+  "_opis_gracze": "Mnozniki pod 100-115 graczy (pazdziernik/listopad 2026)."
 }

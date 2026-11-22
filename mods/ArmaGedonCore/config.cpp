@@ -772,6 +772,7 @@ class CfgWorlds
 	{
 		volFogOffset = -200;
 	};
+};
 class CfgVehicles
 {
 	class ExplosionTest;
@@ -793,7 +794,6 @@ class CfgVehicles
 			};
 		};
 	};
-};
 	class CombinationLock;
 	class CodeLock: CombinationLock
 	{
@@ -1166,6 +1166,9 @@ class CfgVehicles
 	{
 		scope = 2;
 		displayName = "Timed Plastic Explosive";
+		model = "\\DayZExpansion\\Objects\\Weapons\\Explosives\\explosive.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
 		descriptionShort = "Plastic explosive wired to an alarm clock. Once armed it detonates after a short countdown. Can be defused with pliers.";
 		attachments[] = {"TriggerAlarmClock"};
 	};
