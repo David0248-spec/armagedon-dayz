@@ -63,10 +63,16 @@ class AGA_Build
 	static AGA_UpStep StepFor(EntityAI e)
 	{
 		if (!e) return null;
-		string t = e.GetType();
-		foreach (AGA_UpStep s : Steps())
+		string tp = e.GetType();
+		tp.ToLower();
+		array<ref AGA_UpStep> all = Steps();
+		for (int i = 0; i < all.Count(); i++)
 		{
-			if (t == s.From) return s;
+			AGA_UpStep st = all[i];
+			if (!st) continue;
+			string fr = st.From;
+			fr.ToLower();
+			if (tp == fr) return st;
 		}
 		return null;
 	}
@@ -322,6 +328,8 @@ class AGA_Build
 		Object tob = null;
 		if (target) tob = target.GetObject();
 		if (tob) txt += "target=" + tob.GetType(); else txt += "target=none";
+		EntityAI te = EntityAI.Cast(tob);
+		if (te) { if (StepFor(te)) txt += "(step ok)"; else txt += "(no step, steps=" + Steps().Count().ToString() + ")"; }
 		if (target && target.GetParent()) txt += " parent=" + target.GetParent().GetType();
 		EntityAI e = Nearest(p, target);
 		if (!e)
@@ -338,6 +346,7 @@ class AGA_Build
 			txt += " nearest=" + e.GetType();
 			AGA_UpStep st = StepFor(e);
 			if (!st) txt += " step=NONE";
+			txt += " steps=" + Steps().Count().ToString();
 			TerritoryFlag f = AGA_Territory.FlagAt(e.GetPosition());
 			if (!f) txt += " flag=NONE";
 			else txt += " flagGid=" + f.AGA_Gid().ToString() + " myGid=" + p.AGA_Gid().ToString() + " lvl=" + f.AGA_Level().ToString();
