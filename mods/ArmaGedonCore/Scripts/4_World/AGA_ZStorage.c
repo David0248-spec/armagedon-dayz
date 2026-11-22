@@ -563,6 +563,7 @@ class AGA_ActionUpgrade : ActionContinuousBase
 		AGA_UpStep s = AGA_Build.StepFor(e);
 		bool ok = false;
 		if (s && AGA_Build.Blocker(action_data.m_Player, e, s) == "") ok = true;
+		AGA_Server.Get().Log("[BAZA] proba ulepszenia (siekiera) " + e.GetType() + " ok=" + ok.ToString());
 		AGA_Build.Upgrade(action_data.m_Player, e);
 		if (ok) MiscGameplayFunctions.DealAbsoluteDmg(action_data.m_MainItem, 4);
 	}
@@ -697,5 +698,75 @@ modded class PluginRecipesManagerBase
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new AGA_CraftGunRack);
+	}
+}
+
+// ==================================================================== ulepszenie pod F (interakcja z obiektem, toporek w ręku)
+class AGA_ActionUpgradeF : ActionInteractBase
+{
+	void AGA_ActionUpgradeF()
+	{
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_INTERACTONCE;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
+		m_Text = "Upgrade";
+	}
+
+	override void CreateConditionComponents()
+	{
+		m_ConditionItem = new CCIDummy();
+		m_ConditionTarget = new CCTNone();
+	}
+
+	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
+	{
+		if (!item || !item.IsKindOf("Hatchet") || item.IsRuined()) return false;
+		EntityAI e = AGA_Build.Nearest(player, target);
+		if (!e) return false;
+		AGA_UpStep s = AGA_Build.StepFor(e);
+		if (!s || !AGA_Build.OwnFlag(player, e.GetPosition())) return false;
+		string to = GetGame().ConfigGetTextOut("CfgVehicles " + s.To + " displayName");
+		string why = AGA_Build.Blocker(player, e, s);
+		if (why == "") m_Text = "Upgrade to " + to;
+		else m_Text = "Upgrade to " + to + " (needs: " + why + ")";
+		return true;
+	}
+
+	override void OnExecuteServer(ActionData action_data)
+	{
+		EntityAI e = AGA_Build.Nearest(action_data.m_Player, action_data.m_Target);
+		if (!e) return;
+		AGA_UpStep s = AGA_Build.StepFor(e);
+		if (!s) return;
+		string why = AGA_Build.Blocker(action_data.m_Player, e, s);
+		AGA_Server.Get().Log("[BAZA] proba ulepszenia " + e.GetType() + " przez " + action_data.m_Player.GetIdentity().GetName() + " brak: '" + why + "'");
+		AGA_Build.Upgrade(action_data.m_Player, e);
+		if (why == "" && action_data.m_MainItem) MiscGameplayFunctions.DealAbsoluteDmg(action_data.m_MainItem, 4);
+	}
+}
+
+modded class WoodenCrate
+{
+	override void SetActions()
+	{
+		super.SetActions();
+		AddAction(AGA_ActionUpgradeF);
+	}
+}
+
+modded class mmg_storage_placeable_base
+{
+	override void SetActions()
+	{
+		super.SetActions();
+		AddAction(AGA_ActionUpgradeF);
+	}
+}
+
+modded class mmg_storage_openable_noLock_base
+{
+	override void SetActions()
+	{
+		super.SetActions();
+		AddAction(AGA_ActionUpgradeF);
 	}
 }
