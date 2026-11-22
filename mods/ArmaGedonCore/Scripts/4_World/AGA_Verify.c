@@ -4,6 +4,7 @@ class AGA_VerifyState
 	string Code;
 	int Tries;
 	bool Done;
+	PlayerIdentity Id;
 }
 
 class AGA_Verify
@@ -35,6 +36,7 @@ class AGA_Verify
 		AGA_VerifyState st = new AGA_VerifyState();
 		st.Code = NewCode();
 		st.Tries = TRIES;
+		st.Id = id;
 		s_St.Set(uid, st);
 		AGA_Server.Get().Log("[WERYFIKACJA] start " + id.GetName() + " (" + uid + ")");
 		Ask(id, st);
@@ -47,8 +49,21 @@ class AGA_Verify
 		Init();
 		if (!id) return;
 		AGA_VerifyState st;
-		if (s_St.Find(id.GetPlainId(), st)) { if (!st.Done) Ask(id, st); return; }
+		if (s_St.Find(id.GetPlainId(), st)) { st.Id = id; if (!st.Done) Ask(id, st); return; }
 		Begin(id);
+	}
+
+	// postac wchodzi do swiata – bez zaliczonej weryfikacji rozlaczamy (nie da sie ominac czekaniem)
+	static void OnSpawn(PlayerIdentity id)
+	{
+		Init();
+		if (!id) return;
+		AGA_VerifyState st;
+		if (s_St.Find(id.GetPlainId(), st) && st.Done) return;
+		string uid = id.GetPlainId();
+		AGA_Server.Get().Log("[WERYFIKACJA] kick " + uid + ": nie zaliczona przed wejsciem");
+		Forget(uid);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().DisconnectPlayer, 300, false, id, uid);
 	}
 
 	// klient zglasza gotowosc (menu zarejestrowane) – wyslij pytanie ponownie
@@ -69,8 +84,12 @@ class AGA_Verify
 	{
 		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
 		AGA_Server.Get().Log("[WERYFIKACJA] kick " + uid + ": " + why);
+		PlayerIdentity id;
+		AGA_VerifyState st;
+		if (s_St && s_St.Find(uid, st)) id = st.Id;
+		if (p && p.GetIdentity()) id = p.GetIdentity();
 		Forget(uid);
-		if (p && p.GetIdentity()) GetGame().DisconnectPlayer(p.GetIdentity(), uid);
+		if (id) GetGame().DisconnectPlayer(id, uid);
 	}
 
 	static void Timeout(string uid)

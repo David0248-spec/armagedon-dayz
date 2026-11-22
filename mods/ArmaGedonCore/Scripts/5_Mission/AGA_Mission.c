@@ -76,7 +76,7 @@ modded class MissionServer
 	{
 		super.InvokeOnConnect(player, identity);
 		AGA_Survival.Start();
-		AGA_Verify.EnsureStarted(identity);
+		AGA_Verify.OnSpawn(identity);
 		if (identity) AGA_Survival.LoadStam(player, identity.GetPlainId());
 		AGA_Territory.AGA_SyncPl(player);
 		if (identity)

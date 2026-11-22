@@ -51,11 +51,29 @@ class AGA_VerifyMenu extends UIScriptedMenu
 			else a.SetColor(ARGB(255, 60, 60, 64));
 		}
 		if (m_Answer) m_Answer.SetText("");
+		m_Wrong = wrong;
 		if (m_Status)
 		{
 			if (wrong) m_Status.SetText("Wrong answer - try again (" + s_Tries.ToString() + " left)");
 			else m_Status.SetText("Type the number shown in the frame");
 		}
+	}
+
+	protected bool m_Wrong;
+	protected float m_Tick;
+
+	// pozostaly czas na odpowiedz (po nim serwer rozlacza)
+	override void Update(float timeslice)
+	{
+		super.Update(timeslice);
+		m_Tick += timeslice;
+		if (m_Tick < 0.25 || !m_Status || !AGA_VerifyClient.s_Holding) return;
+		m_Tick = 0;
+		int left = AGA_VerifyClient.s_LoginTime - (int)(GetGame().GetTickTime() - AGA_VerifyClient.s_HoldAt);
+		if (left < 0) left = 0;
+		string msg = "Type the number shown in the frame";
+		if (m_Wrong) msg = "Wrong answer - try again (" + s_Tries.ToString() + " left)";
+		m_Status.SetText(msg + "   |   " + left.ToString() + "s");
 	}
 
 	void Passed()
