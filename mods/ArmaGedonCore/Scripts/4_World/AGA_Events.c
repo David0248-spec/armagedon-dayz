@@ -1132,7 +1132,8 @@ class AGA_Events
 		float a = Math.Atan2(to[0] - from[0], to[2] - from[2]) * Math.RAD2DEG;
 		if (a < 0) a += 360;
 		array<string> n = {"north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"};
-		int i = Math.Round(a / 45) % 8;
+		int r = Math.Round(a / 45);
+		int i = r % 8;
 		return n[i];
 	}
 
