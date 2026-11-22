@@ -42,10 +42,18 @@ class CfgMods
 
 class CfgVehicles
 {
-	class HouseNoDestruct;
-	class AGA_SmokeColumn: HouseNoDestruct
+	class Wreck_UH1Y;
+	class WoodenCrate;
+	class AGA_SmokeColumn: Wreck_UH1Y
 	{
 		scope = 1;
 		model = "\DZ\data\lightpoint.p3d";
+	};
+	class AGA_LootCrate: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Supply crate";
+		descriptionShort = "A heavy crate left behind at the site. Search it, it is too heavy to carry.";
+		weight = 50000;
 	};
 };

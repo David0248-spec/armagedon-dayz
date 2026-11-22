@@ -17,8 +17,9 @@ def fix_type(m):
     cat = re.search(r'<category name="([^"]+)"', block)
     if cat: mult = cfg['category_mult'].get(cat.group(1), 1.0)
     for k, v in cfg['name_mult'].items():
-        if k in name: mult = max(mult, v)
+        if k in name: mult = v
     if mult == 1.0: return block
+    if mult < 1.0 and int((re.search(r'<nominal>(\d+)</nominal>', block) or [0,'0'])[1]) <= 1: return block
     def scale(tag, b):
         mm = re.search(r'<%s>(\d+)</%s>' % (tag, tag), b)
         if not mm or int(mm.group(1)) == 0: return b
