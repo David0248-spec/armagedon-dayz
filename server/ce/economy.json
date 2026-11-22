@@ -10,7 +10,6 @@
     "lootdispatch": 1.25
   },
   "name_mult": {
-    "Mag_": 1.45,
     "Ammo_": 1.45,
     "AmmoBox": 1.35,
     "Bandage": 1.35,
@@ -48,11 +47,16 @@
     "FAMAS": 1.8,
     "M14": 2.0,
     "SKS": 1.5,
+    "Mag_": 2.2,
     "Mag_AKM_30Rnd": 3.0,
     "Mag_STANAG_30Rnd": 3.0,
     "Mag_AK101_30Rnd": 2.0,
     "Mag_FAL_20Rnd": 2.5,
-    "Mag_M14_20Rnd": 2.5
+    "Mag_M14_20Rnd": 2.5,
+    "Mag_AK74_30Rnd": 2.5,
+    "Mag_FAMAS_25Rnd": 2.5,
+    "Mag_MP5_30Rnd": 2.0,
+    "Mag_SVD_10Rnd": 2.0
   },
   "event_nominal": {
     "StaticHeliCrash": 4,
