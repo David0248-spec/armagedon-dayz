@@ -110,12 +110,20 @@ modded class MissionGameplay
 		GetRPCManager().AddRPC("AGA", "AGA_Zones", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_OnGroupView", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_VerifyAsk", this, SingleplayerExecutionType.Client);
+		GetRPCManager().AddRPC("AGA", "AGA_FlyBy", this, SingleplayerExecutionType.Client);
 	}
 
 	void AGA_Zones(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
 		Param1<ref AGA_ZoneDb> data;
 		if (ctx.Read(data) && data.param1) AGA_Territory.s_Zones = data.param1;
+	}
+
+	void AGA_FlyBy(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		Param4<vector, vector, int, int> d;
+		if (!ctx.Read(d)) return;
+		AGA_FlyBy.Start(d.param1, d.param2, d.param3, d.param4);
 	}
 
 	void AGA_VerifyAsk(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
