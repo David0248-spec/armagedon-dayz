@@ -106,7 +106,7 @@ class AGA_Events
 		from[1] = GetGame().SurfaceY(from[0], from[2]) + 180;
 		vector to = pos;
 		to[1] = to[1] + 25;
-		GetRPCManager().SendRPC("AGA", "AGA_FlyBy", new Param4<vector, vector, int, int>(from, to, ms, type), true, null);
+		GetRPCManager().SendRPC("AGA", "AGA_OnFlyBy", new Param4<vector, vector, int, int>(from, to, ms, type), true, null);
 		s_Incoming.Insert(kind);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Arrive, ms, false, kind, pos, yaw);
 	}
