@@ -82,7 +82,5 @@
     "Watchtower": 604800,
     "WoodenCrate": 604800
   },
-  "removed": [
-    "Plastic_Explosive"
-  ]
+  "removed": []
 }
