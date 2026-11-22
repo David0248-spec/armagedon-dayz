@@ -277,12 +277,12 @@ class AGA_GunRack_T1 : AGA_GunRackBase {}
 class AGA_GunRack_T2 : AGA_GunRackBase
 {
 	override int AGA_Tier() { return 2; }
-	override void AGA_Rules(array<string> t, array<int> l) { t.Insert("AmmoBox"); l.Insert(2); }
+	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("AmmoBox"); limits.Insert(2); }
 }
 class AGA_GunRack_T3 : AGA_GunRackBase
 {
 	override int AGA_Tier() { return 3; }
-	override void AGA_Rules(array<string> t, array<int> l) { t.Insert("AmmoBox"); l.Insert(3); t.Insert("Pistol_Base"); l.Insert(3); }
+	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("AmmoBox"); limits.Insert(3); types.Insert("Pistol_Base"); limits.Insert(3); }
 }
 
 class AGA_GunWallBase : AGA_StorageBase {}
@@ -290,7 +290,7 @@ class AGA_GunWall_T1 : AGA_GunWallBase {}
 class AGA_GunWall_T2 : AGA_GunWallBase
 {
 	override int AGA_Tier() { return 2; }
-	override void AGA_Rules(array<string> t, array<int> l) { t.Insert("Grenade_Base"); l.Insert(8); }
+	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("Grenade_Base"); limits.Insert(8); }
 }
 
 class AGA_GearStandBase : AGA_StorageBase {}
@@ -303,37 +303,37 @@ class AGA_GearStand_T2 : AGA_GearStandBase
 class AGA_WorkbenchBase : AGA_StorageBase {}
 class AGA_Workbench_T1 : AGA_WorkbenchBase
 {
-	override void AGA_Rules(array<string> t, array<int> l)
+	override void AGA_Rules(array<string> types, array<int> limits)
 	{
-		t.Insert("Shovel"); l.Insert(1);
-		t.Insert("FieldShovel"); l.Insert(1);
-		t.Insert("WoodAxe"); l.Insert(1);
-		t.Insert("FirefighterAxe"); l.Insert(1);
-		t.Insert("Pickaxe"); l.Insert(1);
-		t.Insert("Sledgehammer"); l.Insert(1);
-		t.Insert("Hammer"); l.Insert(1);
-		t.Insert("Nail"); l.Insert(2);
-		t.Insert("WoodenPlank"); l.Insert(2);
+		types.Insert("Shovel"); limits.Insert(1);
+		types.Insert("FieldShovel"); limits.Insert(1);
+		types.Insert("WoodAxe"); limits.Insert(1);
+		types.Insert("FirefighterAxe"); limits.Insert(1);
+		types.Insert("Pickaxe"); limits.Insert(1);
+		types.Insert("Sledgehammer"); limits.Insert(1);
+		types.Insert("Hammer"); limits.Insert(1);
+		types.Insert("Nail"); limits.Insert(2);
+		types.Insert("WoodenPlank"); limits.Insert(2);
 	}
 }
 class AGA_Workbench_T2 : AGA_WorkbenchBase
 {
 	override int AGA_Tier() { return 2; }
-	override void AGA_Rules(array<string> t, array<int> l)
+	override void AGA_Rules(array<string> types, array<int> limits)
 	{
-		t.Insert("Hatchet"); l.Insert(1);
-		t.Insert("Shovel"); l.Insert(1);
-		t.Insert("FieldShovel"); l.Insert(1);
-		t.Insert("WoodAxe"); l.Insert(1);
-		t.Insert("FirefighterAxe"); l.Insert(1);
-		t.Insert("Pickaxe"); l.Insert(1);
-		t.Insert("HandSaw"); l.Insert(1);
-		t.Insert("Hacksaw"); l.Insert(1);
-		t.Insert("Pliers"); l.Insert(1);
-		t.Insert("Screwdriver"); l.Insert(1);
-		t.Insert("Sledgehammer"); l.Insert(1);
-		t.Insert("Nail"); l.Insert(3);
-		t.Insert("WoodenPlank"); l.Insert(3);
+		types.Insert("Hatchet"); limits.Insert(1);
+		types.Insert("Shovel"); limits.Insert(1);
+		types.Insert("FieldShovel"); limits.Insert(1);
+		types.Insert("WoodAxe"); limits.Insert(1);
+		types.Insert("FirefighterAxe"); limits.Insert(1);
+		types.Insert("Pickaxe"); limits.Insert(1);
+		types.Insert("HandSaw"); limits.Insert(1);
+		types.Insert("Hacksaw"); limits.Insert(1);
+		types.Insert("Pliers"); limits.Insert(1);
+		types.Insert("Screwdriver"); limits.Insert(1);
+		types.Insert("Sledgehammer"); limits.Insert(1);
+		types.Insert("Nail"); limits.Insert(3);
+		types.Insert("WoodenPlank"); limits.Insert(3);
 	}
 }
 class AGA_Workbench_T3 : AGA_Workbench_T2
