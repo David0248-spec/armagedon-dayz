@@ -504,7 +504,7 @@ class AGA_Events
 			// skrzynia wojskowa: broń na stojaku w skrzyni (sloty) albo w środku
 			if (gun && c.IsKindOf("mmg_storage_openable_noLock_base"))
 			{
-				if (!c.ServerTakeEntityAsAttachment(gun))
+				if (!c.ServerTakeEntityToTargetAttachment(c, gun))
 					c.ServerTakeEntityToCargo(gun);
 			}
 		}

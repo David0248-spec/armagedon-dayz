@@ -883,8 +883,8 @@ class CfgVehicles
 		physLayer = "item_small";
 	};
 	class Wreck_UH1Y;
-	class DeployableContainer_Base;
-	class WoodenCrate: DeployableContainer_Base
+	class Container_Base;
+	class WoodenCrate: Container_Base
 	{
 		aga_tier = 1;
 		attachments[] = {"woodenplank_upgrade_x10","nail_upgrade_x30"};
