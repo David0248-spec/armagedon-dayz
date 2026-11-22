@@ -994,7 +994,7 @@ modded class ActionBuildPart
 			AGA_Territory.Msg(msg);
 			return false;
 		}
-		// limit bram na bazę (KarmaKrew: max 5 bram/warstw)
+		// limit bram na bazę (max 5 bram/warstw)
 		ConstructionActionData cad = player.GetConstructionActionData();
 		ConstructionPart part;
 		if (cad) part = cad.GetCurrentBuildPart();
@@ -1020,7 +1020,7 @@ modded class ActionDismantlePart
 		Object o = target.GetObject();
 		if (!o) return true;
 		string msg;
-		// cudza flaga: tylko poziom 1 i tylko narzędziem typu siekiera (KarmaKrew)
+		// cudza flaga: tylko poziom 1 i tylko narzędziem typu siekiera
 		TerritoryFlag tf = TerritoryFlag.Cast(o);
 		if (tf && tf.AGA_Gid() != 0 && tf.AGA_Gid() != player.AGA_Gid())
 		{
