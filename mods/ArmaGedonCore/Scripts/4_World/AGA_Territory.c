@@ -383,7 +383,8 @@ class AGA_Territory
 				msg = "You can't build here: military, medical, police areas and castles are restricted.";
 				return false;
 			}
-			if (OnRoad(pos))
+			// barykady w oknach / drzwiach są nad ziemią – droga liczy się tylko przy ziemi
+			if (OnRoad(pos) && Math.AbsFloat(pos[1] - GetGame().SurfaceY(pos[0], pos[2])) < 0.4)
 			{
 				msg = "You can't build on roads.";
 				return false;

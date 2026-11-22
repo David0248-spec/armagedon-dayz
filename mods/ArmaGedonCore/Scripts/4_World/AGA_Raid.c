@@ -104,13 +104,49 @@ class AGA_Raid
 	}
 }
 
+// ile trafień potrzeba na jedną część (połowa bramy / ściany); wood = drewno, inaczej metal
+class AGA_RaidDmg
+{
+	static int Hits(string ammo, bool metal)
+	{
+		string a = ammo;
+		a.ToLower();
+		if (a.IndexOf("plastic") >= 0) return 2;
+		if (a.IndexOf("improvised") >= 0) return 3;
+		if (a.IndexOf("claymore") >= 0) { if (metal) return 15; return 10; }
+		if (a.IndexOf("landmine") >= 0) { if (metal) return 60; return 50; }
+		if (a.IndexOf("grenade") >= 0 || a.IndexOf("rgd") >= 0 || a.IndexOf("m67") >= 0) return 20;
+		if (a.IndexOf("pellet") >= 0) { if (metal) return 215 * 8; return 150 * 8; }
+		if (a.IndexOf("slug") >= 0) { if (metal) return 450; return 350; }
+		if (a.IndexOf("545") >= 0) { if (metal) return 720; return 500; }
+		if (a.IndexOf("556") >= 0) { if (metal) return 720; return 550; }
+		if (a.IndexOf("762x39") >= 0) { if (metal) return 660; return 400; }
+		if (a.IndexOf("762x54") >= 0 || a.IndexOf("308") >= 0 || a.IndexOf("mauser") >= 0 || a.IndexOf("9x39") >= 0) { if (metal) return 360; return 250; }
+		if (a.IndexOf("bullet") >= 0) { if (metal) return 1100; return 800; }
+		return 0;
+	}
+}
+
 modded class BaseBuildingBase
 {
 	override bool EEOnDamageCalculated(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef)
 	{
 		if (AGA_Raid.Block(this, source))
 			return false;
-		return super.EEOnDamageCalculated(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+		if (!super.EEOnDamageCalculated(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef))
+			return false;
+		// obrażenia raidowe wg tabeli: stała liczba trafień na część, niezależnie od broni z modów
+		if (!GetGame().IsServer() || IsInherited(TerritoryFlag) || dmgZone == "" || damageType == DamageType.CLOSE_COMBAT)
+			return true;
+		string z = dmgZone;
+		z.ToLower();
+		bool metal = z.IndexOf("metal") >= 0;
+		int n = AGA_RaidDmg.Hits(ammo, metal);
+		if (n <= 0) return true;
+		float mx = GetMaxHealth(dmgZone, "Health");
+		if (mx <= 0) return true;
+		DecreaseHealth(dmgZone, "Health", mx / n);
+		return false;
 	}
 }
 
