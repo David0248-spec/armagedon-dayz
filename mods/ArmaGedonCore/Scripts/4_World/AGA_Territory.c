@@ -187,6 +187,10 @@ class AGA_Territory
 	static array<TerritoryFlag> Flags()
 	{
 		if (!s_Flags) s_Flags = new array<TerritoryFlag>;
+		for (int i = s_Flags.Count() - 1; i >= 0; i--)
+		{
+			if (!s_Flags[i]) s_Flags.Remove(i);
+		}
 		return s_Flags;
 	}
 
@@ -196,8 +200,10 @@ class AGA_Territory
 		TerritoryFlag best;
 		float bestD = RADIUS * mult;
 		pos[1] = 0;
-		foreach (TerritoryFlag f : Flags())
+		array<TerritoryFlag> fl1 = Flags();
+		for (int fi1 = 0; fi1 < fl1.Count(); fi1++)
 		{
+			TerritoryFlag f = fl1[fi1];
 			if (!f || f.IsHologram()) continue;
 			vector fp = f.GetPosition();
 			fp[1] = 0;
@@ -473,8 +479,10 @@ class AGA_Territory
 	static TerritoryFlag FlagOf(AGA_Group g)
 	{
 		if (!g) return null;
-		foreach (TerritoryFlag f : Flags())
+		array<TerritoryFlag> fl2 = Flags();
+		for (int fi2 = 0; fi2 < fl2.Count(); fi2++)
 		{
+			TerritoryFlag f = fl2[fi2];
 			if (f && f.AGA_Gid() == g.Id) return f;
 		}
 		return null;
@@ -495,8 +503,10 @@ class AGA_Territory
 		GetGame().GetPlayers(players);
 		foreach (Man m : players)
 			AGA_SyncPl(PlayerBase.Cast(m));
-		foreach (TerritoryFlag f : Flags())
+		array<TerritoryFlag> fl3 = Flags();
+		for (int fi3 = 0; fi3 < fl3.Count(); fi3++)
 		{
+			TerritoryFlag f = fl3[fi3];
 			if (f) f.AGA_UpdateCount();
 		}
 	}
@@ -506,8 +516,10 @@ class AGA_Territory
 		if (!owner || !owner.GetIdentity()) return;
 		TerritoryFlag flag;
 		float bd = 3;
-		foreach (TerritoryFlag f : Flags())
+		array<TerritoryFlag> fl4 = Flags();
+		for (int fi4 = 0; fi4 < fl4.Count(); fi4++)
 		{
+			TerritoryFlag f = fl4[fi4];
 			if (!f) continue;
 			float d = vector.Distance(f.GetPosition(), pos);
 			if (d < bd)
@@ -634,8 +646,10 @@ class AGA_Territory
 	// przypisanie grup do flag po starcie (po pozycji) + porządki
 	static void Restore()
 	{
-		foreach (TerritoryFlag f : Flags())
+		array<TerritoryFlag> fl5 = Flags();
+		for (int fi5 = 0; fi5 < fl5.Count(); fi5++)
 		{
+			TerritoryFlag f = fl5[fi5];
 			if (!f || f.AGA_Gid() != 0) continue;
 			foreach (AGA_Group g : Db().Groups)
 			{
@@ -663,8 +677,10 @@ class AGA_Territory
 
 	static void VehicleCheck()
 	{
-		foreach (TerritoryFlag f : Flags())
+		array<TerritoryFlag> fl6 = Flags();
+		for (int fi6 = 0; fi6 < fl6.Count(); fi6++)
 		{
+			TerritoryFlag f = fl6[fi6];
 			if (!f || f.AGA_Gid() == 0) continue;
 			array<Object> objs = new array<Object>;
 			GetGame().GetObjectsAtPosition(f.GetPosition(), RADIUS, objs, null);
@@ -694,8 +710,10 @@ class AGA_Territory
 	// sonda nawierzchni pod istniejącymi flagami (kalibracja wykrywania dróg)
 	static void ProbeFlags()
 	{
-		foreach (TerritoryFlag f : Flags())
+		array<TerritoryFlag> fl7 = Flags();
+		for (int fi7 = 0; fi7 < fl7.Count(); fi7++)
 		{
+			TerritoryFlag f = fl7[fi7];
 			if (!f) continue;
 			vector p = f.GetPosition();
 			string t;
