@@ -163,7 +163,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name0 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -176,6 +176,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead0 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead0_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead0_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick0 {
        position 0.78 0.15
@@ -242,7 +281,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name1 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -255,6 +294,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead1 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead1_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead1_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick1 {
        position 0.78 0.15
@@ -321,7 +399,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name2 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -334,6 +412,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead2 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead2_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead2_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick2 {
        position 0.78 0.15
@@ -400,7 +517,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name3 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -413,6 +530,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead3 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead3_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead3_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick3 {
        position 0.78 0.15
@@ -479,7 +635,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name4 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -492,6 +648,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead4 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead4_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead4_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick4 {
        position 0.78 0.15
@@ -558,7 +753,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name5 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -571,6 +766,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead5 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead5_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead5_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick5 {
        position 0.78 0.15
@@ -637,7 +871,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name6 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -650,6 +884,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead6 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead6_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead6_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick6 {
        position 0.78 0.15
@@ -716,7 +989,7 @@ FrameWidgetClass AGA_Group {
       }
       TextWidgetClass Name7 {
        position 0.06 0
-       size 0.7 1
+       size 0.48 1
        hexactpos 0
        vexactpos 0
        hexactsize 0
@@ -729,6 +1002,45 @@ FrameWidgetClass AGA_Group {
        "exact text size" 16
        "text halign" left
        "text valign" center
+      }
+      ButtonWidgetClass Lead7 {
+       position 0.56 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Lead7_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.11 0.118 0.137 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Lead7_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "MAKE LEADER"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
       }
       ButtonWidgetClass Kick7 {
        position 0.78 0.15
@@ -818,6 +1130,45 @@ FrameWidgetClass AGA_Group {
        ignorepointer 1
        color 0.93 0.94 0.95 1
        text "LEAVE GROUP"
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 15
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+    ButtonWidgetClass Disband {
+     position 0.66 0.9
+     size 0.3 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     color 1 1 1 1
+     style Default
+     {
+      PanelWidgetClass Disband_bg {
+       position 0 0
+       size 1 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.55 0.09 0.09 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Disband_txt {
+       position 0 0
+       size 1 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text "DELETE GROUP"
        font "gui/fonts/metron22"
        "exact text" 1
        "exact text size" 15

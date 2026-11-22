@@ -3,6 +3,7 @@ class AGA_GroupMenu extends UIScriptedMenu
 {
 	static ref AGA_GroupView s_View;
 	static AGA_GroupMenu s_Open;
+	bool m_Confirm;
 
 	override Widget Init()
 	{
@@ -68,11 +69,17 @@ class AGA_GroupMenu extends UIScriptedMenu
 				if (v.Online[i] == 1) dot.SetColor(ARGB(255, 70, 200, 90));
 				else dot.SetColor(ARGB(255, 80, 80, 80));
 			}
+			bool other = v.IsOwner && v.Names[i].IndexOf("(owner)") < 0;
 			Widget k = layoutRoot.FindAnyWidget("Kick" + i.ToString());
-			if (k) k.Show(v.IsOwner && v.Names[i].IndexOf("(owner)") < 0);
+			if (k) k.Show(other);
+			Widget ld = layoutRoot.FindAnyWidget("Lead" + i.ToString());
+			if (ld) ld.Show(other);
 		}
 		Widget lv = layoutRoot.FindAnyWidget("Leave");
 		if (lv) lv.Show(has && !v.IsOwner);
+		Widget db = layoutRoot.FindAnyWidget("Disband");
+		if (db) db.Show(has && v.IsOwner && v.Ids.Count() <= 1);
+		if (!m_Confirm) SetT("Disband_txt", "DELETE GROUP");
 		if (has && v.IsOwner) SetT("Hint", "Manage invites at your flag pole. Members join there.");
 		else SetT("Hint", "");
 	}
@@ -88,6 +95,25 @@ class AGA_GroupMenu extends UIScriptedMenu
 		if (n == "Leave")
 		{
 			GetRPCManager().SendRPC("AGA", "AGA_GroupCmd", new Param2<string, string>("leave", ""), true);
+			return true;
+		}
+		if (n == "Disband")
+		{
+			if (!m_Confirm)
+			{
+				m_Confirm = true;
+				SetT("Disband_txt", "CLICK AGAIN TO CONFIRM");
+				return true;
+			}
+			m_Confirm = false;
+			GetRPCManager().SendRPC("AGA", "AGA_GroupCmd", new Param2<string, string>("disband", ""), true);
+			return true;
+		}
+		if (n.IndexOf("Lead") == 0 && s_View)
+		{
+			int li = n.Substring(4, n.Length() - 4).ToInt();
+			if (li < s_View.Ids.Count())
+				GetRPCManager().SendRPC("AGA", "AGA_GroupCmd", new Param2<string, string>("lead", s_View.Ids[li]), true);
 			return true;
 		}
 		if (n.IndexOf("Kick") == 0 && s_View)

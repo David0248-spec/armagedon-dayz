@@ -639,7 +639,7 @@ class AGA_Territory
 		if (!g) return;
 		if (g.Owner == id)
 		{
-			Tell(p, "The owner can't leave. Lower the flag and dismantle the flag pole to give up the territory.");
+			Tell(p, "The leader can't leave. Make someone else the leader in the P menu, or delete the group when you are alone.");
 			return;
 		}
 		Remove(g, id);
@@ -661,6 +661,45 @@ class AGA_Territory
 		NotifyGroup(g, name + " was removed from the group.");
 		PlayerBase t = AGA_Server.Get().FindPlayer(target);
 		if (t) Tell(t, "You were removed from the group.");
+	}
+
+	// lider usuwa grupę (tylko gdy jest w niej sam)
+	static void DisbandOwn(PlayerBase p)
+	{
+		if (!p || !p.GetIdentity()) return;
+		string id = p.GetIdentity().GetPlainId();
+		AGA_Group g = Of(id);
+		if (!g || g.Owner != id) return;
+		if (g.Ids.Count() > 1)
+		{
+			Tell(p, "Remove all members (or make someone else the leader) before deleting the group.");
+			return;
+		}
+		TerritoryFlag f = FlagOf(g);
+		if (f) f.AGA_SetGid(0);
+		int gid = g.Id;
+		Disband(gid, "the group was deleted by its leader.");
+		AGA_Server.Get().Log("[TERYTORIUM] " + p.GetIdentity().GetName() + " (" + id + ") usunal grupe #" + gid.ToString());
+	}
+
+	// przekazanie lidera innemu członkowi
+	static void GiveLead(PlayerBase p, string target)
+	{
+		if (!p || !p.GetIdentity()) return;
+		string id = p.GetIdentity().GetPlainId();
+		AGA_Group g = Of(id);
+		if (!g || g.Owner != id || target == id) return;
+		int i = g.Ids.Find(target);
+		if (i < 0) return;
+		g.Owner = target;
+		Save();
+		string name = "?";
+		if (i < g.Names.Count()) name = g.Names[i];
+		PlayerBase t = AGA_Server.Get().FindPlayer(target);
+		if (t && t.GetIdentity()) name = t.GetIdentity().GetName();
+		NotifyGroup(g, name + " is now the group leader.");
+		AGA_Server.Get().Log("[TERYTORIUM] " + p.GetIdentity().GetName() + " przekazal lidera bazy #" + g.Id.ToString() + " -> " + name + " (" + target + ")");
+		SyncAll();
 	}
 
 	static void Disband(int gid, string reason)
@@ -743,7 +782,7 @@ class AGA_Territory
 		Db();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Restore, 15000, false);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Cleanup, 600000, false);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Cleanup, 3600000, true);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Cleanup, 300000, true);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ProbeFlags, 30000, false);
 	}
 
@@ -840,6 +879,8 @@ class AGA_Territory
 		string cmd = data.param1;
 		if (cmd == "kick") Kick(p, data.param2);
 		else if (cmd == "leave") Leave(p);
+		else if (cmd == "disband") DisbandOwn(p);
+		else if (cmd == "lead") GiveLead(p, data.param2);
 		AGA_GroupView gv = View(p);
 		Param1<ref AGA_GroupView> prm = new Param1<ref AGA_GroupView>(gv);
 		GetRPCManager().SendRPC("AGA", "AGA_OnGroupView", prm, true, sender);
