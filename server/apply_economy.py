@@ -43,12 +43,17 @@ def fix_type(m):
         if name in RARE:
             changed += 1
             return re.sub(r'<min>\d+</min>', '<min>0</min>', re.sub(r'<nominal>\d+</nominal>', '<nominal>0</nominal>', block))
-        if cname == 'weapons' and hi: mult *= 0.6
+        if cname == 'weapons' and hi: mult *= cfg.get('phase1_weapon_mult', 0.6)
         if cname == 'explosives': mult *= 0.5
     elif PHASE == 3:
         if cname == 'weapons' and hi: mult *= 1.25
         if cname == 'explosives': mult *= 1.5
         if any(k in name for k in BUILD): mult *= 1.3
+    if name.startswith('Mag_') and '<quantmin>' in block:
+        nb1 = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>10</quantmin>', block)
+        nb1 = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', nb1)
+        if nb1 != block: changed += 1
+        block = nb1
     if mult == 1.0: return block
     if mult < 1.0 and int((re.search(r'<nominal>(\d+)</nominal>', block) or [0,'0'])[1]) <= 1: return block
     def scale(tag, b):
@@ -73,3 +78,19 @@ for ev, val in cfg['event_nominal'].items():
     s = s[:m.start()] + m.group(1) + str(new) + m.group(3) + str(mx) + m.group(5) + s[m.end():]
     print('event %s: %d -> %d' % (ev, nom, new))
 open(p, 'w').write(s)
+
+# --- cfgspawnabletypes: broń z magazynkiem z szansą (losowa ilość naboi z quantmin/quantmax magazynka) ---
+p, s = pristine('cfgspawnabletypes.xml')
+ch = cfg.get('spawn_mag_chance', 0.5); added = 0
+for w, mag in cfg.get('weapon_mags', {}).items():
+    if not mag: continue
+    m = re.search(r'<type name="%s">(.*?)</type>' % re.escape(w), s, flags=re.S)
+    att = '\t\t<attachments chance="%.2f">\n\t\t\t<item name="%s" chance="1.00" />\n\t\t</attachments>\n' % (ch, mag)
+    if m:
+        if 'Mag_' in m.group(1): continue
+        s = s[:m.end() - len('</type>')] + att + '\t</type>' + s[m.end():]
+    else:
+        s = s.replace('</spawnabletypes>', '\t<type name="%s">\n%s\t</type>\n</spawnabletypes>' % (w, att))
+    added += 1
+open(p, 'w').write(s)
+print('cfgspawnabletypes: magazynki dodane do %d broni' % added)
