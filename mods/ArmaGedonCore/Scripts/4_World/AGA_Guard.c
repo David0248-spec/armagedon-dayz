@@ -153,12 +153,3 @@ modded class PluginRecipesManager
 		GenerateRecipeCache();
 	}
 }
-
-// improwizowany ładunek wyłączony (jak w oryginalnym balansie)
-modded class CraftImprovisedExplosive
-{
-	override bool CanDo(ItemBase ingredients[], PlayerBase player)
-	{
-		return false;
-	}
-}

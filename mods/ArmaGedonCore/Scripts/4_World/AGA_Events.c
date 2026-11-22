@@ -790,7 +790,7 @@ class AGA_Events
 		// rzadki zestaw wybuchowy – max jeden na event
 		if (e.Tier >= 2 && Chance(0.12))
 		{
-			Give(c2, "PlasticExplosive");
+			Give(c2, "ImprovisedExplosive");
 			if (Chance(0.5)) Give(c2, "RemoteDetonator");
 		}
 		OnTop(pal, mats.GetRandomElement());

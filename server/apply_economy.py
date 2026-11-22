@@ -10,6 +10,7 @@ PHASE = 1 if _days < 14 else (2 if _days < 28 else 3)
 RARE = set(cfg.get('phase1_removed', []))
 BUILD = cfg.get('build_items', [])
 LIFE = cfg.get('lifetime', {})
+REMOVED = set(cfg.get('removed', []))
 os.makedirs(os.path.expanduser('~/dayz/profiles/ArmaGedonCore'), exist_ok=True)
 open(os.path.expanduser('~/dayz/profiles/ArmaGedonCore/phase.txt'), 'w').write(str(PHASE))
 print('faza wipe: %d (dzien %d)' % (PHASE, _days + 1))
@@ -35,6 +36,9 @@ def fix_type(m):
     cname = cat.group(1) if cat else ''
     tiers = re.findall(r'<value name="(Tier\d)"', block)
     hi = bool(tiers) and all(t in ('Tier3', 'Tier4') for t in tiers)
+    if name in REMOVED:
+        changed += 1
+        return re.sub(r'<min>\d+</min>', '<min>0</min>', re.sub(r'<nominal>\d+</nominal>', '<nominal>0</nominal>', block))
     if PHASE == 1:
         if name in RARE:
             changed += 1
