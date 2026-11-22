@@ -429,6 +429,19 @@ class AGA_Territory
 			s_Db = new AGA_GroupDb();
 			string p = "$profile:ArmaGedonCore/groups.json";
 			if (FileExist(p)) JsonFileLoader<AGA_GroupDb>.JsonLoadFile(p, s_Db);
+			if (!s_Db.Groups) s_Db.Groups = new array<ref AGA_Group>;
+			if (s_Db.Next < 1) s_Db.Next = 1;
+			for (int i = s_Db.Groups.Count() - 1; i >= 0; i--)
+			{
+				AGA_Group g = s_Db.Groups[i];
+				if (!g)
+				{
+					s_Db.Groups.Remove(i);
+					continue;
+				}
+				if (!g.Ids) g.Ids = new array<string>;
+				if (!g.Names) g.Names = new array<string>;
+			}
 		}
 		return s_Db;
 	}
@@ -626,6 +639,7 @@ class AGA_Territory
 			if (!f || f.AGA_Gid() != 0) continue;
 			foreach (AGA_Group g : Db().Groups)
 			{
+				if (!g) continue;
 				if (vector.Distance(g.Pos, f.GetPosition()) < 2)
 				{
 					f.AGA_SetGid(g.Id);
