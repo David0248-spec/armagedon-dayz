@@ -12,6 +12,7 @@ find ~/dayz/@*/ -maxdepth 4 -iname 'types*.xml' | grep -v '@armagedon' | while I
   echo "CE: $mod"
 done
 cp -f ~/dayz/@*/keys/*.bikey ~/dayz/keys/ 2>/dev/null || true
+python3 ~/armagedon-dayz/server/mod_types.py
 # wpis w cfgeconomycore.xml (odtwarzany za każdym razem)
 python3 - "$MIS" <<'PY'
 import sys, os, re, glob

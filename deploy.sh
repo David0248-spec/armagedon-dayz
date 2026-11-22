@@ -24,7 +24,7 @@ sed -i 's/^maxPlayers.*/maxPlayers = 100;/' ~/dayz/serverDZ.cfg
 grep -q '^serverTimeAcceleration' ~/dayz/serverDZ.cfg && sed -i 's/^serverTimeAcceleration.*/serverTimeAcceleration = 2;/' ~/dayz/serverDZ.cfg || echo 'serverTimeAcceleration = 2;' >> ~/dayz/serverDZ.cfg
 # VPP: dostęp tylko po SteamID z SuperAdmins (bez hasła) - na życzenie właściciela
 grep -q '^vppDisablePassword' ~/dayz/serverDZ.cfg || echo 'vppDisablePassword = 1;' >> ~/dayz/serverDZ.cfg
-tmux new-session -d -s dayz "cd ~/dayz && while true; do ./DayZServer -config=serverDZ.cfg -port=2302 -profiles=profiles '-mod=$MODS' -dologs -adminlog -netlog -freezecheck; echo RESTART; sleep 10; done"
+tmux new-session -d -s dayz "cd ~/dayz && while true; do bash ~/armagedon-dayz/server/setup_ce.sh >/tmp/setup_ce.log 2>&1; ./DayZServer -config=serverDZ.cfg -port=2302 -profiles=profiles '-mod=$MODS' -dologs -adminlog -netlog -freezecheck; echo RESTART; sleep 10; done"
 # paczka Workshop: wysyłana tylko gdy zmienił się mod
 SUM=$(sha1sum dist/@ArmaGedonCore/addons/*.pbo | sha1sum | cut -c1-40)
 if [ "$SUM" != "$(cat ~/.ag_ws_sum 2>/dev/null)" ]; then

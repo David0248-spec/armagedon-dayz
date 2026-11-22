@@ -44,5 +44,36 @@
     "VehicleOffroad02": 1.15,
     "VehicleTruck01": 1.15,
     "VehicleBoat": 1.1
-  }
+  },
+  "wipe_start": "2026-11-22",
+  "phase1_removed": [
+    "NVGoggles",
+    "Mag_STANAG_60Rnd",
+    "M249",
+    "LAR",
+    "Mag_LAR_20Rnd",
+    "VSS",
+    "ASVAL",
+    "SVD",
+    "GhillieSuit_Woodland",
+    "GhillieSuit_Mossy",
+    "GhillieSuit_Tan",
+    "GhillieSuit_Winter",
+    "PlateCarrierVest",
+    "M18SmokeGrenade_Red_Contaminated"
+  ],
+  "build_items": [
+    "NailBox",
+    "Nail",
+    "WoodenPlank",
+    "MetalPlate",
+    "CombinationLock",
+    "CodeLock",
+    "BarbedWire",
+    "MetalWire",
+    "Fence_Kit",
+    "Watchtower_Kit",
+    "PlasticExplosive",
+    "RemoteDetonator"
+  ]
 }
