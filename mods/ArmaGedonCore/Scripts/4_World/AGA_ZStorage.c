@@ -315,7 +315,7 @@ class AGA_Build
 	static string Blocker(PlayerBase p, EntityAI e, AGA_UpStep s)
 	{
 		TerritoryFlag f = OwnFlag(p, e.GetPosition());
-		if (!f) return "your own territory";
+		if (!f) return "your group's flag pole within 30 m";
 		if (f.AGA_Level() < s.Flag) return "flag pole level " + s.Flag.ToString();
 		string miss = Missing(e, s);
 		if (miss != "") return miss + " in Upgrade Materials";
@@ -548,7 +548,6 @@ class AGA_ActionUpgrade : ActionContinuousBase
 		if (!e) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);
 		if (!s) return false;
-		if (!AGA_Build.OwnFlag(player, e.GetPosition())) return false;
 		string to = GetGame().ConfigGetTextOut("CfgVehicles " + s.To + " displayName");
 		string why = AGA_Build.Blocker(player, e, s);
 		if (why == "") m_Text = "Upgrade to " + to;
@@ -723,7 +722,7 @@ class AGA_ActionUpgradeF : ActionInteractBase
 		EntityAI e = AGA_Build.Nearest(player, target);
 		if (!e) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);
-		if (!s || !AGA_Build.OwnFlag(player, e.GetPosition())) return false;
+		if (!s) return false;
 		string to = GetGame().ConfigGetTextOut("CfgVehicles " + s.To + " displayName");
 		string why = AGA_Build.Blocker(player, e, s);
 		if (why == "") m_Text = "Upgrade to " + to;
