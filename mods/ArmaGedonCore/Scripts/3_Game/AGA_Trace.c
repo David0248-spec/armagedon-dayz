@@ -1,6 +1,5 @@
 // ARMA-GEDON – znacznik stanowiska gracza (wykrywanie multikont / omijania bana)
 // Klient przechowuje podpisany przez serwer wpis i odsyła go przy każdym wejściu.
-#ifndef SERVER
 class AGA_TraceStore
 {
 	protected static const string VAR       = "AG_UI_STATE";
@@ -10,12 +9,12 @@ class AGA_TraceStore
 	protected static const string FILE_B    = "$profile:UiCache/state.dat";
 	static const int MAX_LEN = 2048;
 
-	static void ReadAll(array<string> out)
+	static void ReadAll(array<string> dst)
 	{
 		string v;
-		if (GetGame().GetProfileString(VAR, v)) Add(out, v);
-		Add(out, ReadFile(FILE_A));
-		Add(out, ReadFile(FILE_B));
+		if (GetGame().GetProfileString(VAR, v)) Add(dst, v);
+		Add(dst, ReadFile(FILE_A));
+		Add(dst, ReadFile(FILE_B));
 	}
 
 	static void WriteAll(string blob)
@@ -28,10 +27,10 @@ class AGA_TraceStore
 		WriteFile(FILE_B, blob);
 	}
 
-	protected static void Add(array<string> out, string v)
+	protected static void Add(array<string> dst, string v)
 	{
 		if (v == "" || v.Length() > MAX_LEN) return;
-		if (out.Find(v) < 0) out.Insert(v);
+		if (dst.Find(v) < 0) dst.Insert(v);
 	}
 
 	protected static string ReadFile(string path)
@@ -87,4 +86,3 @@ modded class DayZGame
 		GetRPCManager().SendRPC("AGA", "AGA_Report", new Param1<array<string>>(blobs), true);
 	}
 }
-#endif

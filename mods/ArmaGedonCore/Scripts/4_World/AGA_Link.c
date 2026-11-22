@@ -68,7 +68,7 @@ class AGA_Link
 	}
 
 	// zwraca listę id z poprawnie podpisanego wpisu
-	static bool Unpack(string blob, array<string> out)
+	static bool Unpack(string blob, array<string> dst)
 	{
 		int cut = blob.LastIndexOf("|");
 		if (cut <= 0) return false;
@@ -82,7 +82,7 @@ class AGA_Link
 		parts[1].Split(",", ids);
 		foreach (string id : ids)
 		{
-			if (id.Length() >= 5 && out.Find(id) < 0) out.Insert(id);
+			if (id.Length() >= 5 && dst.Find(id) < 0) dst.Insert(id);
 		}
 		return true;
 	}
