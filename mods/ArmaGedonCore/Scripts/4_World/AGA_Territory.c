@@ -255,12 +255,25 @@ class AGA_Territory
 		return "";
 	}
 
+	// nazwa nawierzchni drogi (warstwa dróg) w punkcie, "" gdy brak
+	static string RoadSurface(vector pos)
+	{
+		SurfaceDetectionParameters prm = new SurfaceDetectionParameters();
+		SurfaceDetectionResult res = new SurfaceDetectionResult();
+		prm.type = SurfaceDetectionType.Roadway;
+		prm.position = Vector(pos[0], GetGame().SurfaceY(pos[0], pos[2]) + 1.0, pos[2]);
+		prm.rsd = RoadSurfaceDetection.CLOSEST;
+		if (!GetGame().GetSurface(prm, res) || !res.surface || res.object) return "";
+		string road = res.surface.GetEntryName();
+		string ground;
+		GetGame().SurfaceGetType(pos[0], pos[2], ground);
+		if (road == ground) return "";
+		return road;
+	}
+
 	static bool OnRoad(vector pos)
 	{
-		string t;
-		GetGame().SurfaceGetType(pos[0], pos[2], t);
-		t.ToLower();
-		return t.IndexOf("asphalt") >= 0 || t.IndexOf("asf") >= 0 || t.IndexOf("concrete") >= 0 || t.IndexOf("road") >= 0;
+		return RoadSurface(pos) != "";
 	}
 
 	// ---------------------------------------------------------------- stawianie przedmiotów
@@ -516,9 +529,7 @@ class AGA_Territory
 		flag.AGA_ApplyLife();
 		AGA_SyncPl(owner);
 		flag.AGA_UpdateCount();
-		string st;
-		GetGame().SurfaceGetType(pos[0], pos[2], st);
-		AGA_Server.Get().Log("[TERYTORIUM] nawierzchnia flagi: " + st);
+		AGA_Server.Get().Log("[TERYTORIUM] droga pod flaga: '" + RoadSurface(pos) + "'");
 		AGA_Server.Get().Log("[TERYTORIUM] nowa baza #" + g.Id.ToString() + " " + owner.GetIdentity().GetName() + " (" + id + ") @ " + pos.ToString());
 		Tell(owner, "Territory claimed. You are the base owner. Enable invites at the flag pole to add members (max " + LIMIT.ToString() + ").");
 	}
@@ -684,11 +695,9 @@ class AGA_Territory
 		foreach (vector v : pts)
 		{
 			if (++n > 400) break;
-			string t;
-			GetGame().SurfaceGetType(v[0], v[2], t);
+			string t = RoadSurface(v);
 			onT.Set(t, onT.Get(t) + 1);
-			string t2;
-			GetGame().SurfaceGetType(v[0] + 60, v[2] + 60, t2);
+			string t2 = RoadSurface(Vector(v[0] + 60, 0, v[2] + 60));
 			offT.Set(t2, offT.Get(t2) + 1);
 		}
 		string a = "";
