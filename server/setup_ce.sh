@@ -7,7 +7,7 @@ MIS=~/dayz/mpmissions/dayzOffline.chernarusplus
 CE=$MIS/armagedon_ce
 mkdir -p $CE
 rm -f $CE/types_*.xml
-find ~/dayz/@*/ -maxdepth 4 -iname 'types*.xml' | grep -v '@armagedon' | while IFS= read -r f; do
+find ~/dayz/@*/ -maxdepth 4 -type f -iname 'types*.xml' | grep -v '@armagedon' | while IFS= read -r f; do
   mod=$(echo "$f" | sed 's#.*/dayz/@\([^/]*\)/.*#\1#')
   cp "$f" "$CE/types_${mod}.xml"
   echo "CE: $mod"
