@@ -112,3 +112,10 @@ for w, mag in cfg.get('weapon_mags', {}).items():
     added += 1
 open(p, 'w').write(s)
 print('cfgspawnabletypes: magazynki dodane do %d broni' % added)
+
+# --- globals.xml: pod 100-115 graczy (więcej zombie/zwierząt, szybsze odnawianie lootu) ---
+p, s = pristine('db/globals.xml')
+for k, v in cfg.get('globals', {}).items():
+    s = re.sub(r'(<var name="%s" type="\d+" value=")[^"]*(")' % k, r'\g<1>%s\2' % v, s)
+open(p, 'w').write(s)
+print('globals.xml: %d ustawien' % len(cfg.get('globals', {})))

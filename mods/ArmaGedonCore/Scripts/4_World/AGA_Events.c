@@ -651,7 +651,7 @@ class AGA_Events
 		if (Chance(0.5)) OnTop(s3, top.GetRandomElement());
 		// skrzynie zaopatrzeniowe (do przeszukania, nie do zabrania)
 		array<string> guns = {"M4A1|Mag_STANAG_30Rnd", "AKM|Mag_AKM_30Rnd", "AK74|Mag_AK74_30Rnd", "FAL|Mag_FAL_20Rnd", "AK101|Mag_AK101_30Rnd", "SKS|Ammo_762x39"};
-		array<string> rare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "M249|Ammo_556x45"};
+		array<string> rare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd", "M249|Mag_STANAG_60Rnd"};
 		array<string> gear = {"PlateCarrierVest", "BallisticHelmet_Green", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "AssaultBag_Green", "TacticalGloves_Green", "MilitaryBelt", "TTSKOJacket_Camo", "TTSKOPants", "SmershVest", "UKAssVest_Olive", "Mich2001Helmet", "DAC_TacticalShirt_Green", "DAC_TacticalPants_Green", "DAC_FieldJacket_Green", "DAC_CargoPants_Green", "DAC_BallisticHelmet_Multitone", "DAC_PlateCarrierVest_Multitone", "DAC_TacticalBagCoyoteBag_Multitone", "ColdWarJacket_Splinter", "ColdWarPants_Strichtarn", "ColdWarTop_DPM"};
 		array<string> extra = {"ACOGOptic", "PSO1Optic", "KobraOptic", "M68Optic", "M4_Suppressor", "AK_Suppressor", "NVGoggles", "M67Grenade", "RGD5Grenade", "Mag_STANAG_60Rnd", "AD_ACOG", "AD_RMR", "AD_MRS", "AD_PVS4"};
 		array<string> ground = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_AK74_30Rnd", "Ammo_556x45", "Ammo_762x39", "Ammo_545x39", "Ammo_308Win", "BallisticHelmet_Green", "MilitaryBoots_Black", "BandageDressing", "Canteen", "M67Grenade", "TTSKOPants", "GorkaHelmet"};
@@ -695,6 +695,8 @@ class AGA_Events
 			array<string> mg2 = {"M4A1|Mag_STANAG_30Rnd", "AKM|Mag_AKM_30Rnd", "AK74|Mag_AK74_30Rnd", "SKS|Ammo_762x39", "UMP45|Mag_UMP_25Rnd", "MP5K|Mag_MP5_30Rnd"};
 			c = LootCrate(e, 6, -5);
 			if (Chance(0.8)) GiveGun(c, mg2);
+			array<string> mrare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd"};
+			if (e.Variant == "MIL" && Chance(0.2)) GiveGun(c, mrare);
 			GiveFrom(c, mgear, 2);
 			DropFrom(e, mgear, 4, -8, 8, -8, 8);
 			array<string> mz = {"AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland"};

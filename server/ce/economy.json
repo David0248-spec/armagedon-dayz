@@ -71,13 +71,6 @@
   "wipe_start": "2026-11-22",
   "phase1_removed": [
     "NVGoggles",
-    "Mag_STANAG_60Rnd",
-    "M249",
-    "LAR",
-    "Mag_LAR_20Rnd",
-    "VSS",
-    "ASVAL",
-    "SVD",
     "GhillieSuit_Woodland",
     "GhillieSuit_Mossy",
     "GhillieSuit_Tan",
@@ -208,6 +201,62 @@
     "Ammo_762x39": [
       60,
       35
+    ],
+    "SVD": [
+      3,
+      1
+    ],
+    "VSS": [
+      3,
+      1
+    ],
+    "ASVAL": [
+      3,
+      1
+    ],
+    "LAR": [
+      2,
+      1
+    ],
+    "SV98": [
+      2,
+      1
+    ],
+    "M249": [
+      1,
+      1
+    ],
+    "M14": [
+      4,
+      2
+    ],
+    "Mag_SVD_10Rnd": [
+      7,
+      3
+    ],
+    "Mag_VSS_10Rnd": [
+      6,
+      3
+    ],
+    "Mag_VAL_20Rnd": [
+      6,
+      3
+    ],
+    "Mag_LAR_20Rnd": [
+      4,
+      2
+    ],
+    "Mag_SV98_10Rnd": [
+      4,
+      2
+    ],
+    "Mag_STANAG_60Rnd": [
+      2,
+      1
+    ],
+    "Mag_M14_20Rnd": [
+      6,
+      3
     ]
   },
   "tier_add": {
@@ -240,5 +289,13 @@
     "Ammo_556x45": [
       "Tier2"
     ]
+  },
+  "globals": {
+    "ZombieMaxCount": "1400",
+    "AnimalMaxCount": "260",
+    "RespawnLimit": "40",
+    "RespawnTypes": "24",
+    "RespawnAttempt": "3",
+    "LootProxyPlacement": "1"
   }
 }
