@@ -631,6 +631,75 @@ modded class craft_mmg_supplycrate_level1 { override bool CanDo(ItemBase ingredi
 modded class craft_mmg_gun_rack_planks { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
 modded class craft_mmg_craftable_gun_rack { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
 
+// ulepszenie jako przepis: toporek w ręku + mebel (ten sam mechanizm co przepisy MMG – działa na ich obiektach)
+class AGA_UpgradeRecipe extends RecipeBase
+{
+	string m_From;
+
+	void Setup(string from, string label)
+	{
+		m_From = from;
+		m_Name = "Upgrade to " + label;
+		m_IsInstaRecipe = false;
+		m_AnimationLength = 2;
+		m_Specialty = 0;
+		m_MinDamageIngredient[0] = -1;
+		m_MaxDamageIngredient[0] = 3;
+		m_MinQuantityIngredient[0] = -1;
+		m_MaxQuantityIngredient[0] = -1;
+		m_MinDamageIngredient[1] = -1;
+		m_MaxDamageIngredient[1] = 3;
+		m_MinQuantityIngredient[1] = -1;
+		m_MaxQuantityIngredient[1] = -1;
+		InsertIngredient(0, from);
+		m_IngredientAddHealth[0] = 0;
+		m_IngredientSetHealth[0] = -1;
+		m_IngredientAddQuantity[0] = 0;
+		m_IngredientDestroy[0] = false;
+		m_IngredientUseSoftSkills[0] = false;
+		InsertIngredient(1, "Hatchet");
+		m_IngredientAddHealth[1] = -4;
+		m_IngredientSetHealth[1] = -1;
+		m_IngredientAddQuantity[1] = 0;
+		m_IngredientDestroy[1] = false;
+		m_IngredientUseSoftSkills[1] = false;
+	}
+
+	EntityAI Furn(ItemBase ingredients[])
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			if (ingredients[i] && ingredients[i].GetType() == m_From) return ingredients[i];
+		}
+		return null;
+	}
+
+	override bool CanDo(ItemBase ingredients[], PlayerBase player)
+	{
+		EntityAI e = Furn(ingredients);
+		if (!e || e.GetHierarchyParent()) return false;
+		AGA_UpStep s = AGA_Build.StepFor(e);
+		return s && AGA_Build.Blocker(player, e, s) == "";
+	}
+
+	override void Do(ItemBase ingredients[], PlayerBase player, array<ItemBase> results, float specialty_weight)
+	{
+		EntityAI e = Furn(ingredients);
+		if (!e) return;
+		AGA_Server.Get().Log("[BAZA] przepis ulepszenia " + e.GetType() + " przez " + player.GetIdentity().GetName());
+		AGA_Build.Upgrade(player, e);
+	}
+}
+
+class AGA_UpCrate1 extends AGA_UpgradeRecipe { override void Init() { Setup("WoodenCrate", "Storage Crate (Tier 2)"); } }
+class AGA_UpCrate2 extends AGA_UpgradeRecipe { override void Init() { Setup("mmg_supplycrate_level1", "Storage Crate (Tier 3)"); } }
+class AGA_UpCrate3 extends AGA_UpgradeRecipe { override void Init() { Setup("mmg_supplycrate_level2", "Storage Crate (Tier 4)"); } }
+class AGA_UpRack1 extends AGA_UpgradeRecipe { override void Init() { Setup("mmg_craftable_gun_rack", "Gun Rack (Tier 2)"); } }
+class AGA_UpRack2 extends AGA_UpgradeRecipe { override void Init() { Setup("mmg_gun_rack_tan", "Gun Rack (Tier 3)"); } }
+class AGA_UpWall1 extends AGA_UpgradeRecipe { override void Init() { Setup("mmg_gun_wall_wooden", "Gun Wall (Tier 2)"); } }
+class AGA_UpStand1 extends AGA_UpgradeRecipe { override void Init() { Setup("mmg_gear_stand", "Gear Stand (Tier 2)"); } }
+class AGA_UpBench1 extends AGA_UpgradeRecipe { override void Init() { Setup("mmg_old_table", "Workbench (Tier 2)"); } }
+
 // przepisy MMG "zniszcz / rozbierz": bez siekiery (siekiera = ulepszanie), tylko puste i we własnym terytorium
 class AGA_RecipeGuard
 {
@@ -697,6 +766,14 @@ modded class PluginRecipesManagerBase
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new AGA_CraftGunRack);
+		RegisterRecipe(new AGA_UpCrate1);
+		RegisterRecipe(new AGA_UpCrate2);
+		RegisterRecipe(new AGA_UpCrate3);
+		RegisterRecipe(new AGA_UpRack1);
+		RegisterRecipe(new AGA_UpRack2);
+		RegisterRecipe(new AGA_UpWall1);
+		RegisterRecipe(new AGA_UpStand1);
+		RegisterRecipe(new AGA_UpBench1);
 	}
 }
 
