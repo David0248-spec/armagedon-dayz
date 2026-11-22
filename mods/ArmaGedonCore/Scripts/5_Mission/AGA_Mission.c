@@ -5,13 +5,10 @@ modded class MissionServer
 	{
 		super.OnInit();
 		AGA_Server.Get();
-#ifdef VPPADMINTOOLS
 		AGA_Server.Get().Log("VPP sync: aktywny");
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_SyncVPP, 20000, true);
-#endif
 	}
 
-#ifdef VPPADMINTOOLS
 	// aktualne eventy jako lokacje w Teleport Managerze VPP ([EVENT] ...)
 	protected string m_AGA_VPPSig;
 
@@ -50,7 +47,6 @@ modded class MissionServer
 		m_AGA_VPPSig = sig;
 		AGA_Server.Get().Log("VPP sync: zapisano " + AGA_Events.s_Active.Count().ToString() + " eventow, lokacji " + locs.Count().ToString());
 	}
-#endif
 
 	override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity)
 	{
