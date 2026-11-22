@@ -72,6 +72,7 @@ def fix_type(m):
     # stałe ilości i dodatkowe tiery (np. słabsze automaty w bazach wojskowych niższych tierów)
     SETN = cfg.get('set_nominal', {}); TSET = cfg.get('tier_set', {})
     AU = cfg.get('add_usage', {})
+    if name in AU: block = block.replace('deloot="1"', 'deloot="0"')
     if name in AU and '<usage name=' not in block:
         tags = ''.join('<usage name="%s"/>' % u for u in AU[name]['usage']) + ''.join('<value name="%s"/>' % t for t in AU[name].get('tiers', []))
         block = block.replace('</type>', '\t' + tags + '\n\t</type>')
