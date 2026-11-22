@@ -257,21 +257,29 @@ modded class ZombieBase
 // zamieniaja sie, gdy tylko wlasciciel je otworzy (zamkniety zamek zostaje, zeby nie otworzyc nikomu bazy).
 modded class CombinationLock
 {
+	// CodeLock z naszego moda dziedziczy po CombinationLock – dotyczy to TYLKO zamkow z gry
+	bool AGA_IsVanillaLock()
+	{
+		string t = GetType();
+		return t == "CombinationLock" || t == "CombinationLock4";
+	}
+
 	override bool CanPutAsAttachment(EntityAI parent)
 	{
-		return false;
+		if (AGA_IsVanillaLock()) return false;
+		return super.CanPutAsAttachment(parent);
 	}
 
 	override void EEInit()
 	{
 		super.EEInit();
-		if (GetGame().IsServer())
+		if (GetGame().IsServer() && AGA_IsVanillaLock())
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Swap, 3000, false);
 	}
 
 	void AGA_Swap()
 	{
-		if (IsPendingDeletion()) return;
+		if (IsPendingDeletion() || !AGA_IsVanillaLock()) return;
 		EntityAI parent = GetHierarchyParent();
 		bool onBase = parent && (parent.IsInherited(BaseBuildingBase) || parent.IsInherited(TentBase));
 		if (onBase && IsLocked())
