@@ -12,8 +12,14 @@ modded class MissionServer
 
 #ifdef VPPADMINTOOLS
 	// aktualne eventy jako lokacje w Teleport Managerze VPP ([EVENT] ...)
+	protected string m_AGA_VPPSig;
+
 	void AGA_SyncVPP()
 	{
+		string sig = "";
+		foreach (AGA_Event ev : AGA_Events.s_Active)
+			sig = sig + ev.Kind + ev.Tp.ToString() + ";";
+		if (sig == m_AGA_VPPSig) return;
 		TeleportManager tm = TeleportManager.Cast(GetPluginManager().GetPluginByType(TeleportManager));
 		if (!tm) return;
 		array<ref VPPTeleportLocation> locs = tm.GetTeleportLocations();
@@ -30,6 +36,9 @@ modded class MissionServer
 			cnt.Set(e.Kind, n);
 			tm.AddLocation(AGA_Events.Label(e, n), e.Tp);
 		}
+		// VPP wczytuje listę z pliku przy każdym otwarciu menu – zapisujemy
+		tm.Save();
+		m_AGA_VPPSig = sig;
 	}
 #endif
 
