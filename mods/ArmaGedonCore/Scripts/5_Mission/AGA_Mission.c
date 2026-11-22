@@ -6,6 +6,7 @@ modded class MissionServer
 		super.OnInit();
 		AGA_Server.Get();
 #ifdef VPPADMINTOOLS
+		AGA_Server.Get().Log("VPP sync: aktywny");
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_SyncVPP, 20000, true);
 #endif
 	}
@@ -21,9 +22,17 @@ modded class MissionServer
 			sig = sig + ev.Kind + ev.Tp.ToString() + ";";
 		if (sig == m_AGA_VPPSig) return;
 		TeleportManager tm = TeleportManager.Cast(GetPluginManager().GetPluginByType(TeleportManager));
-		if (!tm) return;
+		if (!tm)
+		{
+			AGA_Server.Get().Log("VPP sync: brak TeleportManager");
+			return;
+		}
 		array<ref VPPTeleportLocation> locs = tm.GetTeleportLocations();
-		if (!locs) return;
+		if (!locs)
+		{
+			AGA_Server.Get().Log("VPP sync: brak listy lokacji");
+			return;
+		}
 		for (int i = locs.Count() - 1; i >= 0; i--)
 		{
 			if (locs[i] && locs[i].GetName().IndexOf("[EVENT]") == 0)
@@ -39,6 +48,7 @@ modded class MissionServer
 		// VPP wczytuje listę z pliku przy każdym otwarciu menu – zapisujemy
 		tm.Save();
 		m_AGA_VPPSig = sig;
+		AGA_Server.Get().Log("VPP sync: zapisano " + AGA_Events.s_Active.Count().ToString() + " eventow, lokacji " + locs.Count().ToString());
 	}
 #endif
 
