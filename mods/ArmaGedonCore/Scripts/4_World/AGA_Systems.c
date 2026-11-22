@@ -95,11 +95,6 @@ modded class PlayerBase
 		RegisterNetSyncVariableFloat("m_AGA_StaminaSkill", -AGA_Stamina.MAX, AGA_Stamina.MAX, 2);
 	}
 
-	// walka: strzał albo trafienie przez gracza w ostatnich 60 s
-	protected int m_AGA_CombatUntil;
-	void AGA_MarkCombat() { m_AGA_CombatUntil = GetGame().GetTime() + 60000; }
-	bool AGA_InCombat() { return GetGame().GetTime() < m_AGA_CombatUntil; }
-
 	float AGA_GetStaminaSkill()
 	{
 		return m_AGA_StaminaSkill;

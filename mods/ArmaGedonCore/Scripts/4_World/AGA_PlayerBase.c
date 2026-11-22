@@ -1,6 +1,12 @@
 // ARMA-GEDON Admin – RPC, leczenie, log walki
 modded class PlayerBase
 {
+	// walka: strzał albo trafienie przez gracza w ostatnich 60 s
+	protected int m_AGA_CombatUntil;
+	void AGA_MarkCombat() { m_AGA_CombatUntil = GetGame().GetTime() + 60000; }
+	bool AGA_InCombat() { return GetGame().GetTime() < m_AGA_CombatUntil; }
+
+
 	override void OnRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
 	{
 		super.OnRPC(sender, rpc_type, ctx);
