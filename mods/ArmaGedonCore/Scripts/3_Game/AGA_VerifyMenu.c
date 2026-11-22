@@ -118,7 +118,10 @@ class AGA_VerifyMenu extends UIScriptedMenu
 class AGA_VerifyClient
 {
 	static ref AGA_VerifyClient s_Inst;
-	static bool s_Hello;
+	static bool s_Verified;      // w tej sesji juz zaliczona
+	static bool s_Holding;       // wstrzymane odliczanie (czeka na weryfikacje)
+	static int  s_LoginTime;
+	static float s_HoldAt;
 
 	static void Init()
 	{
@@ -140,7 +143,9 @@ class AGA_VerifyClient
 		if (data.param2 < 0)
 		{
 			AGA_VerifyMenu.s_Pending = false;
+			s_Verified = true;
 			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Passed();
+			Release();
 			return;
 		}
 		AGA_VerifyMenu.s_Code = data.param1;
@@ -148,6 +153,16 @@ class AGA_VerifyClient
 		AGA_VerifyMenu.s_Pending = true;
 		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Refresh(true);
 		Show();
+	}
+
+	// po zaliczeniu: dopiero teraz odliczanie do wejscia (pozostaly czas)
+	static void Release()
+	{
+		if (!s_Holding) return;
+		s_Holding = false;
+		int left = s_LoginTime - (int)(GetGame().GetTickTime() - s_HoldAt);
+		DayZGame g = DayZGame.Cast(GetGame());
+		if (g && left > 0) g.AGA_ShowLoginTime(left);
 	}
 
 	static void Show()
@@ -163,11 +178,31 @@ class AGA_VerifyClient
 
 modded class DayZGame
 {
+	// bez zaliczonej weryfikacji nie ma ekranu odliczania – najpierw okno weryfikacji
 	override void OnLoginTimeEvent(int loginTime)
 	{
-		super.OnLoginTimeEvent(loginTime);
+		if (AGA_VerifyClient.s_Verified)
+		{
+			super.OnLoginTimeEvent(loginTime);
+			return;
+		}
+		AGA_VerifyClient.s_Holding = true;
+		AGA_VerifyClient.s_LoginTime = loginTime;
+		AGA_VerifyClient.s_HoldAt = GetTickTime();
 		AGA_VerifyClient.Hello();
 		AGA_VerifyClient.Show();
+		// awaryjnie: gdyby pytanie nie doszlo w 8 s – normalne odliczanie
+		GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_HoldFallback, 8000, false);
+	}
+
+	void AGA_HoldFallback()
+	{
+		if (AGA_VerifyClient.s_Holding && !AGA_VerifyMenu.s_Pending) AGA_VerifyClient.Release();
+	}
+
+	void AGA_ShowLoginTime(int t)
+	{
+		super.OnLoginTimeEvent(t);
 	}
 
 	override void OnUpdate(bool doSim, float timeslice)
