@@ -1,4 +1,4 @@
-// ARMA-GEDON: palisada (kit -> hologram -> sciana z bali), raid wg naszej tabeli, rozbiorka siekiera
+// ARMA-GEDON: palisada (kit -> hologram -> sciana z bali), niezniszczalna, rozbiorka siekiera
 class AGA_PalisadeKit extends KitBase
 {
 	override void OnPlacementComplete(Man player, vector position = "0 0 0", vector orientation = "0 0 0")
@@ -39,15 +39,9 @@ class AGA_Palisade extends ItemBase
 	override bool IsTakeable() { return false; }
 	override bool CanDisplayCargo() { return false; }
 
+	// palisady nie da sie zniszczyc – do bazy wchodzi sie tylko przez bramy / drzwi
 	override bool EEOnDamageCalculated(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef)
 	{
-		if (!GetGame().IsServer()) return false;
-		if (AGA_Raid.Block(this, source)) return false;
-		if (damageType == DamageType.CLOSE_COMBAT) return false;
-		int n = AGA_RaidDmg.Hits(ammo, false);
-		if (n <= 0) return false;
-		DecreaseHealth("", "Health", GetMaxHealth("", "Health") / n);
-		if (GetHealth("", "Health") <= 0) GetGame().ObjectDelete(this);
 		return false;
 	}
 

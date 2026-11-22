@@ -35,7 +35,7 @@ class CfgVehicles
 	{
 		scope = 2;
 		displayName = "Palisade";
-		descriptionShort = "Wooden palisade wall. Cheap and fast, weaker than a fence.";
+		descriptionShort = "Wooden palisade wall. Cannot be destroyed - enter bases only through gates and doors.";
 		model = "\DZ\structures\Walls\Wall_Wood4_4.p3d";
 		bounding = "BSphere";
 		overrideDrawArea = "8.0";

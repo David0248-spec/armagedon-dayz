@@ -55,6 +55,7 @@ modded class MissionServer
 	{
 		if (identity) AGA_Link.Forget(identity.GetPlainId());
 		if (identity && player) AGA_Survival.SaveStam(player, identity.GetPlainId());
+		if (identity) AGA_Verify.Forget(identity.GetPlainId());
 		if (!authFailed && player && player.IsAlive() && player.AGA_InCombat())
 		{
 			if (logoutTime < 60) logoutTime = 60;
@@ -68,6 +69,7 @@ modded class MissionServer
 	{
 		super.InvokeOnConnect(player, identity);
 		AGA_Survival.Start();
+		AGA_Verify.Begin(identity);
 		if (identity) AGA_Survival.LoadStam(player, identity.GetPlainId());
 		AGA_Territory.AGA_SyncPl(player);
 		if (identity)
@@ -99,12 +101,29 @@ modded class MissionGameplay
 		GetRPCManager().AddRPC("AGA", "AGA_OnRecipes", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_Zones", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_OnGroupView", this, SingleplayerExecutionType.Client);
+		GetRPCManager().AddRPC("AGA", "AGA_VerifyAsk", this, SingleplayerExecutionType.Client);
 	}
 
 	void AGA_Zones(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
 		Param1<ref AGA_ZoneDb> data;
 		if (ctx.Read(data) && data.param1) AGA_Territory.s_Zones = data.param1;
+	}
+
+	void AGA_VerifyAsk(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		Param2<string, int> data;
+		if (!ctx.Read(data)) return;
+		if (data.param2 < 0)
+		{
+			AGA_VerifyMenu.s_Pending = false;
+			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Passed();
+			return;
+		}
+		AGA_VerifyMenu.s_Code = data.param1;
+		AGA_VerifyMenu.s_Tries = data.param2;
+		AGA_VerifyMenu.s_Pending = true;
+		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Refresh(true);
 	}
 
 	void AGA_OnGroupView(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -148,7 +167,16 @@ modded class MissionGameplay
 			AGA_ToggleGroup();
 		}
 		m_AGA_PDown = pd;
-		if (m_AGA_RulesShown) return;
+		if (m_AGA_RulesShown)
+		{
+			// weryfikacja anty-cheat po regulaminie
+			if (AGA_VerifyMenu.s_Pending && (!AGA_VerifyMenu.s_Open || AGA_VerifyMenu.s_Open.IsClosed()) && !GetGame().GetUIManager().GetMenu())
+			{
+				AGA_VerifyMenu.s_Open = new AGA_VerifyMenu();
+				GetGame().GetUIManager().ShowScriptedMenu(AGA_VerifyMenu.s_Open, null);
+			}
+			return;
+		}
 		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
 		if (!p || !p.IsAlive()) return;
 		m_AGA_RulesTimer += timeslice;

@@ -1,4 +1,4 @@
-// ARMA-GEDON: przetrwanie – zlamana reka, kondycja (stamina jako umiejetnosc), AFK, walka z zombie, zamki
+// ARMA-GEDON: przetrwanie – zlamana reka (zapisywana), kondycja (stamina jako umiejetnosc), walka z zombie, zamki
 
 // ======================================================================== stale
 class AGA_SurvCfg
@@ -21,9 +21,6 @@ class AGA_SurvCfg
 	static const float STAM_DRAIN_FROM  = -7.5;
 	static const float STAM_DRAIN_MULT  = 1.5;
 
-	// AFK
-	static const int AFK_WARN_S = 720;   // 12 min
-	static const int AFK_KICK_S = 900;   // 15 min
 }
 
 // ======================================================================== gracz
@@ -32,9 +29,6 @@ modded class PlayerBase
 	int   m_AGAArm;       // 0 zdrowa, 1 zlamana, 2 na szynie
 	float m_AGAStam;      // umiejetnosc kondycji (-15..15)
 	float m_AGAStamTick;
-	vector m_AGAAfkPos;
-	float  m_AGAAfkDir;
-	int    m_AGAAfkIdle;
 
 	override void Init()
 	{
@@ -208,6 +202,7 @@ modded class StaminaHandler
 class AGA_StamSave
 {
 	float Value;
+	int Arm;
 }
 
 class AGA_Survival
@@ -221,7 +216,6 @@ class AGA_Survival
 		s_Started = true;
 		if (!FileExist("$profile:ArmaGedonCore")) MakeDirectory("$profile:ArmaGedonCore");
 		if (!FileExist(Dir())) MakeDirectory(Dir());
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AfkTick, 60000, true);
 	}
 
 	static void LoadStam(PlayerBase p, string uid)
@@ -232,6 +226,7 @@ class AGA_Survival
 		AGA_StamSave s = new AGA_StamSave();
 		JsonFileLoader<AGA_StamSave>.JsonLoadFile(f, s);
 		p.AGA_SetStam(s.Value);
+		if (s.Arm > 0) p.AGA_SetArm(s.Arm);
 	}
 
 	static void SaveStam(PlayerBase p, string uid)
@@ -239,34 +234,10 @@ class AGA_Survival
 		if (!p || uid == "") return;
 		AGA_StamSave s = new AGA_StamSave();
 		s.Value = p.AGA_Stam();
+		s.Arm = p.AGA_Arm();
 		JsonFileLoader<AGA_StamSave>.JsonSaveFile(Dir() + "/" + uid + ".json", s);
 	}
 
-	// AFK: brak ruchu i obrotu przez 15 min = kick (admini pomijani)
-	static void AfkTick()
-	{
-		array<Man> ps = new array<Man>;
-		GetGame().GetPlayers(ps);
-		foreach (Man m : ps)
-		{
-			PlayerBase p = PlayerBase.Cast(m);
-			if (!p || !p.GetIdentity() || !p.IsAlive() || AGA_Server.Get().IsStaff(p.GetIdentity())) continue;
-			vector pos = p.GetPosition();
-			float dir = p.GetOrientation()[0];
-			bool still = vector.Distance(pos, p.m_AGAAfkPos) < 0.3 && Math.AbsFloat(dir - p.m_AGAAfkDir) < 1;
-			p.m_AGAAfkPos = pos;
-			p.m_AGAAfkDir = dir;
-			if (!still || p.IsUnconscious()) { p.m_AGAAfkIdle = 0; continue; }
-			p.m_AGAAfkIdle += 60;
-			if (p.m_AGAAfkIdle == AGA_SurvCfg.AFK_WARN_S)
-				NotificationSystem.SendNotificationToPlayerIdentityExtended(p.GetIdentity(), 15, "AFK", "You have been inactive for 12 minutes. Move or you will be kicked in 3 minutes.", "set:dayz_gui image:icon_info");
-			if (p.m_AGAAfkIdle >= AGA_SurvCfg.AFK_KICK_S)
-			{
-				AGA_Server.Get().Log("[AFK] kick: " + p.GetIdentity().GetName() + " (" + p.GetIdentity().GetPlainId() + ")");
-				GetGame().DisconnectPlayer(p.GetIdentity(), p.GetIdentity().GetPlainId());
-			}
-		}
-	}
 }
 
 // ======================================================================== walka z zombie = 1 min
@@ -282,30 +253,38 @@ modded class ZombieBase
 }
 
 // ======================================================================== zamek z gry -> nasz CodeLock
+// Zamkow z gry nie da sie zakladac. Luzne zamieniaja sie od razu w CodeLock, a zalozone na bramie
+// zamieniaja sie, gdy tylko wlasciciel je otworzy (zamkniety zamek zostaje, zeby nie otworzyc nikomu bazy).
 modded class CombinationLock
 {
 	override bool CanPutAsAttachment(EntityAI parent)
 	{
-		return false;   // nowych zamkow z gry nie da sie zakladac – uzywamy CodeLock
+		return false;
 	}
 
 	override void EEInit()
 	{
 		super.EEInit();
 		if (GetGame().IsServer())
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Swap, 2000, false);
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Swap, 3000, false);
 	}
 
 	void AGA_Swap()
 	{
 		if (IsPendingDeletion()) return;
 		EntityAI parent = GetHierarchyParent();
-		if (parent && (parent.IsInherited(BaseBuildingBase) || parent.IsInherited(TentBase))) return; // zalozone na bramie zostaja
+		bool onBase = parent && (parent.IsInherited(BaseBuildingBase) || parent.IsInherited(TentBase));
+		if (onBase && IsLocked())
+		{
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Swap, 60000, false);
+			return;
+		}
 		vector pos = GetPosition();
 		if (parent) pos = parent.GetPosition();
 		GetGame().ObjectDelete(this);
 		EntityAI cl;
-		if (parent) cl = parent.GetInventory().CreateInInventory("CodeLock");
+		if (parent && !onBase) cl = parent.GetInventory().CreateInInventory("CodeLock");
 		if (!cl) GetGame().CreateObjectEx("CodeLock", pos, ECE_PLACE_ON_SURFACE);
+		if (onBase) AGA_Server.Get().Log("[ZAMEK] zamek z gry zdjety z otwartej bramy i zamieniony na CodeLock @ " + pos.ToString());
 	}
 }
