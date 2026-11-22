@@ -88,6 +88,16 @@ class AGA_Build
 		return 1;
 	}
 
+	static bool InUpSlot(EntityAI a)
+	{
+		InventoryLocation loc = new InventoryLocation;
+		if (!a.GetInventory().GetCurrentInventoryLocation(loc)) return false;
+		if (loc.GetType() != InventoryLocationType.ATTACHMENT) return false;
+		string sn = InventorySlots.GetSlotName(loc.GetSlot());
+		sn.ToLower();
+		return sn.IndexOf("aga_up_") == 0;
+	}
+
 	// ilość materiału w slotach ulepszenia obiektu
 	static float InSlots(EntityAI box, string type)
 	{
@@ -96,7 +106,7 @@ class AGA_Build
 		for (int i = 0; i < box.GetInventory().AttachmentCount(); i++)
 		{
 			EntityAI a = box.GetInventory().GetAttachmentFromIndex(i);
-			if (a && !a.IsRuined() && a.IsKindOf(type)) n += Amount(a);
+			if (a && !a.IsRuined() && a.IsKindOf(type) && InUpSlot(a)) n += Amount(a);
 		}
 		return n;
 	}
@@ -124,7 +134,7 @@ class AGA_Build
 			for (int k = box.GetInventory().AttachmentCount() - 1; k >= 0 && need > 0; k--)
 			{
 				EntityAI a = box.GetInventory().GetAttachmentFromIndex(k);
-				if (!a || a.IsRuined() || !a.IsKindOf(s.Mat[i])) continue;
+				if (!a || a.IsRuined() || !a.IsKindOf(s.Mat[i]) || !InUpSlot(a)) continue;
 				ItemBase ib = ItemBase.Cast(a);
 				if (ib && ib.HasQuantity() && ib.GetQuantity() > need)
 				{
@@ -591,6 +601,66 @@ modded class craft_mmg_gun_wall_kit_metal { override bool CanDo(ItemBase ingredi
 modded class craft_mmg_supplycrate_level1 { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
 modded class craft_mmg_gun_rack_planks { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
 modded class craft_mmg_craftable_gun_rack { override bool CanDo(ItemBase ingredients[], PlayerBase player) { return false; } }
+
+// przepisy MMG "zniszcz / rozbierz": bez siekiery (siekiera = ulepszanie), tylko puste i we własnym terytorium
+class AGA_RecipeGuard
+{
+	static bool Ok(ItemBase ingredients[], PlayerBase player)
+	{
+		if (!AGA_Build.InOwnTerritory(player)) return false;
+		for (int i = 0; i < 2; i++)
+		{
+			ItemBase ib = ingredients[i];
+			if (ib && AGA_Territory.BaseCat(ib, false) != "" && !AGA_Build.IsEmptyBox(ib)) return false;
+		}
+		return true;
+	}
+}
+
+modded class destroy_mmgsupplycrate_lvl1
+{
+	override void Init() { super.Init(); RemoveIngredient(1, "Hatchet"); }
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class destroy_mmgsupplycrate_lvl2
+{
+	override void Init() { super.Init(); RemoveIngredient(1, "Hatchet"); }
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class destroy_mmgsupplycrate_lvl3
+{
+	override void Init() { super.Init(); RemoveIngredient(1, "Hatchet"); }
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class dismantle_mmg_craftable_gun_rack
+{
+	override void Init() { super.Init(); RemoveIngredient(1, "Hatchet"); InsertIngredient(1, "Screwdriver"); }
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class dismantle_mmg_gun_rack_tan
+{
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class dismantle_mmg_gun_rack_green
+{
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class dismantle_mmg_gun_wall_wooden
+{
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class dismantle_mmg_gun_wall_metal
+{
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class dismantle_gear_stand
+{
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
+modded class dismantle_mmg_toolwagon_red
+{
+	override bool CanDo(ItemBase ingredients[], PlayerBase player) { return super.CanDo(ingredients, player) && AGA_RecipeGuard.Ok(ingredients, player); }
+}
 
 modded class PluginRecipesManagerBase
 {

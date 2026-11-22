@@ -887,14 +887,14 @@ class CfgVehicles
 	class WoodenCrate: Container_Base
 	{
 		aga_tier = 1;
-		attachments[] = {"aga_up_planks","aga_up_nails","aga_up_wire"};
+		attachments[] = {"aga_up_planks10","aga_up_nails40","aga_up_wire"};
 		class GUIInventoryAttachmentsProps
 		{
 			class UpgradeMaterials
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_planks","aga_up_nails","aga_up_wire"};
+				attachmentSlots[] = {"aga_up_planks10","aga_up_nails40","aga_up_wire"};
 				icon = "cat_bb_material";
 				view_index = 1;
 			};
@@ -1004,11 +1004,11 @@ class CfgVehicles
 	class Inventory_Base;
 	class Nail: Inventory_Base
 	{
-		inventorySlot[] += {"aga_up_nails"};
+		inventorySlot[] += {"aga_up_nails","aga_up_nails40","aga_up_nails70"};
 	};
 	class WoodenPlank: Inventory_Base
 	{
-		inventorySlot[] += {"aga_up_planks","aga_up_planks2"};
+		inventorySlot[] += {"aga_up_planks","aga_up_planks2","aga_up_planks10","aga_up_planks20","aga_up_planks22"};
 	};
 	class MetalWire: Inventory_Base
 	{
@@ -1162,7 +1162,7 @@ class CfgVehicles
 	{
 		scope = 2;
 		aga_tier = 2;
-		attachments[] = {"woodenlog1","woodenplank1","woodenplank2","firewood1","nails1","nails2","aga_up_planks","aga_up_planks2","aga_up_nails","aga_up_wire","aga_up_metal"};
+		attachments[] = {"woodenlog1","woodenplank1","woodenplank2","firewood1","nails1","nails2","aga_up_planks20","aga_up_nails70","aga_up_wire","aga_up_metal2"};
 		class GUIInventoryAttachmentsProps
 		{
 			class Supply
@@ -1177,7 +1177,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_planks","aga_up_planks2","aga_up_nails","aga_up_wire","aga_up_metal"};
+				attachmentSlots[] = {"aga_up_planks20","aga_up_nails70","aga_up_wire","aga_up_metal2"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1189,7 +1189,7 @@ class CfgVehicles
 	{
 		scope = 2;
 		aga_tier = 3;
-		attachments[] = {"woodenlog1","woodenlog2","woodenplank1","woodenplank2","woodenplank3","firewood1","nails1","nails2","nails3","aga_up_planks","aga_up_planks2","aga_up_nails","aga_up_wire","aga_up_metal"};
+		attachments[] = {"woodenlog1","woodenlog2","woodenplank1","woodenplank2","woodenplank3","firewood1","nails1","nails2","nails3","aga_up_planks22","aga_up_nails70","aga_up_wire","aga_up_metal4"};
 		class GUIInventoryAttachmentsProps
 		{
 			class Supply
@@ -1204,7 +1204,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_planks","aga_up_planks2","aga_up_nails","aga_up_wire","aga_up_metal"};
+				attachmentSlots[] = {"aga_up_planks22","aga_up_nails70","aga_up_wire","aga_up_metal4"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1237,7 +1237,7 @@ class CfgVehicles
 		aga_tier = 1;
 		displayName = "Gun Rack (Tier 1)";
 		descriptionShort = "Wooden gun rack. Holds 2 rifles. Upgrade (level 2 flag pole): 40 nails, 2 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
-		attachments[] = {"Shoulder1","Shoulder2","aga_up_nails","aga_up_metal","aga_up_wire"};
+		attachments[] = {"Shoulder1","Shoulder2","aga_up_nails40","aga_up_metal2","aga_up_wire"};
 		itemsCargoSize[] = {0,0};
 		class Cargo
 		{
@@ -1257,7 +1257,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_nails","aga_up_metal","aga_up_wire"};
+				attachmentSlots[] = {"aga_up_nails40","aga_up_metal2","aga_up_wire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1270,7 +1270,7 @@ class CfgVehicles
 		aga_tier = 2;
 		displayName = "Gun Rack (Tier 2)";
 		descriptionShort = "Metal gun rack. Holds 4 rifles and 2 ammo boxes. Upgrade (level 3 flag pole): 70 nails, 4 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
-		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","aga_up_nails","aga_up_metal","aga_up_wire"};
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","aga_up_nails70","aga_up_metal4","aga_up_wire"};
 		aga_cargoTypes[] = {"AmmoBox"};
 		aga_cargoLimits[] = {2};
 		itemsCargoSize[] = {10,5};
@@ -1292,7 +1292,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_nails","aga_up_metal","aga_up_wire"};
+				attachmentSlots[] = {"aga_up_nails70","aga_up_metal4","aga_up_wire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1332,7 +1332,7 @@ class CfgVehicles
 		aga_tier = 1;
 		displayName = "Gun Wall (Tier 1)";
 		descriptionShort = "Wooden gun wall. Holds 4 rifles. Upgrade (level 2 flag pole): 10 planks, 70 nails, 4 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
-		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","aga_up_planks","aga_up_nails","aga_up_metal","aga_up_wire"};
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","aga_up_planks10","aga_up_nails70","aga_up_metal4","aga_up_wire"};
 		itemsCargoSize[] = {0,0};
 		class Cargo
 		{
@@ -1352,7 +1352,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_planks","aga_up_nails","aga_up_metal","aga_up_wire"};
+				attachmentSlots[] = {"aga_up_planks10","aga_up_nails70","aga_up_metal4","aga_up_wire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1400,7 +1400,7 @@ class CfgVehicles
 		aga_tier = 1;
 		displayName = "Gear Stand (Tier 1)";
 		descriptionShort = "Holds headgear and a vest. Upgrade (level 2 flag pole): 10 planks, 40 nails, 1 rope in Upgrade Materials, then use a hatchet.";
-		attachments[] = {"Headgear","Vest","aga_up_planks","aga_up_nails","aga_up_rope"};
+		attachments[] = {"Headgear","Vest","aga_up_planks10","aga_up_nails40","aga_up_rope"};
 		itemsCargoSize[] = {0,0};
 		class Cargo
 		{
@@ -1420,7 +1420,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_planks","aga_up_nails","aga_up_rope"};
+				attachmentSlots[] = {"aga_up_planks10","aga_up_nails40","aga_up_rope"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1453,7 +1453,7 @@ class CfgVehicles
 		aga_tier = 1;
 		displayName = "Workbench (Tier 1)";
 		descriptionShort = "Tool storage: axe, sledgehammer, pickaxe, shovel, a hammer, nails and planks. Upgrade (level 2 flag pole): 10 planks, 70 nails, 3 metal sheets, 1 metal wire in Upgrade Materials, then use a hatchet.";
-		attachments[] = {"Axe1","SledgeHammer1","Pickaxe1","Shovel1","aga_up_planks","aga_up_nails","aga_up_metal","aga_up_wire"};
+		attachments[] = {"Axe1","SledgeHammer1","Pickaxe1","Shovel1","aga_up_planks10","aga_up_nails70","aga_up_metal3","aga_up_wire"};
 		aga_cargoTypes[] = {"Hammer","Nail","WoodenPlank"};
 		aga_cargoLimits[] = {1,2,2};
 		itemsCargoSize[] = {10,5};
@@ -1475,7 +1475,7 @@ class CfgVehicles
 			{
 				name = "Upgrade Materials";
 				description = "";
-				attachmentSlots[] = {"aga_up_planks","aga_up_nails","aga_up_metal","aga_up_wire"};
+				attachmentSlots[] = {"aga_up_planks10","aga_up_nails70","aga_up_metal3","aga_up_wire"};
 				icon = "cat_bb_material";
 				view_index = 2;
 			};
@@ -1528,7 +1528,7 @@ class CfgVehicles
 	};
 	class MetalPlate: Inventory_Base
 	{
-		inventorySlot[] += {"aga_up_metal"};
+		inventorySlot[] += {"aga_up_metal","aga_up_metal2","aga_up_metal3","aga_up_metal4"};
 	};
 	class AGA_MetalPanel: MetalPlate
 	{
@@ -1573,6 +1573,62 @@ class CfgVehicles
 
 class CfgSlots
 {
+	class Slot_aga_up_planks10
+	{
+		name = "aga_up_planks10";
+		displayName = "Planks";
+		ghostIcon = "set:dayz_inventory image:planks";
+		stackMax = 10;
+	};
+	class Slot_aga_up_planks20
+	{
+		name = "aga_up_planks20";
+		displayName = "Planks";
+		ghostIcon = "set:dayz_inventory image:planks";
+		stackMax = 20;
+	};
+	class Slot_aga_up_planks22
+	{
+		name = "aga_up_planks22";
+		displayName = "Planks";
+		ghostIcon = "set:dayz_inventory image:planks";
+		stackMax = 22;
+	};
+	class Slot_aga_up_nails40
+	{
+		name = "aga_up_nails40";
+		displayName = "Nails";
+		ghostIcon = "set:dayz_inventory image:nails";
+		stackMax = 40;
+	};
+	class Slot_aga_up_nails70
+	{
+		name = "aga_up_nails70";
+		displayName = "Nails";
+		ghostIcon = "set:dayz_inventory image:nails";
+		stackMax = 70;
+	};
+	class Slot_aga_up_metal2
+	{
+		name = "aga_up_metal2";
+		displayName = "Metal Sheets";
+		ghostIcon = "set:dayz_inventory image:metalplate";
+		stackMax = 2;
+	};
+	class Slot_aga_up_metal3
+	{
+		name = "aga_up_metal3";
+		displayName = "Metal Sheets";
+		ghostIcon = "set:dayz_inventory image:metalplate";
+		stackMax = 3;
+	};
+	class Slot_aga_up_metal4
+	{
+		name = "aga_up_metal4";
+		displayName = "Metal Sheets";
+		ghostIcon = "set:dayz_inventory image:metalplate";
+		stackMax = 4;
+	};
 	class Slot_aga_up_nails
 	{
 		name = "aga_up_nails";
