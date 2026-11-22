@@ -1,7 +1,7 @@
 {
   "_opis": "Vanilla+ : blisko vanilli, lekko łatwiej. Mnożniki nominal/min (1.0 = vanilla). Nazwa nadpisuje kategorię.",
   "category_mult": {
-    "weapons": 3.0,
+    "weapons": 2.3,
     "explosives": 1.15,
     "tools": 1.55,
     "food": 1.55,
@@ -10,7 +10,7 @@
     "lootdispatch": 1.55
   },
   "name_mult": {
-    "Ammo_": 2.2,
+    "Ammo_": 1.8,
     "AmmoBox": 2.0,
     "Bandage": 1.8,
     "SparkPlug": 1.45,
@@ -37,16 +37,25 @@
     "PP19": 2.5,
     "Saiga": 2.5,
     "UMP45": 2.5,
-    "Mag_": 2.5,
-    "Mag_AKM_30Rnd": 3.0,
-    "Mag_STANAG_30Rnd": 3.0,
+    "AKM": 2.8,
+    "AKS74U": 2.8,
+    "AK74": 2.6,
+    "SKS": 2.6,
+    "M4A1": 2.4,
+    "Mag_": 2.0,
+    "Mag_AKM_30Rnd": 2.5,
+    "Mag_STANAG_30Rnd": 2.5,
     "Mag_AK101_30Rnd": 2.0,
     "Mag_FAL_20Rnd": 2.5,
     "Mag_M14_20Rnd": 2.5,
-    "Mag_AK74_30Rnd": 2.5,
+    "Mag_AK74_30Rnd": 2.1,
     "Mag_FAMAS_25Rnd": 2.5,
     "Mag_MP5_30Rnd": 2.0,
-    "Mag_SVD_10Rnd": 2.0
+    "Mag_SVD_10Rnd": 2.0,
+    "NVGoggles": 0.7,
+    "Bag": 2.0,
+    "BagIV": 1.55,
+    "SleepingBag": 1.55
   },
   "event_nominal": {
     "StaticHeliCrash": 4,
