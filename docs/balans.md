@@ -19,7 +19,19 @@ Cały kod autorski w ArmaGedonCore. Loot: vanilla+ i fazy wipe.
 - Kontrola kamery co 9 s (5–1300 m) → log i powiadomienie adminów
 - Zombie AG_ZmbM_Spetsnaz (230 HP) na wojskowych eventach
 
+- Podpalanie pojazdów (0.5 s przy wlewie, silnik 0, wybuch po 7 s, zasięg ×13, 60 HP / 100 szok)
+- Wylogowanie w walce (okno 60 s od strzału/trafienia → licznik min. 60 s + log; ostrzeżenie i blokada przycisku przy >50 s)
+- Okno regulaminu po wejściu
+
 ## Do zrobienia
+### System budowy (duży, osobna sesja)
+- Flaga z poziomami, dołączanie do flagi, zaproszenia, menu grupy (GroupManagement), ulepszanie kontenerów (L1+), stojaki na broń/ubrania, stół, palisady, barykady drzwi, panele metalowe, oznaczanie skrzyń
+- Strefy zakazu budowy (koła/wielokąty, konfiguracja wysyłana z serwera), min. odstęp flag 30 m
+- Nowe akcje budowy/rozbiórki, zmiany receptur (płot, flaga, wieża, skrzynia, ognisko)
+- Studnia artezyjska, skrzynia na rośliny, kran z wodą
+- Hipoksja / złe powietrze (bunkier)
+- UWAGA: poziomy flagi, limity bram itd. są w configu serwera (JSON), nie w paczce klienta – w skryptach są tylko wartości domyślne
+
 | System | Wartości | Plan |
 |---|---|---|
 | C4 timer | odliczanie 10 s, rozbrajanie 6 s, pikanie 1.0 s → 0.2 s (wykładnik 1.75), koszt naprawy 50 | własny kod |
