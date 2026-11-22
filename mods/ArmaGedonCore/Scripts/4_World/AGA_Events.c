@@ -12,6 +12,8 @@ class AGA_LootCrate extends WoodenCrate
 {
 	override bool CanPutInCargo(EntityAI parent) { return false; }
 	override bool CanPutIntoHands(EntityAI parent) { return false; }
+	override bool CanBeSplit() { return false; }
+	override bool IsHeavyBehaviour() { return true; }
 }
 
 class AGA_Event
@@ -24,6 +26,9 @@ class AGA_Event
 	int Born;
 	int LifeMin;
 	vector Tp;
+	int LootedAt = -1;
+	ref array<ZombieBase> Zs = new array<ZombieBase>;
+	ref array<EntityAI> Crates = new array<EntityAI>;
 	ref array<Object> Objs = new array<Object>;
 }
 
@@ -48,7 +53,10 @@ class AGA_Events
 		for (int i = s_Active.Count() - 1; i >= 0; i--)
 		{
 			AGA_Event e = s_Active[i];
-			if (s_Minute - e.Born >= e.LifeMin && !PlayerNear(e.Pos, 200))
+			Leash(e);
+			if (e.LootedAt < 0 && IsLooted(e)) e.LootedAt = s_Minute;
+			bool done = (e.LootedAt >= 0 && s_Minute - e.LootedAt >= 5);
+			if ((done || s_Minute - e.Born >= e.LifeMin) && !PlayerNear(e.Pos, 150))
 			{
 				Despawn(e);
 				s_Active.Remove(i);
@@ -60,6 +68,32 @@ class AGA_Events
 		Ensure("HELI", 2);
 		Ensure("CONVOY", 1);
 		Ensure("PLANE", 1);
+	}
+
+	// event wyczyszczony = skrzynie puste
+	static bool IsLooted(AGA_Event e)
+	{
+		if (e.Crates.Count() == 0) return false;
+		foreach (EntityAI c : e.Crates)
+		{
+			if (c && c.GetInventory() && c.GetInventory().GetCargo() && c.GetInventory().GetCargo().GetItemCount() > 0)
+				return false;
+		}
+		return true;
+	}
+
+	// zombie nie odchodzą daleko od eventu, gdy nikogo nie gonią
+	static void Leash(AGA_Event e)
+	{
+		foreach (ZombieBase z : e.Zs)
+		{
+			if (!z || !z.IsAlive()) continue;
+			if (vector.Distance(z.GetPosition(), e.Pos) < 60) continue;
+			if (PlayerNear(z.GetPosition(), 120)) continue;
+			float a = Math.RandomFloat(0, 360);
+			float d = Math.RandomFloat(8, 25);
+			z.SetPosition(Off(e, Math.Sin(a * Math.DEG2RAD) * d, Math.Cos(a * Math.DEG2RAD) * d));
+		}
 	}
 
 	static void Ensure(string kind, int want)
@@ -376,7 +410,9 @@ class AGA_Events
 
 	static EntityAI LootCrate(AGA_Event e, float right, float fwd)
 	{
-		return EntityAI.Cast(Put(e, "AGA_LootCrate", right, fwd, Math.RandomFloat(-20, 20), 0));
+		EntityAI c = EntityAI.Cast(Put(e, "AGA_LootCrate", right, fwd, Math.RandomFloat(-20, 20), 0));
+		if (c) e.Crates.Insert(c);
+		return c;
 	}
 
 	static void Give(EntityAI c, string cls)
@@ -389,6 +425,21 @@ class AGA_Events
 	static void GiveFrom(EntityAI c, array<string> pool, int n)
 	{
 		for (int i = 0; i < n; i++) Give(c, pool.GetRandomElement());
+	}
+
+	// broń + pasujący magazynek/amunicja ("Bron|Mag")
+	static void GiveGun(EntityAI c, array<string> pool)
+	{
+		string pick = pool.GetRandomElement();
+		array<string> parts = new array<string>;
+		pick.Split("|", parts);
+		Give(c, parts[0]);
+		if (parts.Count() > 1) { Give(c, parts[1]); Give(c, parts[1]); }
+	}
+
+	static void DropFrom(AGA_Event e, array<string> pool, int n, float r0, float r1, float f0, float f1)
+	{
+		for (int i = 0; i < n; i++) Drop(e, pool.GetRandomElement(), Math.RandomFloat(r0, r1), Math.RandomFloat(f0, f1));
 	}
 
 	// przedmiot leżący na statycznej skrzyni / palecie
@@ -430,7 +481,9 @@ class AGA_Events
 		float a = Math.RandomFloat(0, 360);
 		float d = Math.RandomFloat(rMin, rMax);
 		vector p = Off(e, Math.Sin(a * Math.DEG2RAD) * d, Math.Cos(a * Math.DEG2RAD) * d);
-		return ZombieBase.Cast(GetGame().CreateObjectEx(cls, p, ECE_PLACE_ON_SURFACE | ECE_INITAI | ECE_EQUIP));
+		ZombieBase z = ZombieBase.Cast(GetGame().CreateObjectEx(cls, p, ECE_PLACE_ON_SURFACE | ECE_INITAI | ECE_EQUIP));
+		if (z) e.Zs.Insert(z);
+		return z;
 	}
 
 	static void Zeds(AGA_Event e, array<string> pool, int n, float rMin, float rMax)
@@ -460,7 +513,7 @@ class AGA_Events
 		e.Yaw = yaw;
 		e.Tier = TierOf(pos);
 		e.Born = s_Minute;
-		e.LifeMin = 60;
+		e.LifeMin = 45;
 
 		if (kind == "PLANE") BuildPlane(e);
 		else if (kind == "HELI") BuildHeli(e);
@@ -510,18 +563,23 @@ class AGA_Events
 		OnTop(s2, top.GetRandomElement());
 		if (Chance(0.5)) OnTop(s3, top.GetRandomElement());
 		// skrzynie zaopatrzeniowe (do przeszukania, nie do zabrania)
-		array<string> guns = {"M4A1", "AKM", "AK74", "FAL", "AK101"};
-		array<string> rare = {"SVD", "VSS", "M249"};
-		array<string> gear = {"PlateCarrierVest", "BallisticHelmet_Green", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "AssaultBag_Green", "TacticalGloves_Green", "MilitaryBelt", "TTSKOJacket_Camo", "TTSKOPants"};
-		array<string> extra = {"ACOGOptic", "PSO1Optic", "KobraOptic", "M4_Suppressor", "NVGoggles", "M67Grenade", "RGD5Grenade"};
+		array<string> guns = {"M4A1|Mag_STANAG_30Rnd", "AKM|Mag_AKM_30Rnd", "AK74|Mag_AK74_30Rnd", "FAL|Mag_FAL_20Rnd", "AK101|Mag_AK101_30Rnd", "SKS|Ammo_762x39"};
+		array<string> rare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "M249|Ammo_556x45"};
+		array<string> gear = {"PlateCarrierVest", "BallisticHelmet_Green", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "AssaultBag_Green", "TacticalGloves_Green", "MilitaryBelt", "TTSKOJacket_Camo", "TTSKOPants", "SmershVest", "UKAssVest_Olive", "Mich2001Helmet"};
+		array<string> extra = {"ACOGOptic", "PSO1Optic", "KobraOptic", "M68Optic", "M4_Suppressor", "AK_Suppressor", "NVGoggles", "M67Grenade", "RGD5Grenade", "Mag_STANAG_60Rnd"};
+		array<string> ground = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_AK74_30Rnd", "Ammo_556x45", "Ammo_762x39", "Ammo_545x39", "Ammo_308Win", "BallisticHelmet_Green", "MilitaryBoots_Black", "BandageDressing", "Canteen", "M67Grenade", "TTSKOPants", "GorkaHelmet"};
 		EntityAI c1 = LootCrate(e, -3, -30);
-		if (Chance(0.12)) Give(c1, rare.GetRandomElement());
-		else if (Chance(0.65)) Give(c1, guns.GetRandomElement());
-		GiveFrom(c1, top, 1);
+		if (Chance(0.15)) GiveGun(c1, rare); else GiveGun(c1, guns);
 		GiveFrom(c1, gear, 1);
 		EntityAI c2 = LootCrate(e, 5, -44);
+		if (Chance(0.6)) GiveGun(c2, guns);
 		GiveFrom(c2, gear, 2);
-		if (Chance(0.35)) GiveFrom(c2, extra, 1);
+		GiveFrom(c2, extra, 1);
+		EntityAI c3 = LootCrate(e, -7, -50);
+		GiveFrom(c3, ground, 2);
+		GiveFrom(c3, gear, 1);
+		if (Chance(0.4)) GiveFrom(c3, extra, 1);
+		DropFrom(e, ground, 6, -9, 9, -55, -18);
 		// tylko wojskowe zombie + szansa na opancerzonych
 		array<string> mil = {"ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_PatrolNormal_PautRev", "ZmbM_usSoldier_normal_Woodland"};
 		Zeds(e, mil, 6 + e.Tier, 12, 45);
@@ -547,10 +605,11 @@ class AGA_Events
 			OnTop(hs, "Ammo_556x45");
 			array<string> mguns = {"M4A1", "AKM", "AK74", "SKS", "Mosin9130", "UMP45"};
 			array<string> mgear = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Ammo_556x45", "Ammo_762x39", "BallisticHelmet_Green", "MilitaryBoots_Black", "TacticalGloves_Green", "AssaultBag_Green", "PlateCarrierVest", "BandageDressing", "M67Grenade"};
+			array<string> mg2 = {"M4A1|Mag_STANAG_30Rnd", "AKM|Mag_AKM_30Rnd", "AK74|Mag_AK74_30Rnd", "SKS|Ammo_762x39", "UMP45|Mag_UMP_25Rnd", "MP5K|Mag_MP5_30Rnd"};
 			c = LootCrate(e, 6, -5);
-			if (Chance(0.55)) Give(c, mguns.GetRandomElement());
+			if (Chance(0.8)) GiveGun(c, mg2);
 			GiveFrom(c, mgear, 2);
-			Drop(e, mgear.GetRandomElement(), -5, 4);
+			DropFrom(e, mgear, 4, -8, 8, -8, 8);
 			array<string> mz = {"ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland"};
 			Zeds(e, mz, 3 + e.Tier, 8, 30);
 			if (e.Tier >= 3 && Chance(0.3)) PlateZed(e, 10, 25);
@@ -563,8 +622,8 @@ class AGA_Events
 			Smoke(e, 2, 1);
 			array<string> cl = {"Hoodie_Blue", "Jeans_Blue", "HikingBootsLow_Black", "MountainBag_Green", "TunaCan", "BakedBeansCan", "WaterBottle", "Flashlight", "Battery9V", "Binoculars", "CZ75", "Mag_CZ75_15Rnd", "Ammo_9x19", "Compass", "Matchbox"};
 			c = LootCrate(e, 7, -4);
-			GiveFrom(c, cl, 3);
-			Drop(e, cl.GetRandomElement(), -6, 3);
+			GiveFrom(c, cl, 4);
+			DropFrom(e, cl, 4, -8, 8, -8, 8);
 			array<string> cz = {"ZmbM_CitizenASkinny_Blue", "ZmbF_CitizenANormal_Blue", "ZmbM_HikerSkinny_Blue", "ZmbM_PilotNormal", "ZmbM_OffshoreWorker_Green"};
 			Zeds(e, cz, 3 + e.Tier, 8, 30);
 		}
@@ -576,7 +635,8 @@ class AGA_Events
 			OnTop(mb, "BandageDressing");
 			array<string> md = {"BandageDressing", "BandageDressing", "Morphine", "Epinephrine", "SalineBagIV", "BloodBagIV", "BloodTestKit", "FirstAidKit", "TetracyclineAntibiotics", "PainkillerTablets", "CharcoalTablets", "DisinfectantSpray", "SurgicalGloves_Blue", "MedicalScrubsShirt_Green"};
 			c = LootCrate(e, 6, -5);
-			GiveFrom(c, md, 3);
+			GiveFrom(c, md, 4);
+			DropFrom(e, md, 3, -7, 7, -7, 7);
 			if (Chance(0.15)) Give(c, "NBCGlovesGray");
 			array<string> mz2 = {"ZmbM_DoctorFat", "ZmbF_NurseFat", "ZmbF_DoctorSkinny", "ZmbM_ParamedicNormal_Red", "ZmbM_ParamedicNormal_Blue", "ZmbF_ParamedicNormal_Red"};
 			Zeds(e, mz2, 3 + e.Tier, 8, 30);
@@ -605,9 +665,10 @@ class AGA_Events
 		array<string> basic = {"BandageDressing", "BandageDressing", "Rag", "PainkillerTablets", "CharcoalTablets", "TetracyclineAntibiotics", "VitaminBottle", "DisinfectantAlcohol", "Morphine", "Epinephrine", "SalineBagIV", "BloodTestKit", "SurgicalGloves_Blue", "SurgicalMask", "FirstAidKit", "Iodine"};
 		array<string> nbc = {"NBCGlovesGray", "NBCBootsGray", "NBCHoodGray", "NBCPantsGray", "NBCJacketGray", "GasMask"};
 		EntityAI c1 = LootCrate(e, 4.5, 2);
-		GiveFrom(c1, basic, 3);
+		GiveFrom(c1, basic, 4);
 		EntityAI c2 = LootCrate(e, 4.5, -7);
-		GiveFrom(c2, basic, 2);
+		GiveFrom(c2, basic, 3);
+		DropFrom(e, basic, 4, -3, 5, -18, 14);
 		if (Chance(0.2)) Give(c2, nbc.GetRandomElement());
 		if (Chance(0.1)) Give(c2, "Grenade_ChemGas");
 		array<string> doc = {"ZmbM_DoctorFat", "ZmbF_NurseFat", "ZmbF_DoctorSkinny", "ZmbM_ParamedicNormal_Red", "ZmbM_ParamedicNormal_Blue", "ZmbF_ParamedicNormal_Red", "ZmbF_ParamedicNormal_Blue"};
@@ -630,11 +691,13 @@ class AGA_Events
 		array<string> ammo = {"Ammo_762x54", "Ammo_308Win", "Ammo_22", "Ammo_12gaPellets", "Ammo_12gaSlug", "Mag_CZ527_5rnd"};
 		array<string> wear = {"HuntingJacket_Autumn", "HuntingJacket_Brown", "HunterPants_Autumn", "HunterPants_Brown", "BoonieHat_DPM", "HuntingBag", "WoolGloves_Green"};
 		array<string> misc = {"HuntingKnife", "Compass", "Rope", "Canteen", "Matchbox", "DeerSteakMeat", "Binoculars", "HuntingOptic"};
+		array<string> hg = {"Mosin9130|Ammo_762x54", "CZ527|Mag_CZ527_5rnd", "Izh18|Ammo_762x39", "Winchester70|Ammo_308Win", "Izh43Shotgun|Ammo_12gaPellets", "Ruger1022|Mag_Ruger1022_15Rnd"};
 		EntityAI c = LootCrate(e, 3.2, 2.5);
-		if (Chance(0.5)) Give(c, guns.GetRandomElement());
-		GiveFrom(c, ammo, 1);
-		GiveFrom(c, wear, 1);
+		if (Chance(0.65)) GiveGun(c, hg); else GiveFrom(c, ammo, 1);
+		GiveFrom(c, wear, 2);
 		GiveFrom(c, misc, 1);
+		DropFrom(e, misc, 2, -5, 5, -5, 5);
+		DropFrom(e, wear, 1, -5, 5, -5, 5);
 		OnTop(bx, misc.GetRandomElement());
 		array<string> hz = {"ZmbM_HunterOld_Autumn", "ZmbM_HunterOld_Spring", "ZmbM_HunterOld_Summer", "ZmbM_HikerSkinny_Green", "ZmbM_HikerSkinny_Grey", "ZmbM_ForestManOld"};
 		Zeds(e, hz, 2 + e.Tier / 2, 10, 28);
@@ -660,8 +723,10 @@ class AGA_Events
 		array<string> stuff = {"Hoodie_Blue", "Jeans_Blue", "AthleticShoes_Black", "WoolCoat_Black", "Sweater_Gray", "Matchbox", "Flashlight", "Battery9V", "Rag", "KitchenKnife", "CanOpener", "Hatchet", "SewingKit", "TaloonBag_Blue"};
 		array<string> pist = {"CZ75", "MKII", "Izh43Shotgun"};
 		EntityAI c = LootCrate(e, -4, 6);
-		GiveFrom(c, food, 1);
-		GiveFrom(c, stuff, 2);
+		GiveFrom(c, food, 2);
+		GiveFrom(c, stuff, 3);
+		DropFrom(e, food, 2, -6, 6, -5, 8);
+		DropFrom(e, stuff, 3, -6, 6, -5, 8);
 		if (e.Tier >= 2 && Chance(0.25)) Give(c, pist.GetRandomElement());
 		OnTop(bx, food.GetRandomElement());
 		array<string> civ = {"ZmbM_CitizenASkinny_Blue", "ZmbF_CitizenANormal_Blue", "ZmbM_HikerSkinny_Blue", "ZmbF_HikerSkinny_Red", "ZmbM_FarmerFat_Brown", "ZmbF_JoggerSkinny_Red"};
@@ -694,11 +759,16 @@ class AGA_Events
 		array<string> tools = {"Hammer", "Shovel", "Pliers", "Hacksaw", "HandSaw", "Hatchet", "Crowbar", "Pickaxe"};
 		array<string> wear = {"ConstructionHelmet_Orange", "ConstructionHelmet_Yellow", "ReflexVest", "WorkingBoots_Yellow", "WorkingGloves_Yellow", "Overalls_Blue", "Overalls_Gray"};
 		EntityAI c1 = LootCrate(e, 4, 2);
-		GiveFrom(c1, mats, 2);
+		Give(c1, "NailBox");
+		GiveFrom(c1, mats, 3);
 		GiveFrom(c1, tools, 1);
 		EntityAI c2 = LootCrate(e, -2, 3);
-		GiveFrom(c2, wear, 1);
-		GiveFrom(c2, tools, 1);
+		GiveFrom(c2, wear, 2);
+		GiveFrom(c2, tools, 2);
+		GiveFrom(c2, mats, 1);
+		DropFrom(e, mats, 4, -6, 8, -6, 12);
+		DropFrom(e, tools, 2, -6, 8, -6, 12);
+		DropFrom(e, wear, 1, -6, 8, -6, 12);
 		// rzadki zestaw wybuchowy – max jeden na event
 		if (e.Tier >= 2 && Chance(0.12))
 		{
@@ -738,6 +808,8 @@ class AGA_Events
 			if (ent && ent.GetHierarchyRootPlayer()) continue;
 			GetGame().ObjectDelete(o);
 		}
+		foreach (ZombieBase z : e.Zs)
+			if (z && !PlayerNear(z.GetPosition(), 100)) GetGame().ObjectDelete(z);
 		AGA_Server.Get().Log("EVENT koniec " + e.Kind + " @ " + e.Pos.ToString());
 	}
 
