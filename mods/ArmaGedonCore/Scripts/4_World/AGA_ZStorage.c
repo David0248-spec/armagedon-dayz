@@ -597,7 +597,6 @@ class AGA_ActionUpgrade : ActionContinuousBase
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
 	{
 		if (!item || player.IsPlacingLocal()) return false;
-		AGA_Build.Diag(player, target);
 		EntityAI e = AGA_Build.Nearest(player, target);
 		if (!e) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);
@@ -821,14 +820,6 @@ modded class PluginRecipesManagerBase
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new AGA_CraftGunRack);
-		RegisterRecipe(new AGA_UpCrate1);
-		RegisterRecipe(new AGA_UpCrate2);
-		RegisterRecipe(new AGA_UpCrate3);
-		RegisterRecipe(new AGA_UpRack1);
-		RegisterRecipe(new AGA_UpRack2);
-		RegisterRecipe(new AGA_UpWall1);
-		RegisterRecipe(new AGA_UpStand1);
-		RegisterRecipe(new AGA_UpBench1);
 	}
 }
 
@@ -880,7 +871,6 @@ modded class WoodenCrate
 	override void SetActions()
 	{
 		super.SetActions();
-		AddAction(AGA_ActionUpgradeF);
 	}
 }
 
@@ -889,7 +879,6 @@ modded class mmg_storage_placeable_base
 	override void SetActions()
 	{
 		super.SetActions();
-		AddAction(AGA_ActionUpgradeF);
 	}
 }
 
@@ -898,6 +887,5 @@ modded class mmg_storage_openable_noLock_base
 	override void SetActions()
 	{
 		super.SetActions();
-		AddAction(AGA_ActionUpgradeF);
 	}
 }
