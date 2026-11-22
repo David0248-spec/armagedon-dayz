@@ -78,3 +78,7 @@ class AGA_Bans
 		Banned = new array<string>;
 	}
 }
+
+// regulamin serwera (okno po wejściu)
+const string AGA_RULES_TITLE = "ARMA-GEDON - SERVER RULES";
+const string AGA_RULES_TEXT = "1. No cheats, exploits, glitching or ghosting into bases.\n2. No racism, hate speech or toxic behaviour.\n3. Raid only during raid hours (see the welcome message).\n4. No combat logging - logging out in combat may result in a ban.\n5. Build reasonably, no blocking roads or loot spawns.\n6. AFK longer than 10 minutes = kick.\n7. Admin decisions are final. Report problems on our Discord.";

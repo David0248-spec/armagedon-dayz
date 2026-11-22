@@ -48,6 +48,18 @@ modded class MissionServer
 		AGA_Server.Get().Log("VPP sync: zapisano " + AGA_Events.s_Active.Count().ToString() + " eventow, lokacji " + locs.Count().ToString());
 	}
 
+	// wylogowanie w trakcie walki: dłuższy licznik i wpis do logu
+	override void OnClientDisconnectedEvent(PlayerIdentity identity, PlayerBase player, int logoutTime, bool authFailed)
+	{
+		if (!authFailed && player && player.IsAlive() && player.AGA_InCombat())
+		{
+			if (logoutTime < 60) logoutTime = 60;
+			if (identity)
+				AGA_Server.Get().Log("[WALKA] wylogowanie w trakcie walki: " + identity.GetName() + " (" + identity.GetPlainId() + ") @ " + player.GetPosition().ToString());
+		}
+		super.OnClientDisconnectedEvent(identity, player, logoutTime, authFailed);
+	}
+
 	override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity)
 	{
 		super.InvokeOnConnect(player, identity);
@@ -58,5 +70,60 @@ modded class MissionServer
 			AGA_Server.Get().Log("Zbanowany probowal wejsc: " + identity.GetName() + " (" + identity.GetPlainId() + ")");
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().DoKick, 2000, false, identity.GetPlainId());
 		}
+	}
+}
+
+modded class MissionGameplay
+{
+	protected bool m_AGA_RulesShown;
+	protected float m_AGA_RulesTimer;
+
+	override void OnUpdate(float timeslice)
+	{
+		super.OnUpdate(timeslice);
+		if (m_AGA_RulesShown) return;
+		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
+		if (!p || !p.IsAlive()) return;
+		m_AGA_RulesTimer += timeslice;
+		if (m_AGA_RulesTimer < 20 || GetGame().GetUIManager().GetMenu()) return;
+		m_AGA_RulesShown = true;
+		GetGame().GetUIManager().ShowDialog(AGA_RULES_TITLE, AGA_RULES_TEXT, 7701, DBT_OK, DBB_OK, DMT_INFO, null);
+	}
+}
+
+// ekran wylogowania: ostrzeżenie w trakcie walki i krótka blokada przycisku "wyjdź teraz"
+modded class LogoutMenu
+{
+	protected float m_AGA_LockTime;
+	protected bool m_AGA_Locked;
+
+	override void SetTime(int time)
+	{
+		super.SetTime(time);
+		if (time <= 50) return;
+		TextWidget desc = TextWidget.Cast(layoutRoot.FindAnyWidget("txtDescription"));
+		if (desc)
+		{
+			desc.SetText("You are still in combat. Logout may result in a ban!");
+			desc.SetColor(ARGB(255, 255, 64, 64));
+		}
+		ButtonWidget now = ButtonWidget.Cast(layoutRoot.FindAnyWidget("bLogoutNow"));
+		if (now)
+		{
+			m_AGA_Locked = true;
+			m_AGA_LockTime = 1;
+			now.Enable(false);
+		}
+	}
+
+	override void Update(float timeslice)
+	{
+		super.Update(timeslice);
+		if (!m_AGA_Locked) return;
+		m_AGA_LockTime -= timeslice;
+		if (m_AGA_LockTime > 0) return;
+		ButtonWidget now = ButtonWidget.Cast(layoutRoot.FindAnyWidget("bLogoutNow"));
+		if (now) now.Enable(true);
+		m_AGA_Locked = false;
 	}
 }

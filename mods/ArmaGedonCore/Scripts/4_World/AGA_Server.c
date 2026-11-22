@@ -280,7 +280,6 @@ class AGA_Server
 		string state = "Raiding is CLOSED right now.";
 		if (AGA_Raid.IsRaidTime()) state = "Raiding is OPEN right now.";
 		NotificationSystem.SendNotificationToPlayerIdentityExtended(p.GetIdentity(), 14, "WELCOME TO ARMA-GEDON", state + " " + AGA_Raid.Cfg().Info, "set:dayz_gui image:icon_info");
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(SendRules, 16000, false, steamId);
 	}
 
 	void SendRules(string steamId)

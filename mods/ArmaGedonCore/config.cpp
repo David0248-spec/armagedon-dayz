@@ -49,6 +49,29 @@ class Mode_Burst;
 class Mode_Double;
 class CfgAmmo
 {
+	class Plastic_Explosive_Ammo;
+	class AGA_IgniteCar_Ammo: Plastic_Explosive_Ammo
+	{
+		indirectHit = 1;
+		indirectHitRange = 1;
+		indirectHitRangeMultiplier = 13;
+		class DamageApplied
+		{
+			type = "FragGrenade";
+			class Health
+			{
+				damage = 60;
+			};
+			class Blood
+			{
+				damage = 0;
+			};
+			class Shock
+			{
+				damage = 100;
+			};
+		};
+	};
 	class Bullet_Base;
 	class Bullet_12GaugeSlug: Bullet_Base
 	{
@@ -750,6 +773,10 @@ class CfgWorlds
 	};
 class CfgVehicles
 {
+	class ExplosionTest;
+	class AGA_IgniteExplosion: ExplosionTest
+	{
+	};
 	class ZmbM_eastSoldier_normal_Navy;
 	class DamageSystem;
 	class AG_ZmbM_Spetsnaz: ZmbM_eastSoldier_normal_Navy

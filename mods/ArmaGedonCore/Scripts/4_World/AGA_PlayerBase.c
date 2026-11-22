@@ -80,6 +80,11 @@ modded class PlayerBase
 		if (!GetGame().IsServer())
 			return;
 		PlayerBase shooter = AGA_RootPlayer(source);
+		if (shooter && shooter != this)
+		{
+			AGA_MarkCombat();
+			shooter.AGA_MarkCombat();
+		}
 		if (!shooter || shooter == this)
 			return;
 		float dmg = 0;
@@ -131,18 +136,6 @@ modded class Weapon_Base
 		PlayerBase pb = PlayerBase.Cast(GetHierarchyRootPlayer());
 		if (!pb)
 			return;
-		// kierunek z kątów celowania postaci (to samo liczy gra dla linii strzału), start z głowy
-		vector usti = pb.GetBonePositionWS(pb.GetBoneIndexByName("Head"));
-		vector aim = pb.GetOrientation();
-		HumanCommandWeapons hcw = pb.GetCommandModifier_Weapons();
-		if (hcw)
-		{
-			aim[0] = aim[0] + hcw.GetBaseAimingAngleLR() + hcw.GetAimingHandsOffsetLR();
-			aim[1] = aim[1] + hcw.GetBaseAimingAngleUD() + hcw.GetAimingHandsOffsetUD();
-		}
-		aim[2] = 0;
-		vector dir = aim.AnglesToVector();
-		dir.Normalize();
-		AGA_Server.Get().OnShot(pb, usti, dir, ammoType, GetDisplayName());
+		pb.AGA_MarkCombat();
 	}
 }
