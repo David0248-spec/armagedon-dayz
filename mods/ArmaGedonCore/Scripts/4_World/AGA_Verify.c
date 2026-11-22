@@ -19,6 +19,7 @@ class AGA_Verify
 		s_Inst = new AGA_Verify();
 		s_St = new map<string, ref AGA_VerifyState>;
 		GetRPCManager().AddRPC("AGA", "AGA_VerifyAnswer", s_Inst, SingleplayerExecutionType.Server);
+		GetRPCManager().AddRPC("AGA", "AGA_VerifyHello", s_Inst, SingleplayerExecutionType.Server);
 	}
 
 	static string NewCode()
@@ -37,6 +38,23 @@ class AGA_Verify
 		s_St.Set(uid, st);
 		Ask(id, st);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Timeout, TIMEOUT_MS, false, uid);
+	}
+
+	// po wejsciu postaci: jesli weryfikacja nie wystartowala przy laczeniu – wystartuj teraz
+	static void EnsureStarted(PlayerIdentity id)
+	{
+		Init();
+		if (!id) return;
+		AGA_VerifyState st;
+		if (s_St.Find(id.GetPlainId(), st)) { if (!st.Done) Ask(id, st); return; }
+		Begin(id);
+	}
+
+	// klient zglasza gotowosc (menu zarejestrowane) – wyslij pytanie ponownie
+	void AGA_VerifyHello(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		if (type != CallType.Server || !sender) return;
+		EnsureStarted(sender);
 	}
 
 	static void Ask(PlayerIdentity id, AGA_VerifyState st)

@@ -1,6 +1,13 @@
 // ARMA-GEDON – funkcje serwera (panel admina: VPP Admin Tools)
 modded class MissionServer
 {
+	// weryfikacja startuje juz przy laczeniu (przed odliczaniem do wejscia)
+	override void OnClientPrepareEvent(PlayerIdentity identity, out bool useDB, out vector pos, out float yaw, out int preloadTimeout)
+	{
+		super.OnClientPrepareEvent(identity, useDB, pos, yaw, preloadTimeout);
+		AGA_Verify.Begin(identity);
+	}
+
 	override void OnInit()
 	{
 		super.OnInit();
@@ -69,7 +76,7 @@ modded class MissionServer
 	{
 		super.InvokeOnConnect(player, identity);
 		AGA_Survival.Start();
-		AGA_Verify.Begin(identity);
+		AGA_Verify.EnsureStarted(identity);
 		if (identity) AGA_Survival.LoadStam(player, identity.GetPlainId());
 		AGA_Territory.AGA_SyncPl(player);
 		if (identity)
@@ -89,6 +96,7 @@ modded class MissionServer
 modded class MissionGameplay
 {
 	protected bool m_AGA_RulesShown;
+	protected bool m_AGA_VerifyHello;
 	protected float m_AGA_RulesTimer;
 	protected bool m_AGA_RecipesDone;
 
@@ -167,16 +175,26 @@ modded class MissionGameplay
 			AGA_ToggleGroup();
 		}
 		m_AGA_PDown = pd;
-		if (m_AGA_RulesShown)
+		// weryfikacja anty-cheat: od razu po polaczeniu, takze nad ekranem odliczania; regulamin dopiero po niej
+		if (!m_AGA_VerifyHello)
 		{
-			// weryfikacja anty-cheat po regulaminie
-			if (AGA_VerifyMenu.s_Pending && (!AGA_VerifyMenu.s_Open || AGA_VerifyMenu.s_Open.IsClosed()) && !GetGame().GetUIManager().GetMenu())
+			m_AGA_VerifyHello = true;
+			GetRPCManager().SendRPC("AGA", "AGA_VerifyHello", new Param1<int>(0), true);
+		}
+		if (AGA_VerifyMenu.s_Pending)
+		{
+			if (!AGA_VerifyMenu.s_Open || AGA_VerifyMenu.s_Open.IsClosed())
 			{
-				AGA_VerifyMenu.s_Open = new AGA_VerifyMenu();
-				GetGame().GetUIManager().ShowScriptedMenu(AGA_VerifyMenu.s_Open, null);
+				UIScriptedMenu curM = GetGame().GetUIManager().GetMenu();
+				if (!curM || LoginTimeBase.Cast(curM))
+				{
+					AGA_VerifyMenu.s_Open = new AGA_VerifyMenu();
+					GetGame().GetUIManager().ShowScriptedMenu(AGA_VerifyMenu.s_Open, curM);
+				}
 			}
 			return;
 		}
+		if (m_AGA_RulesShown) return;
 		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
 		if (!p || !p.IsAlive()) return;
 		m_AGA_RulesTimer += timeslice;

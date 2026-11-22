@@ -713,7 +713,7 @@ class AGA_Events
 			if (Chance(0.35)) Give(c, "M67Grenade");
 			if (Chance(0.08)) Give(c, "NVGoggles");
 			array<string> mrare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "LAR|Mag_LAR_20Rnd", "SV98|Mag_SV98_10Rnd", "M14|Mag_M14_20Rnd", "M24|Ammo_308Win", "AEK971|Mag_AK74_30Rnd", "SVT40|Mag_SVT40_10Rnd"};
-			if (e.Variant == "MIL" && Chance(0.25)) GiveGun(c, mrare);
+			if (e.Variant == "_MIL" && Chance(0.25)) GiveGun(c, mrare);
 			GiveFrom(c, mgear, 2);
 			DropFrom(e, mgear, 4, -8, 8, -8, 8);
 			array<string> mz = {"AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland"};
