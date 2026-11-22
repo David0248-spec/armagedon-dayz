@@ -18,11 +18,12 @@ def names(path):
         if n == '': break
         out.append(('f', n))
     return out
-for pbo in sorted(glob.glob(os.path.expanduser('~/dayz/@*/addons/*.pbo'))):
+PAT = sys.argv[2] if len(sys.argv) > 2 else '~/dayz/@*/addons/*.pbo'
+for pbo in sorted(glob.glob(os.path.expanduser(PAT))):
     try: ents = names(pbo)
     except Exception as e: print('ERR', pbo, e); continue
     pref = ''
-    mod = pbo.split('/@')[1].split('/')[0]
+    mod = os.path.basename(pbo)
     for t, n in ents:
         if t == '#prefix': pref = n; continue
         if n.lower().endswith('.p3d'):
