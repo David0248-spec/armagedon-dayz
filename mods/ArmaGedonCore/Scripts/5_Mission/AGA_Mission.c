@@ -7,6 +7,7 @@ modded class MissionServer
 		AGA_Server.Get();
 		AGA_Server.Get().Log("VPP sync: aktywny");
 		AGA_Recipes.Apply(AGA_Recipes.Cfg().Disabled);
+		AGA_Territory.Init();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_SyncVPP, 20000, true);
 	}
 
@@ -65,6 +66,9 @@ modded class MissionServer
 	override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity)
 	{
 		super.InvokeOnConnect(player, identity);
+		AGA_Territory.SyncPlayer(player);
+		if (identity)
+			GetRPCManager().SendRPC("AGA", "AGA_Zones", new Param1<ref AGA_ZoneDb>(AGA_Territory.Zones()), true, identity);
 		if (identity && AGA_Recipes.Cfg().Disabled.Count() > 0)
 			GetRPCManager().SendRPC("AGA", "AGA_OnRecipes", new Param1<array<string>>(AGA_Recipes.Cfg().Disabled), true, identity);
 		if (identity)
@@ -83,9 +87,39 @@ modded class MissionGameplay
 	protected float m_AGA_RulesTimer;
 	protected bool m_AGA_RecipesDone;
 
+	protected bool m_AGA_PDown;
+
 	void MissionGameplay()
 	{
 		GetRPCManager().AddRPC("AGA", "AGA_OnRecipes", this, SingleplayerExecutionType.Client);
+		GetRPCManager().AddRPC("AGA", "AGA_Zones", this, SingleplayerExecutionType.Client);
+		GetRPCManager().AddRPC("AGA", "AGA_GroupView", this, SingleplayerExecutionType.Client);
+	}
+
+	void AGA_Zones(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		Param1<ref AGA_ZoneDb> data;
+		if (ctx.Read(data) && data.param1) AGA_Territory.s_Zones = data.param1;
+	}
+
+	void AGA_GroupView(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		Param1<ref AGA_GroupView> data;
+		if (!ctx.Read(data) || !data.param1) return;
+		AGA_GroupMenu.s_View = data.param1;
+		if (AGA_GroupMenu.s_Open) AGA_GroupMenu.s_Open.Fill();
+	}
+
+	void AGA_ToggleGroup()
+	{
+		UIScriptedMenu cur = GetGame().GetUIManager().GetMenu();
+		if (cur && AGA_GroupMenu.Cast(cur))
+		{
+			cur.Close();
+			return;
+		}
+		if (cur) return;
+		GetGame().GetUIManager().ShowScriptedMenu(new AGA_GroupMenu(), null);
 	}
 
 	void AGA_OnRecipes(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -100,6 +134,14 @@ modded class MissionGameplay
 	override void OnUpdate(float timeslice)
 	{
 		super.OnUpdate(timeslice);
+		UAInput gIn = GetUApi().GetInputByName("UAAGAGroup");
+		bool pd = gIn && gIn.LocalPress();
+		if ((pd && !m_AGA_PDown) || AGA_Territory.s_OpenMenu)
+		{
+			AGA_Territory.s_OpenMenu = false;
+			AGA_ToggleGroup();
+		}
+		m_AGA_PDown = pd;
 		if (m_AGA_RulesShown) return;
 		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
 		if (!p || !p.IsAlive()) return;

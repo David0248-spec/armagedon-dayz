@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<modded_inputs>
+	<inputs>
+		<actions>
+			<input name="UAAGAGroup" loc="ARMA-GEDON: group overview" />
+		</actions>
+	</inputs>
+	<preset>
+		<input name="UAAGAGroup">
+			<btn name="kP"/>
+		</input>
+	</preset>
+</modded_inputs>

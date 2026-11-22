@@ -39,6 +39,13 @@ class AGA_Server
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ProbeHeliSpots, 90000, false);
 		AGA_Raid.Cfg();
 		GetRPCManager().AddRPC("AGA", "AGA_Report", this, SingleplayerExecutionType.Server);
+		GetRPCManager().AddRPC("AGA", "AGA_GroupCmd", this, SingleplayerExecutionType.Server);
+	}
+
+	void AGA_GroupCmd(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		if (type != CallType.Server) return;
+		AGA_Territory.OnCmd(ctx, sender);
 	}
 
 	void AGA_Report(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -250,6 +257,7 @@ class AGA_Server
 		AGA_Raid.Tick();
 		AfkTick();
 		AGA_Events.Tick();
+		AGA_Territory.SyncAll();
 	}
 
 	// wyrzucanie AFK po 10 minutach bez ruchu (admini pominięci)

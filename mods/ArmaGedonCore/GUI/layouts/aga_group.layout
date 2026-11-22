@@ -1,0 +1,832 @@
+FrameWidgetClass AGA_Group {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass Dim {
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   ignorepointer 1
+   color 0 0 0 0.55
+   style rover_sim_colorable
+  }
+  PanelWidgetClass Win {
+   position 0.33 0.16
+   size 0.34 0.68
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   ignorepointer 0
+   color 0.047 0.051 0.059 0.97
+   style rover_sim_colorable
+   {
+    PanelWidgetClass Head {
+     position 0 0
+     size 1 0.085
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.031 0.034 0.04 1
+     style rover_sim_colorable
+     {
+      TextWidgetClass Title {
+       position 0.04 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text "GROUP"
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 20
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Close {
+       position 0.9 0.15
+       size 0.08 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Close_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.16 0.06 0.06 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Close_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "X"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 18
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Accent {
+     position 0 0.085
+     size 1 0.006
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.86 0.15 0.15 1
+     style rover_sim_colorable
+    }
+    TextWidgetClass Info {
+     position 0.04 0.1
+     size 0.92 0.05
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.55 0.58 0.63 1
+     text ""
+     font "gui/fonts/metron22"
+     "exact text" 1
+     "exact text size" 15
+     "text halign" left
+     "text valign" center
+    }
+    TextWidgetClass Info2 {
+     position 0.04 0.15
+     size 0.92 0.05
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.55 0.58 0.63 1
+     text ""
+     font "gui/fonts/metron22"
+     "exact text" 1
+     "exact text size" 15
+     "text halign" left
+     "text valign" center
+    }
+    PanelWidgetClass Row0 {
+     position 0.04 0.215
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot0 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name0 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick0 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick0_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick0_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Row1 {
+     position 0.04 0.29
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot1 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name1 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick1 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick1_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick1_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Row2 {
+     position 0.04 0.365
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot2 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name2 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick2 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick2_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick2_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Row3 {
+     position 0.04 0.43999999999999995
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot3 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name3 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick3 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick3_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick3_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Row4 {
+     position 0.04 0.515
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot4 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name4 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick4 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick4_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick4_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Row5 {
+     position 0.04 0.59
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot5 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name5 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick5 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick5_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick5_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Row6 {
+     position 0.04 0.6649999999999999
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot6 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name6 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick6 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick6_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick6_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass Row7 {
+     position 0.04 0.74
+     size 0.92 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 0
+     color 0.071 0.078 0.09 1
+     style rover_sim_colorable
+     {
+      PanelWidgetClass Dot7 {
+       position 0.02 0.35
+       size 0.018 0.3
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.3 0.3 0.3 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Name7 {
+       position 0.06 0
+       size 0.7 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text ""
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 16
+       "text halign" left
+       "text valign" center
+      }
+      ButtonWidgetClass Kick7 {
+       position 0.78 0.15
+       size 0.2 0.7
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       color 1 1 1 1
+       style Default
+       {
+        PanelWidgetClass Kick7_bg {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.55 0.09 0.09 1
+         style rover_sim_colorable
+        }
+        TextWidgetClass Kick7_txt {
+         position 0 0
+         size 1 1
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         ignorepointer 1
+         color 0.93 0.94 0.95 1
+         text "REMOVE"
+         font "gui/fonts/metron22"
+         "exact text" 1
+         "exact text size" 13
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    TextWidgetClass Hint {
+     position 0.04 0.825
+     size 0.92 0.06
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     ignorepointer 1
+     color 0.55 0.58 0.63 1
+     text ""
+     font "gui/fonts/metron22"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" left
+     "text valign" center
+    }
+    ButtonWidgetClass Leave {
+     position 0.04 0.9
+     size 0.3 0.065
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     color 1 1 1 1
+     style Default
+     {
+      PanelWidgetClass Leave_bg {
+       position 0 0
+       size 1 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.16 0.06 0.06 1
+       style rover_sim_colorable
+      }
+      TextWidgetClass Leave_txt {
+       position 0 0
+       size 1 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       ignorepointer 1
+       color 0.93 0.94 0.95 1
+       text "LEAVE GROUP"
+       font "gui/fonts/metron22"
+       "exact text" 1
+       "exact text size" 15
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+   }
+  }
+ }
+}

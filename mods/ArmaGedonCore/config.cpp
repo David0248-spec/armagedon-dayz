@@ -5,7 +5,7 @@ class CfgPatches
 		units[] = {"AGA_TimedExplosive"};
 		weapons[] = {};
 		requiredVersion = 0.1;
-		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow", "DZ_Weapons_Explosives", "DZ_Gear_Tools", "DZ_Sounds_Effects", "JM_CF_Scripts", "GDZ_Codelock"};
+		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow", "DZ_Weapons_Explosives", "DZ_Gear_Tools", "DZ_Sounds_Effects", "JM_CF_Scripts", "GDZ_Codelock", "DZ_Gear_Camping"};
 	};
 };
 
@@ -18,6 +18,7 @@ class CfgMods
 		author = "ARMA-GEDON";
 		version = "1.0";
 		type = "mod";
+		inputs = "ArmaGedonCore/Data/Inputs.xml";
 		dependencies[] = {"Game", "World", "Mission"};
 		class defs
 		{
@@ -907,6 +908,77 @@ class CfgVehicles
 		displayName = "Supply crate";
 		descriptionShort = "A heavy crate left behind at the site. Search it, it is too heavy to carry.";
 		weight = 50000;
+	};
+	class BaseBuildingBase;
+	class TerritoryFlag: BaseBuildingBase
+	{
+		class Construction
+		{
+			class totem
+			{
+				class base
+				{
+					class Materials
+					{
+						delete Material1;
+					};
+				};
+				class support
+				{
+					class Materials
+					{
+						class Material1
+						{
+							type = "WoodenLog";
+							slot_name = "Material_FPole_WoodenLog";
+							quantity = 1;
+							lockable = 0;
+						};
+						class Material2
+						{
+							type = "Rope";
+							slot_name = "Material_FPole_Rope";
+							quantity = 0;
+							lockable = 0;
+						};
+					};
+				};
+				class pole
+				{
+					class Materials
+					{
+						class Material1
+						{
+							type = "Stone";
+							slot_name = "Material_FPole_Stones";
+							quantity = 16;
+							lockable = 0;
+						};
+						class Material2
+						{
+							type = "WoodenLog";
+							slot_name = "Material_FPole_WoodenLog2";
+							quantity = 6;
+							lockable = 0;
+						};
+						class Material3
+						{
+							type = "Nail";
+							slot_name = "Material_FPole_Nails";
+							quantity = 60;
+							lockable = 0;
+						};
+						delete Material4;
+					};
+				};
+			};
+		};
+	};
+	class Inventory_Base;
+	class TerritoryFlagKit: Inventory_Base
+	{
+		attachments[] = {};
+		descriptionShort = "Flag pole kit. Place it to claim a territory (30 m). Upgrade it at the flag: level 2 - 1 log and 1 rope, level 3 - 6 logs, 60 nails and 16 stones.";
 	};
 	class ExplosivesBase;
 	class Plastic_Explosive: ExplosivesBase

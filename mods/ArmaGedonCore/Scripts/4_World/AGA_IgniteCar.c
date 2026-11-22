@@ -158,5 +158,10 @@ modded class ActionConstructor
 		actions.Insert(AGA_ActionIgniteCar);
 		actions.Insert(AGA_ActionArmTimed);
 		actions.Insert(AGA_ActionDefuseTimed);
+		actions.Insert(AGA_ActionFlagInviteOn);
+		actions.Insert(AGA_ActionFlagInviteOff);
+		actions.Insert(AGA_ActionFlagJoin);
+		actions.Insert(AGA_ActionFlagLeave);
+		actions.Insert(AGA_ActionFlagGroup);
 	}
 }
