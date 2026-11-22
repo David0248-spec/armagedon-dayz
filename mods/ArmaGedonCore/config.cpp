@@ -2,7 +2,7 @@ class CfgPatches
 {
 	class ArmaGedonCore
 	{
-		units[] = {"AGA_TimedExplosive"};
+		units[] = {"AGA_TimedExplosive", "AGA_MetalPanel", "AGA_GunRack_T1", "AGA_GunWall_T1", "AGA_GearStand_T1", "AGA_Workbench_T1"};
 		weapons[] = {};
 		requiredVersion = 0.1;
 		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow", "DZ_Weapons_Explosives", "DZ_Gear_Tools", "DZ_Sounds_Effects", "JM_CF_Scripts", "GDZ_Codelock", "DZ_Gear_Camping"};
@@ -979,6 +979,162 @@ class CfgVehicles
 	{
 		attachments[] = {};
 		descriptionShort = "Flag pole kit. Place it to claim a territory (30 m). Upgrade it at the flag: level 2 - 1 log and 1 rope, level 3 - 6 logs, 60 nails and 16 stones.";
+	};
+	class WoodenCrate;
+	class AGA_Crate_T2: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Wooden Crate (Tier 2)";
+		descriptionShort = "Upgraded storage crate. 100 slots.";
+		model = "\DZ\structures_bliss\residential\Misc\Misc_WoodenCrate.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		itemsCargoSize[] = {10,10};
+	};
+	class AGA_Crate_T3: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Wooden Crate (Tier 3)";
+		descriptionShort = "Upgraded storage crate. 150 slots.";
+		model = "\DZ\structures_bliss\residential\Misc\Misc_WoodenCrate_3x.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		itemsCargoSize[] = {10,15};
+	};
+	class AGA_Crate_T4: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Wooden Crate (Tier 4)";
+		descriptionShort = "Fully upgraded storage crate. 200 slots.";
+		model = "\DZ\structures_bliss\residential\Misc\Misc_WoodenCrate_5x.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		itemsCargoSize[] = {10,20};
+	};
+	class AGA_GunRack_T1: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Gun Rack (Tier 1)";
+		descriptionShort = "Holds 2 rifles. Upgrade with a hammer.";
+		model = "\DayZExpansion\Objects\Basebuilding\Misc\gunrack\gunrack.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		attachments[] = {"Shoulder1","Shoulder2"};
+		itemsCargoSize[] = {0,0};
+		weight = 10000;
+	};
+	class AGA_GunRack_T2: AGA_GunRack_T1
+	{
+		scope = 2;
+		displayName = "Gun Rack (Tier 2)";
+		descriptionShort = "Holds 4 rifles and 2 ammo boxes.";
+		model = "\DayZExpansion\Objects\Basebuilding\Misc\gunrack\gunrack.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+		itemsCargoSize[] = {6,4};
+	};
+	class AGA_GunRack_T3: AGA_GunRack_T1
+	{
+		scope = 2;
+		displayName = "Gun Rack (Tier 3)";
+		descriptionShort = "Holds 4 rifles, 3 ammo boxes and 3 pistols.";
+		model = "\DayZExpansion\Objects\Basebuilding\Misc\gunrack\gunrack.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+		itemsCargoSize[] = {8,6};
+	};
+	class AGA_GunWall_T1: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Gun Wall (Tier 1)";
+		descriptionShort = "Holds 4 rifles. Upgrade with a hammer.";
+		model = "\DZ\structures\military\Misc\Misc_Gunrack.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
+		itemsCargoSize[] = {0,0};
+		weight = 12000;
+	};
+	class AGA_GunWall_T2: AGA_GunWall_T1
+	{
+		scope = 2;
+		displayName = "Gun Wall (Tier 2)";
+		descriptionShort = "Holds 8 rifles and 8 grenades.";
+		model = "\DZ\structures\military\Misc\Misc_Gunrack.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","Shoulder5","Shoulder6","Shoulder7","Shoulder8"};
+		itemsCargoSize[] = {8,4};
+	};
+	class AGA_GearStand_T1: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Gear Stand (Tier 1)";
+		descriptionShort = "Holds headgear and a vest. Upgrade with a hammer.";
+		model = "\DZ\structures\furniture\Various\rack_DZ.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		attachments[] = {"Headgear","Vest"};
+		itemsCargoSize[] = {0,0};
+		weight = 8000;
+	};
+	class AGA_GearStand_T2: AGA_GearStand_T1
+	{
+		scope = 2;
+		displayName = "Gear Stand (Tier 2)";
+		descriptionShort = "Holds a full outfit.";
+		model = "\DZ\structures\furniture\Various\rack_DZ.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		attachments[] = {"Headgear","Vest","Eyewear","Gloves","Body","Back","Hips","Legs","Feet"};
+		itemsCargoSize[] = {0,0};
+	};
+	class AGA_Workbench_T1: WoodenCrate
+	{
+		scope = 2;
+		displayName = "Workbench (Tier 1)";
+		descriptionShort = "Tool storage: shovel, axe, pickaxe, sledgehammer, hammer, nails and planks.";
+		model = "\DZ\structures\furniture\Various\workbench_DZ.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		itemsCargoSize[] = {10,10};
+		weight = 15000;
+	};
+	class AGA_Workbench_T2: AGA_Workbench_T1
+	{
+		scope = 2;
+		displayName = "Workbench (Tier 2)";
+		descriptionShort = "Tool storage: hatchet, shovel, axe, pickaxe, saw, pliers, screwdriver, sledgehammer, nails and planks.";
+		model = "\DZ\structures\furniture\Various\workbench_DZ.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		itemsCargoSize[] = {10,10};
+	};
+	class AGA_Workbench_T3: AGA_Workbench_T1
+	{
+		scope = 2;
+		displayName = "Workbench (Tier 3)";
+		descriptionShort = "All tier 2 storage. Items repaired near it can reach pristine condition.";
+		model = "\DZ\structures\furniture\Various\workbench_DZ.p3d";
+		hiddenSelections[] = {};
+		hiddenSelectionsTextures[] = {};
+		itemsCargoSize[] = {10,10};
+	};
+	class MetalPlate;
+	class AGA_MetalPanel: MetalPlate
+	{
+		scope = 2;
+		displayName = "Metal Panel";
+		descriptionShort = "Smaller metal panel used to upgrade base storage. Fits in a backpack. Six panels and a blowtorch make a metal sheet.";
+		itemSize[] = {2,3};
+		weight = 1500;
+		canBeSplit = 1;
+		varQuantityInit = 1;
+		varQuantityMin = 0;
+		varQuantityMax = 10;
+		varQuantityDestroyOnMin = 1;
 	};
 	class ExplosivesBase;
 	class Plastic_Explosive: ExplosivesBase

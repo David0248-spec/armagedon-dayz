@@ -271,7 +271,7 @@ class AGA_Territory
 
 	static bool NeedsTerritory(EntityAI item)
 	{
-		return item.IsInherited(FenceKit) || item.IsInherited(WatchtowerKit) || item.IsInherited(WoodenCrate);
+		return item.IsInherited(FenceKit) || item.IsInherited(WatchtowerKit) || item.IsInherited(WoodenCrate) || item.IsInherited(AGA_StorageBase);
 	}
 
 	static bool ZoneLimited(EntityAI item)
@@ -291,6 +291,28 @@ class AGA_Territory
 			if (e.IsInherited(t)) n++;
 		}
 		return n;
+	}
+
+	static int CountKind(TerritoryFlag flag, string kind)
+	{
+		array<Object> objs = new array<Object>;
+		GetGame().GetObjectsAtPosition(flag.GetPosition(), RADIUS, objs, null);
+		int n = 0;
+		foreach (Object o : objs)
+		{
+			EntityAI e = EntityAI.Cast(o);
+			if (!e || e.IsHologram() || e.GetHierarchyParent()) continue;
+			if (e.IsKindOf(kind)) n++;
+		}
+		return n;
+	}
+
+	static bool AGA_LimitOk(EntityAI item, TerritoryFlag flag, typename kind, int max, string label, out string msg)
+	{
+		if (!item.IsInherited(kind)) return true;
+		if (CountNear(flag, kind) < max) return true;
+		msg = "Storage limit reached: max " + max.ToString() + " " + label + " per base.";
+		return false;
 	}
 
 	static bool CanPlace(EntityAI item, Man player, vector pos, out string msg)
@@ -342,6 +364,10 @@ class AGA_Territory
 				msg = "Storage limit reached: max " + MAX_CRATES.ToString() + " crates per base.";
 				return false;
 			}
+			if (!AGA_LimitOk(item, flag, AGA_GunRackBase, 2, "gun racks", msg)) return false;
+			if (!AGA_LimitOk(item, flag, AGA_GunWallBase, 2, "gun walls", msg)) return false;
+			if (!AGA_LimitOk(item, flag, AGA_GearStandBase, 2, "gear stands", msg)) return false;
+			if (!AGA_LimitOk(item, flag, AGA_WorkbenchBase, 1, "workbench", msg)) return false;
 			if (item.IsInherited(Fireplace) && CountNear(flag, Fireplace) >= MAX_FIREPLACES)
 			{
 				msg = "Limit reached: max " + MAX_FIREPLACES.ToString() + " fireplace per base.";
