@@ -516,6 +516,9 @@ class AGA_Territory
 		flag.AGA_ApplyLife();
 		AGA_SyncPl(owner);
 		flag.AGA_UpdateCount();
+		string st;
+		GetGame().SurfaceGetType(pos[0], pos[2], st);
+		AGA_Server.Get().Log("[TERYTORIUM] nawierzchnia flagi: " + st);
 		AGA_Server.Get().Log("[TERYTORIUM] nowa baza #" + g.Id.ToString() + " " + owner.GetIdentity().GetName() + " (" + id + ") @ " + pos.ToString());
 		Tell(owner, "Territory claimed. You are the base owner. Enable invites at the flag pole to add members (max " + LIMIT.ToString() + ").");
 	}
@@ -675,19 +678,25 @@ class AGA_Territory
 	{
 		array<vector> pts = AGA_Events.s_Roads;
 		if (!pts) return;
-		int on = 0;
-		int off = 0;
+		map<string, int> onT = new map<string, int>;
+		map<string, int> offT = new map<string, int>;
 		int n = 0;
 		foreach (vector v : pts)
 		{
-			if (++n > 200) break;
-			if (OnRoad(v)) on++;
-			vector side = v + "35 0 35";
-			if (OnRoad(side)) off++;
+			if (++n > 400) break;
+			string t;
+			GetGame().SurfaceGetType(v[0], v[2], t);
+			onT.Set(t, onT.Get(t) + 1);
+			string t2;
+			GetGame().SurfaceGetType(v[0] + 60, v[2] + 60, t2);
+			offT.Set(t2, offT.Get(t2) + 1);
 		}
-		string t;
-		GetGame().SurfaceGetType(pts[0][0], pts[0][2], t);
-		AGA_Server.Get().Log("[DROGI] sonda: na drodze " + on.ToString() + "/" + Math.Min(n, 200).ToString() + ", obok drogi " + off.ToString() + ", typ " + t + ", roadY-Y " + (GetGame().SurfaceRoadY(pts[0][0], pts[0][2]) - GetGame().SurfaceY(pts[0][0], pts[0][2])).ToString());
+		string a = "";
+		foreach (string k, int c : onT) a += k + "=" + c.ToString() + " ";
+		string b = "";
+		foreach (string k2, int c2 : offT) b += k2 + "=" + c2.ToString() + " ";
+		AGA_Server.Get().Log("[DROGI] na drodze: " + a);
+		AGA_Server.Get().Log("[DROGI] obok drogi: " + b);
 	}
 
 	static AGA_GroupView View(PlayerBase p)

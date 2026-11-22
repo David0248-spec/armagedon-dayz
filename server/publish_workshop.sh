@@ -10,6 +10,9 @@ cp $REPO/workshop/mod.cpp $STAGE/
 ID=0
 [ -f $IDFILE ] && ID=$(cat $IDFILE)
 [ -f $REPO/workshop/item_id ] && ID=$(cat $REPO/workshop/item_id)
+# widocznosc ustawiana tylko przy tworzeniu nowej paczki; aktualizacje zostawiaja ustawienie wlasciciela
+VIS=""
+[ -z "$ID" ] && VIS=' "visibility" "2"'
 cat > /tmp/ag_workshop.vdf <<VDF
 "workshopitem"
 {
@@ -17,9 +20,9 @@ cat > /tmp/ag_workshop.vdf <<VDF
  "publishedfileid" "$ID"
  "contentfolder" "$STAGE"
  "previewfile" "$REPO/workshop/preview.png"
- "visibility" "2"
+$VIS
  "title" "Arma-Gedon"
- "description" "Prywatna paczka serwera ARMA-GEDON (panel administracyjny i zawartosc serwera)."
+ "description" "Paczka serwera ARMA-GEDON (DayZ)."
  "changenote" "$(cd $REPO && git log --oneline -1)"
 }
 VDF
