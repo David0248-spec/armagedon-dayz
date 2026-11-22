@@ -52,10 +52,10 @@ class AGA_Build
 		Add("AGA_Crate_T3", "AGA_Crate_T4", 3, "WoodenPlank:16,Nail:28,AGA_MetalPanel:1");
 		Add("AGA_GunRack_T1", "AGA_GunRack_T2", 2, "WoodenPlank:8,Nail:40,BurlapSack:2,AGA_MetalPanel:2");
 		Add("AGA_GunRack_T2", "AGA_GunRack_T3", 3, "WoodenPlank:16,Nail:64,MetalWire:1,Rope:1,AGA_MetalPanel:2");
-		Add("AGA_GunWall_T1", "AGA_GunWall_T2", 2, "WoodenPlank:20,Nail:80,Rope:1,BurlapSack:4,MetalWire:1,AGA_MetalPanel:6");
-		Add("AGA_GearStand_T1", "AGA_GearStand_T2", 2, "Rope:1,Nail:50,TannedLeather:10");
-		Add("AGA_Workbench_T1", "AGA_Workbench_T2", 2, "WoodenPlank:12,BurlapSack:2,Nail:40,AGA_MetalPanel:2");
-		Add("AGA_Workbench_T2", "AGA_Workbench_T3", 2, "WoodenPlank:20,BurlapSack:4,Nail:80,AGA_MetalPanel:6");
+		// wyłączone: Add("AGA_GunWall_T1", "AGA_GunWall_T2", 2, "WoodenPlank:20,Nail:80,Rope:1,BurlapSack:4,MetalWire:1,AGA_MetalPanel:6");
+		// wyłączone: Add("AGA_GearStand_T1", "AGA_GearStand_T2", 2, "Rope:1,Nail:50,TannedLeather:10");
+		// wyłączone: Add("AGA_Workbench_T1", "AGA_Workbench_T2", 2, "WoodenPlank:12,BurlapSack:2,Nail:40,AGA_MetalPanel:2");
+		// wyłączone: Add("AGA_Workbench_T2", "AGA_Workbench_T3", 2, "WoodenPlank:20,BurlapSack:4,Nail:80,AGA_MetalPanel:6");
 		return s_Steps;
 	}
 
@@ -285,7 +285,24 @@ class AGA_GunRack_T3 : AGA_GunRackBase
 	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("AmmoBox"); limits.Insert(3); types.Insert("Pistol_Base"); limits.Insert(3); }
 }
 
-class AGA_GunWallBase : AGA_StorageBase {}
+// Gun wall, gear stand i workbench – tymczasowo wyłączone (model powodował crash klienta).
+// Istniejące egzemplarze są usuwane przy wczytaniu.
+class AGA_RemovedStorage : AGA_StorageBase
+{
+	override void EEInit()
+	{
+		super.EEInit();
+		if (GetGame().IsServer())
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Remove, 100, false);
+	}
+
+	void AGA_Remove()
+	{
+		GetGame().ObjectDelete(this);
+	}
+}
+
+class AGA_GunWallBase : AGA_RemovedStorage {}
 class AGA_GunWall_T1 : AGA_GunWallBase {}
 class AGA_GunWall_T2 : AGA_GunWallBase
 {
@@ -293,14 +310,14 @@ class AGA_GunWall_T2 : AGA_GunWallBase
 	override void AGA_Rules(array<string> types, array<int> limits) { types.Insert("Grenade_Base"); limits.Insert(8); }
 }
 
-class AGA_GearStandBase : AGA_StorageBase {}
+class AGA_GearStandBase : AGA_RemovedStorage {}
 class AGA_GearStand_T1 : AGA_GearStandBase {}
 class AGA_GearStand_T2 : AGA_GearStandBase
 {
 	override int AGA_Tier() { return 2; }
 }
 
-class AGA_WorkbenchBase : AGA_StorageBase {}
+class AGA_WorkbenchBase : AGA_RemovedStorage {}
 class AGA_Workbench_T1 : AGA_WorkbenchBase
 {
 	override void AGA_Rules(array<string> types, array<int> limits)
@@ -461,7 +478,7 @@ class AGA_RecipeSimple extends RecipeBase
 		m_ResultSetHealth[0] = -1;
 		m_ResultInheritsHealth[0] = -1;
 		m_ResultInheritsColor[0] = -1;
-		m_ResultToInventory[0] = -2;
+		m_ResultToInventory[0] = -1;
 		m_ResultUseSoftSkills[0] = false;
 		m_ResultReplacesIngredient[0] = -1;
 	}
@@ -523,9 +540,6 @@ modded class PluginRecipesManagerBase
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new AGA_CraftGunRack);
-		RegisterRecipe(new AGA_CraftGunWall);
-		RegisterRecipe(new AGA_CraftGearStand);
-		RegisterRecipe(new AGA_CraftWorkbench);
 		RegisterRecipe(new AGA_CraftMetalPanels);
 		RegisterRecipe(new AGA_CraftMetalSheet);
 	}

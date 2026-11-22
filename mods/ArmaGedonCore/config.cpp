@@ -894,7 +894,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Supply crate";
 		descriptionShort = "A heavy crate left behind at the site. Search it, it is too heavy to carry.";
-		model = "\\DZ\\structures_bliss\\residential\\Misc\\Misc_WoodenCrate.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		weight = 50000;
@@ -903,12 +902,10 @@ class CfgVehicles
 	class AGA_LootCrateMil: AGA_LootCrate
 	{
 		displayName = "Military crate";
-		model = "\\DZ\\structures\\furniture\\Cases\\metalcrate\\metalcrate.p3d";
 	};
 	class AGA_LootCrateMed: AGA_LootCrate
 	{
 		displayName = "Medical case";
-		model = "\\DZ\\structures\\furniture\\Cases\\metalcase\\metalcase_01.p3d";
 	};
 	class BaseBuildingBase;
 	class TerritoryFlag: BaseBuildingBase
@@ -997,7 +994,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Wooden Crate (Tier 2)";
 		descriptionShort = "Upgraded storage crate. 100 slots.";
-		model = "\DZ\structures_bliss\residential\Misc\Misc_WoodenCrate.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		itemsCargoSize[] = {10,10};
@@ -1007,7 +1003,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Wooden Crate (Tier 3)";
 		descriptionShort = "Upgraded storage crate. 150 slots.";
-		model = "\DZ\structures_bliss\residential\Misc\Misc_WoodenCrate_3x.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		itemsCargoSize[] = {10,15};
@@ -1017,7 +1012,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Wooden Crate (Tier 4)";
 		descriptionShort = "Fully upgraded storage crate. 200 slots.";
-		model = "\DZ\structures_bliss\residential\Misc\Misc_WoodenCrate_5x.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		itemsCargoSize[] = {10,20};
@@ -1061,7 +1055,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Gun Wall (Tier 1)";
 		descriptionShort = "Holds 4 rifles. Upgrade with a hammer.";
-		model = "\DZ\structures\military\Misc\Misc_Gunrack.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4"};
@@ -1073,7 +1066,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Gun Wall (Tier 2)";
 		descriptionShort = "Holds 8 rifles and 8 grenades.";
-		model = "\DZ\structures\military\Misc\Misc_Gunrack.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		attachments[] = {"Shoulder1","Shoulder2","Shoulder3","Shoulder4","Shoulder5","Shoulder6","Shoulder7","Shoulder8"};
@@ -1084,7 +1076,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Gear Stand (Tier 1)";
 		descriptionShort = "Holds headgear and a vest. Upgrade with a hammer.";
-		model = "\DZ\structures\furniture\Various\rack_DZ.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		attachments[] = {"Headgear","Vest"};
@@ -1096,7 +1087,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Gear Stand (Tier 2)";
 		descriptionShort = "Holds a full outfit.";
-		model = "\DZ\structures\furniture\Various\rack_DZ.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		attachments[] = {"Headgear","Vest","Eyewear","Gloves","Body","Back","Hips","Legs","Feet"};
@@ -1107,7 +1097,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Workbench (Tier 1)";
 		descriptionShort = "Tool storage: shovel, axe, pickaxe, sledgehammer, hammer, nails and planks.";
-		model = "\DZ\structures\furniture\Various\workbench_DZ.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		itemsCargoSize[] = {10,10};
@@ -1118,7 +1107,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Workbench (Tier 2)";
 		descriptionShort = "Tool storage: hatchet, shovel, axe, pickaxe, saw, pliers, screwdriver, sledgehammer, nails and planks.";
-		model = "\DZ\structures\furniture\Various\workbench_DZ.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		itemsCargoSize[] = {10,10};
@@ -1128,7 +1116,6 @@ class CfgVehicles
 		scope = 2;
 		displayName = "Workbench (Tier 3)";
 		descriptionShort = "All tier 2 storage. Items repaired near it can reach pristine condition.";
-		model = "\DZ\structures\furniture\Various\workbench_DZ.p3d";
 		hiddenSelections[] = {};
 		hiddenSelectionsTextures[] = {};
 		itemsCargoSize[] = {10,10};
