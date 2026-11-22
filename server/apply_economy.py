@@ -87,6 +87,27 @@ def fix_type(m):
     if nb != block: changed += 1
     return nb
 s = re.sub(r'<type name="([^"]+)">.*?</type>', fix_type, s, flags=re.S)
+# warianty kolorystyczne broni (AK74_Black, Mosin9130_Camo...): spawn jak broń bazowa, 1/3 jej ilości
+if cfg.get('weapon_variants'):
+    base = {m.group(1): m.group(0) for m in re.finditer(r'<type name="([^"]+)">.*?</type>', s, flags=re.S)}
+    def var_fix(m):
+        global changed
+        name, block = m.group(1), m.group(0)
+        mm = re.match(r'^([A-Za-z0-9]+)_(Black|Green|Camo|Tan|Woodland|Wood|Olive|Desert|Grey|Snow|White|Brown|Coyote)$', name)
+        if not mm or mm.group(1) not in base or '<category name="weapons"' not in block: return block
+        if int(re.search(r'<nominal>(\d+)</nominal>', block).group(1)) > 0: return block
+        bb = base[mm.group(1)]
+        bn = int(re.search(r'<nominal>(\d+)</nominal>', bb).group(1))
+        if bn == 0: return block
+        n0 = max(2, bn // 3)
+        nb = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
+        nb = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, n0 // 2), nb)
+        nb = re.sub(r'\s*<(usage|value) name="[^"]+"\s*/>', '', nb)
+        tags = ''.join('\n\t\t' + t for t in re.findall(r'<(?:usage|value) name="[^"]+"\s*/>', bb))
+        nb = nb.replace('</type>', tags.lstrip('\n').replace('\t\t', '\t\t', 1) + '\n\t</type>') if tags else nb
+        changed += 1
+        return nb
+    s = re.sub(r'<type name="([^"]+)">.*?</type>', var_fix, s, flags=re.S)
 open(p, 'w').write(s)
 print('types.xml: zmieniono %d typow' % changed)
 # --- events.xml (vanilla + nasze bloki ARMAGEDON doklejane potem przez setup_ce) ---
@@ -120,6 +141,9 @@ for w, mag in cfg.get('weapon_mags', {}).items():
     else:
         s = s.replace('</spawnabletypes>', '\t<type name="%s">\n%s\t</type>\n</spawnabletypes>' % (w, att))
     added += 1
+sc = cfg.get('stock_chance')
+if sc:
+    s = re.sub(r'<attachments chance="[\d.]+">(\s*<item name="[^"]*(?:Bttstck|Hndgrd|Buttstock|Handguard)[^"]*")', lambda q: '<attachments chance="%.2f">%s' % (sc, q.group(1)), s)
 open(p, 'w').write(s)
 print('cfgspawnabletypes: magazynki dodane do %d broni' % added)
 
