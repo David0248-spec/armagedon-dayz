@@ -16,12 +16,7 @@ class AGA_UpStep
 		Mat = new array<string>;
 		Qty = new array<int>;
 	}
-	AGA_UpStep M(string type, int q)
-	{
-		Mat.Insert(type);
-		Qty.Insert(q);
-		return this;
-	}
+
 }
 
 class AGA_Build
@@ -32,19 +27,35 @@ class AGA_Build
 	static const int MAX_BENCHES = 1;
 	static ref array<ref AGA_UpStep> s_Steps;
 
+	static void Add(string f, string t, int flag, string spec)
+	{
+		AGA_UpStep st = new AGA_UpStep(f, t, flag);
+		array<string> parts = new array<string>;
+		spec.Split(",", parts);
+		foreach (string p : parts)
+		{
+			array<string> kv = new array<string>;
+			p.Split(":", kv);
+			if (kv.Count() != 2) continue;
+			st.Mat.Insert(kv[0]);
+			st.Qty.Insert(kv[1].ToInt());
+		}
+		s_Steps.Insert(st);
+	}
+
 	static array<ref AGA_UpStep> Steps()
 	{
 		if (s_Steps) return s_Steps;
 		s_Steps = new array<ref AGA_UpStep>;
-		s_Steps.Insert(new AGA_UpStep("WoodenCrate", "AGA_Crate_T2", 2).M("WoodenPlank", 10).M("Nail", 18).M("MetalWire", 1));
-		s_Steps.Insert(new AGA_UpStep("AGA_Crate_T2", "AGA_Crate_T3", 3).M("WoodenPlank", 14).M("Nail", 22).M("AGA_MetalPanel", 1));
-		s_Steps.Insert(new AGA_UpStep("AGA_Crate_T3", "AGA_Crate_T4", 3).M("WoodenPlank", 16).M("Nail", 28).M("AGA_MetalPanel", 1));
-		s_Steps.Insert(new AGA_UpStep("AGA_GunRack_T1", "AGA_GunRack_T2", 2).M("WoodenPlank", 8).M("Nail", 40).M("Tarp", 2).M("AGA_MetalPanel", 2));
-		s_Steps.Insert(new AGA_UpStep("AGA_GunRack_T2", "AGA_GunRack_T3", 3).M("WoodenPlank", 16).M("Nail", 64).M("MetalWire", 1).M("Rope", 1).M("AGA_MetalPanel", 2));
-		s_Steps.Insert(new AGA_UpStep("AGA_GunWall_T1", "AGA_GunWall_T2", 2).M("WoodenPlank", 20).M("Nail", 80).M("Rope", 1).M("Tarp", 4).M("MetalWire", 1).M("AGA_MetalPanel", 6));
-		s_Steps.Insert(new AGA_UpStep("AGA_GearStand_T1", "AGA_GearStand_T2", 2).M("Rope", 1).M("Nail", 50).M("TannedLeather", 10));
-		s_Steps.Insert(new AGA_UpStep("AGA_Workbench_T1", "AGA_Workbench_T2", 2).M("WoodenPlank", 12).M("Tarp", 2).M("Nail", 40).M("AGA_MetalPanel", 2));
-		s_Steps.Insert(new AGA_UpStep("AGA_Workbench_T2", "AGA_Workbench_T3", 2).M("WoodenPlank", 20).M("Tarp", 4).M("Nail", 80).M("AGA_MetalPanel", 6));
+		Add("WoodenCrate", "AGA_Crate_T2", 2, "WoodenPlank:10,Nail:18,MetalWire:1");
+		Add("AGA_Crate_T2", "AGA_Crate_T3", 3, "WoodenPlank:14,Nail:22,AGA_MetalPanel:1");
+		Add("AGA_Crate_T3", "AGA_Crate_T4", 3, "WoodenPlank:16,Nail:28,AGA_MetalPanel:1");
+		Add("AGA_GunRack_T1", "AGA_GunRack_T2", 2, "WoodenPlank:8,Nail:40,BurlapSack:2,AGA_MetalPanel:2");
+		Add("AGA_GunRack_T2", "AGA_GunRack_T3", 3, "WoodenPlank:16,Nail:64,MetalWire:1,Rope:1,AGA_MetalPanel:2");
+		Add("AGA_GunWall_T1", "AGA_GunWall_T2", 2, "WoodenPlank:20,Nail:80,Rope:1,BurlapSack:4,MetalWire:1,AGA_MetalPanel:6");
+		Add("AGA_GearStand_T1", "AGA_GearStand_T2", 2, "Rope:1,Nail:50,TannedLeather:10");
+		Add("AGA_Workbench_T1", "AGA_Workbench_T2", 2, "WoodenPlank:12,BurlapSack:2,Nail:40,AGA_MetalPanel:2");
+		Add("AGA_Workbench_T2", "AGA_Workbench_T3", 2, "WoodenPlank:20,BurlapSack:4,Nail:80,AGA_MetalPanel:6");
 		return s_Steps;
 	}
 
@@ -99,7 +110,7 @@ class AGA_Build
 		if (type == "MetalWire") return "metal wire";
 		if (type == "AGA_MetalPanel") return "metal panels";
 		if (type == "TannedLeather") return "tanned leather";
-		if (type == "Tarp") return "tarp";
+		if (type == "BurlapSack") return "burlap sacks";
 		if (type == "Rope") return "rope";
 		return type;
 	}
