@@ -703,7 +703,7 @@ class AGA_Territory
 		string cmd = data.param1;
 		if (cmd == "kick") Kick(p, data.param2);
 		else if (cmd == "leave") Leave(p);
-		GetRPCManager().SendRPC("AGA", "AGA_GroupView", new Param1<ref AGA_GroupView>(View(p)), true, sender);
+		GetRPCManager().SendRPC("AGA", "AGA_OnGroupView", new Param1<ref AGA_GroupView>(View(p)), true, sender);
 	}
 }
 

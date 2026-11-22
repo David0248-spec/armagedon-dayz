@@ -93,7 +93,7 @@ modded class MissionGameplay
 	{
 		GetRPCManager().AddRPC("AGA", "AGA_OnRecipes", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_Zones", this, SingleplayerExecutionType.Client);
-		GetRPCManager().AddRPC("AGA", "AGA_GroupView", this, SingleplayerExecutionType.Client);
+		GetRPCManager().AddRPC("AGA", "AGA_OnGroupView", this, SingleplayerExecutionType.Client);
 	}
 
 	void AGA_Zones(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -102,7 +102,7 @@ modded class MissionGameplay
 		if (ctx.Read(data) && data.param1) AGA_Territory.s_Zones = data.param1;
 	}
 
-	void AGA_GroupView(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	void AGA_OnGroupView(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
 		Param1<ref AGA_GroupView> data;
 		if (!ctx.Read(data) || !data.param1) return;
