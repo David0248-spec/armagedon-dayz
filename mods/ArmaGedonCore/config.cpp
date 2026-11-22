@@ -1689,6 +1689,26 @@ class CfgSoundShaders
 		volume = 4;
 		range = 70;
 	};
+	// katastrofy eventow slyszalne z ~4 km
+	class HeliCrash_Distant_SoundShader;
+	class AGA_PlaneCrash_Far_SoundShader: HeliCrash_Distant_SoundShader
+	{
+		range = 4200;
+		volume = 1.6;
+	};
+	class AGA_HeliCrash_Far_SoundShader: HeliCrash_Distant_SoundShader
+	{
+		range = 3200;
+		volume = 1.3;
+	};
+};
+
+class CfgSoundCurves
+{
+	class AGA_CrashFarCurve
+	{
+		points[] = {{0,1},{800,1},{1600,0.8},{2400,0.55},{3200,0.3},{4200,0}};
+	};
 };
 
 class CfgSound3DProcessors
@@ -1710,5 +1730,18 @@ class CfgSoundSets
 		soundShaders[] = {"AGA_TimerTick_SoundShader"};
 		sound3DProcessingType = "AGA_TimerTick_3DProcessingType";
 		volumeCurve = "Smooth1Curve";
+	};
+	class HeliCrash_Distant_Base_SoundSet;
+	class AGA_PlaneCrash_Far_SoundSet: HeliCrash_Distant_Base_SoundSet
+	{
+		soundShaders[] = {"AGA_PlaneCrash_Far_SoundShader"};
+		sound3DProcessingType = "ThunderNear3DProcessingType";
+		volumeCurve = "AGA_CrashFarCurve";
+	};
+	class AGA_HeliCrash_Far_SoundSet: HeliCrash_Distant_Base_SoundSet
+	{
+		soundShaders[] = {"AGA_HeliCrash_Far_SoundShader"};
+		sound3DProcessingType = "ThunderNear3DProcessingType";
+		volumeCurve = "AGA_CrashFarCurve";
 	};
 };

@@ -1,10 +1,18 @@
-// ARMA-GEDON: dynamiczne eventy (katastrofa samolotu, konwój medyczny, obozy myśliwych i cywilów, plac budowy)
+// ARMA-GEDON: dynamiczne eventy – samolot i heli (MAYDAY + katastrofa slyszalna z 4 km), konwoje, posterunek, zasadzka specnazu,
+// skazenie chemiczne, obozy mysliwych i cywilow, plac budowy.
 // Każdy obiekt jest osadzany wg własnego obrysu i nachylenia terenu (bez lewitowania / zapadania).
 // Zombie i loot zależą od tieru okolicy. Do tego automatyczne restarty serwera 2x dziennie.
 
 // słup dymu i trzask ognia – mechanika wraku heli z gry, bez modelu
 class AGA_SmokeColumn extends Wreck_UH1Y
 {
+	static bool s_AGASnd = AGA_RegSnd();
+	static bool AGA_RegSnd()
+	{
+		CrashSoundSets.RegisterSoundSet("AGA_PlaneCrash_Far_SoundSet");
+		CrashSoundSets.RegisterSoundSet("AGA_HeliCrash_Far_SoundSet");
+		return true;
+	}
 }
 
 // skrzynia z lootem eventu: da się przeszukać, nie da się zabrać
@@ -81,6 +89,31 @@ class AGA_Events
 		Ensure("MILCONVOY", 1);
 		Ensure("POLICE", 1);
 		Ensure("PLANE", 1);
+		Ensure("TOXIC", 1);
+		Ensure("AMBUSH", 1);
+	}
+
+	// ---------------- samolot / heli: najpierw przechwycony MAYDAY, katastrofa ~50 s pozniej ----------------
+	static ref array<string> s_Incoming = new array<string>;
+
+	static void Mayday(string kind, vector pos, float yaw)
+	{
+		AGA_Event tmp = new AGA_Event;
+		tmp.Pos = pos;
+		s_Cur = tmp;
+		if (kind == "PLANE") Announce("MAYDAY INTERCEPTED", "A military cargo plane is losing altitude.");
+		else Announce("MAYDAY INTERCEPTED", "A helicopter reports engine failure and is going down.");
+		s_Cur = null;
+		s_Incoming.Insert(kind);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Arrive, Math.RandomIntInclusive(40000, 70000), false, kind, pos, yaw);
+	}
+
+	static void Arrive(string kind, vector pos, float yaw)
+	{
+		int i = s_Incoming.Find(kind);
+		if (i >= 0) s_Incoming.Remove(i);
+		if (s_Restarting) return;
+		SpawnAt(kind, pos, yaw);
 	}
 
 	// event wyczyszczony = skrzynie puste
@@ -131,6 +164,7 @@ class AGA_Events
 		if (s_Phase == 3) { want = want + 1; chance = 60; }
 		int have = 0;
 		foreach (AGA_Event e : s_Active) if (e.Kind == kind) have++;
+		foreach (string pk : s_Incoming) if (pk == kind) have++;
 		if (have >= want) return;
 		if (Math.RandomInt(0, 100) > chance) return;
 		Spawn(kind);
@@ -261,7 +295,7 @@ class AGA_Events
 		float nt, nb;
 		for (int t = 0; t < 400; t++)
 		{
-			if (kind == "CONVOY" || kind == "BUILD" || kind == "MILCONVOY" || kind == "POLICE")
+			if (kind == "CONVOY" || kind == "BUILD" || kind == "MILCONVOY" || kind == "POLICE" || kind == "AMBUSH")
 			{
 				if (s_Roads.Count() == 0) return vector.Zero;
 				vector rp = s_Roads.GetRandomElement();
@@ -277,7 +311,7 @@ class AGA_Events
 				}
 				p[1] = GetGame().SurfaceY(p[0], p[2]);
 				if (!FarFromOthers(p)) continue;
-				if (kind == "CONVOY" || kind == "MILCONVOY" || kind == "POLICE")
+				if (kind == "CONVOY" || kind == "MILCONVOY" || kind == "POLICE" || kind == "AMBUSH")
 				{
 					if (!Flat(p, 10, 1.2)) continue;
 					Scan(p, 20, trees, nt, nb);
@@ -300,7 +334,7 @@ class AGA_Events
 				if (nt < 38 || nb < 130) continue;
 				return q;
 			}
-			if (kind == "HELI")
+			if (kind == "HELI" || kind == "TOXIC")
 			{
 				if (!Flat(q, 14, 1.2) || !Flat(q, 7, 0.6)) continue;
 				Scan(q, 90, trees, nt, nb);
@@ -470,7 +504,8 @@ class AGA_Events
 	static string CrateClass(AGA_Event e)
 	{
 		if (e.Kind == "PLANE") return "AGA_EvWeapons";
-		if (e.Kind == "CONVOY" || e.Kind == "MILCONVOY") return "AGA_EvArmy";
+		if (e.Kind == "CONVOY" || e.Kind == "MILCONVOY" || e.Kind == "AMBUSH") return "AGA_EvArmy";
+		if (e.Kind == "TOXIC") return "AGA_EvMedic";
 		if (e.Kind == "HELI" && e.Variant == "_MIL") return "AGA_EvWeapons";
 		if (e.Kind == "HELI" && e.Variant == "_MED") return "AGA_EvMedic";
 		return "AGA_LootCrate";
@@ -601,6 +636,12 @@ class AGA_Events
 		float yaw;
 		vector pos = FindSpot(kind, yaw);
 		if (pos == vector.Zero) return;
+		if (kind == "PLANE" || kind == "HELI") { Mayday(kind, pos, yaw); return; }
+		SpawnAt(kind, pos, yaw);
+	}
+
+	static void SpawnAt(string kind, vector pos, float yaw)
+	{
 		AGA_Event e = new AGA_Event;
 		e.Kind = kind;
 		e.Pos = pos;
@@ -618,6 +659,8 @@ class AGA_Events
 		else if (kind == "BUILD") BuildSite(e);
 		else if (kind == "MILCONVOY") BuildMilConvoy(e);
 		else if (kind == "POLICE") BuildPolice(e);
+		else if (kind == "TOXIC") BuildToxic(e);
+		else if (kind == "AMBUSH") BuildAmbush(e);
 
 		if (kind == "PLANE") e.Tp = Off(e, 0, 32);
 		else if (kind == "HELI") e.Tp = Off(e, 0, 16);
@@ -626,6 +669,8 @@ class AGA_Events
 		else if (kind == "CIVIL") e.Tp = Off(e, -9, -6);
 		else if (kind == "MILCONVOY") e.Tp = Off(e, 8, -4);
 		else if (kind == "POLICE") e.Tp = Off(e, 7, 0);
+		else if (kind == "TOXIC") e.Tp = Off(e, 0, -40);
+		else if (kind == "AMBUSH") e.Tp = Off(e, 9, -6);
 		else e.Tp = Off(e, 6, -13);
 		e.Tp[1] = e.Tp[1] + 0.3;
 
@@ -687,7 +732,7 @@ class AGA_Events
 		if (Chance(0.6)) PlateZed(e, 15, 40);
 		if (Chance(0.25)) PlateZed(e, 15, 40);
 		Boom(e);
-		CrashSound(e, "HeliCrash_big_SoundSet");
+		CrashSound(e, "AGA_PlaneCrash_Far_SoundSet");
 		Announce("PLANE CRASH", "A military cargo plane went down somewhere in Chernarus. Follow the smoke.");
 	}
 
@@ -749,7 +794,7 @@ class AGA_Events
 		}
 		Fire(e, -4, -6);
 		Boom(e);
-		CrashSound(e, "HeliCrash_Distant_SoundSet");
+		CrashSound(e, "AGA_HeliCrash_Far_SoundSet");
 		if (e.Variant == "_MED") Announce("MEDEVAC HELICOPTER DOWN", "A medical helicopter crashed. Medical supplies on board.");
 		else if (e.Variant == "_MIL") Announce("MILITARY HELICOPTER DOWN", "A military helicopter was shot down. Follow the smoke.");
 		else Announce("HELICOPTER CRASH", "A civilian helicopter crashed.");
@@ -964,6 +1009,82 @@ class AGA_Events
 		Zeds(e, workers, 5 + e.Tier, 8, 26);
 	}
 
+	// skazenie chemiczne: porzucone laboratorium polowe w strefie gazu, sprzet NBC, rzadkie bronie
+	static void BuildToxic(AGA_Event e)
+	{
+		e.LifeMin = 70;
+		if (e.Tier < 3) e.Tier = 3;
+		Put(e, "Land_Container_1Moh", 0, 6, 90, 0.02);
+		Put(e, "Land_Wreck_V3S", -9, -4, 160, 0.15);
+		Put(e, "StaticObj_Decon_HazmatBag_01_F", 4, -2, 30, 0.02);
+		Put(e, "StaticObj_Decon_HazmatBag_01_F", 5, -3.5, 75, 0.02);
+		Put(e, "StaticObj_Decon_LayFlatHose_01_Roll_F", -3, 2, 10, 0.02);
+		Put(e, "StaticObj_Decon_LayFlatHose_01_SBend_F", -4, -1, 60, 0.02);
+		Put(e, "StaticObj_Dead_pile1", 7, 4, 20, 0.02);
+		Put(e, "StaticObj_Furniture_hospital_transport_bed", 2.5, 2.5, -15, 0.02);
+		Put(e, "Land_Misc_FireBarrel_Yellow", -6, 6, 0, 0.05);
+		Put(e, "StaticObj_Mil_CamoNet_Tent2", -8, 9, 30, 0);
+		Object t = Put(e, "StaticObj_ammoboxes_stacked", 6, 9, 40, 0.02);
+		// strefa gazu (mechanika skazen z gry) – bez maski nie wejdziesz
+		Object gas = GetGame().CreateObjectEx("ContaminatedArea_Dynamic", Off(e, 0, 0), ECE_PLACE_ON_SURFACE);
+		if (gas) e.Objs.Insert(gas);
+		array<string> nbc = {"NBCJacketGray", "NBCPantsGray", "NBCHoodGray", "NBCGlovesGray", "NBCBootsGray", "GasMask", "GP5GasMask", "GasMask_Filter", "AirborneMask"};
+		array<string> med = {"AntiChemInjector", "Epinephrine", "Morphine", "SalineBagIV", "BloodTestKit", "TetracyclineAntibiotics", "CharcoalTablets"};
+		array<string> guns = {"G36|Mag_G36_30Rnd", "M16A4|Mag_STANAG_30Rnd", "AK74|Mag_AK74_30Rnd", "AKM|Mag_AKM_30Rnd", "RPK74|Mag_AK74_30Rnd", "kar98k|AG_Ammo_792x57"};
+		array<string> rare = {"SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "M24|Ammo_308Win", "AEK971|Mag_AK74_30Rnd", "SVT40|Mag_SVT40_10Rnd", "SV98|Mag_SV98_10Rnd"};
+		EntityAI c1 = LootCrate(e, 1.5, 4);
+		GiveGun(c1, guns);
+		if (Chance(0.35)) GiveGun(c1, rare);
+		GiveFrom(c1, nbc, 2);
+		EntityAI c2 = LootCrate(e, -2, -3);
+		GiveFrom(c2, med, 2);
+		GiveFrom(c2, nbc, 2);
+		if (Chance(0.3)) Give(c2, "AntiChemInjector");
+		if (Chance(0.12)) Give(c2, "NVGoggles");
+		OnTop(t, "GasMask_Filter");
+		DropFrom(e, nbc, 3, -8, 8, -8, 10);
+		array<string> zz = {"ZmbM_NBC_Grey", "ZmbM_NBC_Yellow", "ZmbM_NBC_White", "ZmbM_SoldierNormal", "ZmbM_DoctorFat"};
+		Zeds(e, zz, 5 + e.Tier, 8, 30);
+		Announce("TOXIC SPILL", "A mobile laboratory leaked toxic gas. Bring a gas mask and NBC gear.");
+	}
+
+	// zasadzka specnazu: ostrzelane auta na drodze, leje po pociskach, obozowisko z amunicja
+	static void BuildAmbush(AGA_Event e)
+	{
+		e.LifeMin = 65;
+		if (e.Tier < 2) e.Tier = 2;
+		Put(e, "Land_Wreck_offroad02_aban1", 0.3, 6, 12, 0.15);
+		Put(e, "Land_Wreck_offroad02_aban2", -0.4, -6, -18, 0.15);
+		Put(e, "Land_wreck_truck01_aban1_green", 0.2, -18, 6, 0.2);
+		Smoke(e, 0.3, 6);
+		Put(e, "StaticObj_ShellCrater2_Debris", 5, 2, 0, 0);
+		Put(e, "StaticObj_ShellCrater2_Small", -5, -10, 40, 0);
+		Put(e, "StaticObj_ShellCrater1_Decal", 4, -14, 0, 0);
+		Put(e, "StaticObj_Wreck_Decal_Small1", -3, 10, 80, 0);
+		Put(e, "StaticObj_Misc_BagFence_Round", 9, -4, 90, 0);
+		Put(e, "StaticObj_Mil_CamoNet_Tent2", 11, 4, 100, 0);
+		Fire(e, 10, -1);
+		Object a1 = Put(e, "StaticObj_ammoboxes_single", 8, 2, 30, 0.02);
+		Object a2 = Put(e, "StaticObj_ammoboxes_single", 7, -7, 80, 0.02);
+		array<string> top = {"Mag_AK74_30Rnd", "Mag_AKM_30Rnd", "Ammo_545x39", "Ammo_762x39", "RGD5Grenade", "BandageDressing", "Mag_G36_30Rnd"};
+		OnTop(a1, top.GetRandomElement());
+		OnTop(a2, top.GetRandomElement());
+		array<string> guns = {"AK74|Mag_AK74_30Rnd", "AKM|Mag_AKM_30Rnd", "AKS74U|Mag_AK74_30Rnd", "G36C|Mag_G36_30Rnd", "RPK74|Mag_AK74_30Rnd", "AG_RPK_762x39|Mag_AKM_30Rnd", "SKS|Ammo_762x39"};
+		array<string> rare = {"VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "AEK971|Mag_AK74_30Rnd", "SVD|Mag_SVD_10Rnd"};
+		array<string> gear = {"GorkaEJacket_Summer", "GorkaPants_Summer", "GorkaHelmet", "SmershVest", "SmershBag_Spur_Green", "BalaclavaMask_Black", "TacticalGloves_Black", "MilitaryBoots_Black", "validol_GorkaGSS11_J", "validol_GorkaGSS11_P", "Spur_MilBag_Black"};
+		array<string> extra = {"KobraOptic", "PSO1Optic", "OKP7_Optic", "PKAS_Optic", "AK_Suppressor", "Mag_AK74_45Rnd", "RGD5Grenade", "RDG2SmokeGrenade_Black"};
+		EntityAI c = LootCrate(e, 9, 1);
+		GiveGun(c, guns);
+		if (Chance(0.18)) GiveGun(c, rare);
+		GiveFrom(c, gear, 2);
+		GiveFrom(c, extra, 1);
+		DropFrom(e, top, 4, -6, 10, -16, 12);
+		array<string> mil = {"AG_ZmbM_Spetsnaz", "AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn"};
+		Zeds(e, mil, 4 + e.Tier, 8, 30);
+		if (Chance(0.35)) PlateZed(e, 10, 30);
+		Announce("SPETSNAZ AMBUSH", "Gunfire reported on a road. A spetsnaz team ambushed a patrol.");
+	}
+
 	static string Label(AGA_Event e, int n)
 	{
 		string name = "Event";
@@ -981,6 +1102,8 @@ class AGA_Events
 		else if (e.Kind == "BUILD") name = "Plac budowy";
 		else if (e.Kind == "MILCONVOY") name = "Kolumna wojskowa";
 		else if (e.Kind == "POLICE") name = "Posterunek policji";
+		else if (e.Kind == "TOXIC") name = "Skazenie chemiczne";
+		else if (e.Kind == "AMBUSH") name = "Zasadzka specnazu";
 		return "[EVENT] " + name + " " + n.ToString() + " (T" + e.Tier.ToString() + ")";
 	}
 
