@@ -1458,10 +1458,10 @@
 		<value name="Tier4"/>
 	</type>
 	<type name="AK_Suppressor545">
-		<nominal>0</nominal>
+		<nominal>4</nominal>
 		<lifetime>14400</lifetime>
 		<restock>1800</restock>
-		<min>0</min>
+		<min>2</min>
 		<quantmin>-1</quantmin>
 		<quantmax>-1</quantmax>
 		<cost>100</cost>
