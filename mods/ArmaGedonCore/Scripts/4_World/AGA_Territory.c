@@ -341,8 +341,6 @@ class AGA_Territory
 			}
 		}
 
-		if (pb.AGA_IsStaff()) return true;
-
 		if (item.IsInherited(TerritoryFlagKit))
 		{
 			if (pb.AGA_Gid() != 0)
@@ -357,6 +355,8 @@ class AGA_Territory
 			}
 			return true;
 		}
+
+		if (pb.AGA_IsStaff()) return true;
 
 		TerritoryFlag flag = FlagAt(pos);
 		if (flag)
@@ -674,7 +674,33 @@ class AGA_Territory
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Restore, 15000, false);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Cleanup, 600000, false);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Cleanup, 3600000, true);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ProbeRoads, 60000, false);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ProbeFlags, 30000, false);
+	}
+
+	// sonda nawierzchni pod istniejącymi flagami (kalibracja wykrywania dróg)
+	static void ProbeFlags()
+	{
+		foreach (TerritoryFlag f : Flags())
+		{
+			if (!f) continue;
+			vector p = f.GetPosition();
+			string t;
+			GetGame().SurfaceGetType(p[0], p[2], t);
+			float dy = GetGame().SurfaceRoadY(p[0], p[2]) - GetGame().SurfaceY(p[0], p[2]);
+			string r1 = "-";
+			string r2 = "-";
+			float h1 = 0;
+			SurfaceDetectionParameters prm = new SurfaceDetectionParameters();
+			SurfaceDetectionResult res = new SurfaceDetectionResult();
+			prm.type = SurfaceDetectionType.Roadway;
+			prm.position = Vector(p[0], p[1] + 2, p[2]);
+			prm.rsd = RoadSurfaceDetection.ABOVE;
+			if (GetGame().GetSurface(prm, res) && res.surface) { r1 = res.surface.GetEntryName(); h1 = res.height - GetGame().SurfaceY(p[0], p[2]); }
+			prm.rsd = RoadSurfaceDetection.UNDER;
+			SurfaceDetectionResult res2 = new SurfaceDetectionResult();
+			if (GetGame().GetSurface(prm, res2) && res2.surface) r2 = res2.surface.GetEntryName();
+			AGA_Server.Get().Log("[DROGI] flaga @" + p.ToString() + " teren=" + t + " roadY-Y=" + dy.ToString() + " above=" + r1 + " dh=" + h1.ToString() + " under=" + r2);
+		}
 	}
 
 	// jednorazowa sonda wykrywania dróg (log do kalibracji)

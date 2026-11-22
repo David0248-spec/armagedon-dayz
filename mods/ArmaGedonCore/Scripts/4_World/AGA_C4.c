@@ -318,6 +318,54 @@ modded class AlarmClock_ColorBase
 	}
 }
 
+// --- przypięcie budzika do ładunku (przeciągnięcie jednego na drugi) ---
+class AGA_AttachClockToExplosive extends RecipeBase
+{
+	override void Init()
+	{
+		m_Name = "Attach alarm clock";
+		m_IsInstaRecipe = true;
+		m_AnimationLength = 1;
+		m_MinDamageIngredient[0] = -1;
+		m_MaxDamageIngredient[0] = 3;
+		m_MinQuantityIngredient[0] = -1;
+		m_MaxQuantityIngredient[0] = -1;
+		m_MinDamageIngredient[1] = -1;
+		m_MaxDamageIngredient[1] = 3;
+		m_MinQuantityIngredient[1] = -1;
+		m_MaxQuantityIngredient[1] = -1;
+		InsertIngredient(0, "Plastic_Explosive");
+		m_IngredientAddHealth[0] = 0;
+		m_IngredientSetHealth[0] = -1;
+		m_IngredientAddQuantity[0] = 0;
+		m_IngredientDestroy[0] = false;
+		m_IngredientUseSoftSkills[0] = false;
+		InsertIngredient(1, "AlarmClock_ColorBase");
+		m_IngredientAddHealth[1] = 0;
+		m_IngredientSetHealth[1] = -1;
+		m_IngredientAddQuantity[1] = 0;
+		m_IngredientDestroy[1] = false;
+		m_IngredientUseSoftSkills[1] = false;
+	}
+
+	override bool CanDo(ItemBase ingredients[], PlayerBase player)
+	{
+		Plastic_Explosive pe = Plastic_Explosive.Cast(ingredients[0]);
+		if (!pe || pe.IsInherited(AGA_TimedExplosive) || pe.AGA_HasClock() || pe.GetArmed()) return false;
+		if (!ingredients[1]) return false;
+		EntityAI par = ingredients[1].GetHierarchyParent();
+		return !par || !par.IsInherited(Plastic_Explosive);
+	}
+
+	override void Do(ItemBase ingredients[], PlayerBase player, array<ItemBase> results, float specialty_weight)
+	{
+		if (!GetGame().IsServer()) return;
+		Plastic_Explosive pe = Plastic_Explosive.Cast(ingredients[0]);
+		ItemBase clock = ingredients[1];
+		if (pe && clock) pe.ServerTakeEntityAsAttachment(clock);
+	}
+}
+
 // --- receptura ---
 class AGA_CraftTimedExplosive extends RecipeBase
 {
@@ -426,6 +474,7 @@ modded class PluginRecipesManagerBase
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new AGA_CraftTimedExplosive);
+		RegisterRecipe(new AGA_AttachClockToExplosive);
 	}
 }
 
