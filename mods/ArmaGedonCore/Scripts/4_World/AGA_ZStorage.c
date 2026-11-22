@@ -284,6 +284,33 @@ class AGA_Build
 		return null;
 	}
 
+	// najbliższy mebel do ulepszenia przy graczu (nie zależy od celownika – cienkie modele jak gun wall)
+	static EntityAI Nearest(PlayerBase p, ActionTarget target)
+	{
+		EntityAI t = Furniture(target);
+		if (t) return t;
+		if (!p) return null;
+		array<Object> objs = new array<Object>;
+		GetGame().GetObjectsAtPosition(p.GetPosition(), 3.0, objs, null);
+		vector dir = p.GetDirection();
+		EntityAI best = null;
+		float bestScore = 1000;
+		foreach (Object o : objs)
+		{
+			EntityAI e = EntityAI.Cast(o);
+			if (!e || e.GetHierarchyParent() || e.IsSetForDeletion() || !StepFor(e)) continue;
+			vector to = e.GetPosition() - p.GetPosition();
+			to[1] = 0;
+			float dist = to.Length();
+			if (dist > 0.1) to.Normalize();
+			float facing = vector.Dot(dir, to);
+			if (dist > 0.8 && facing < 0.2) continue;
+			float score = dist - facing;
+			if (score < bestScore) { bestScore = score; best = e; }
+		}
+		return best;
+	}
+
 	// co blokuje ulepszenie ("" = można)
 	static string Blocker(PlayerBase p, EntityAI e, AGA_UpStep s)
 	{
@@ -509,13 +536,15 @@ class AGA_ActionUpgrade : ActionContinuousBase
 	override void CreateConditionComponents()
 	{
 		m_ConditionItem = new CCINonRuined();
-		m_ConditionTarget = new CCTNonRuined(UAMaxDistances.DEFAULT);
+		m_ConditionTarget = new CCTNone();
 	}
+
+	override bool HasTarget() { return false; }
 
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
 	{
-		if (!item || !target || player.IsPlacingLocal()) return false;
-		EntityAI e = AGA_Build.Furniture(target);
+		if (!item || player.IsPlacingLocal()) return false;
+		EntityAI e = AGA_Build.Nearest(player, target);
 		if (!e) return false;
 		AGA_UpStep s = AGA_Build.StepFor(e);
 		if (!s) return false;
@@ -529,7 +558,7 @@ class AGA_ActionUpgrade : ActionContinuousBase
 
 	override void OnFinishProgressServer(ActionData action_data)
 	{
-		EntityAI e = AGA_Build.Furniture(action_data.m_Target);
+		EntityAI e = AGA_Build.Nearest(action_data.m_Player, action_data.m_Target);
 		if (!e) return;
 		AGA_UpStep s = AGA_Build.StepFor(e);
 		bool ok = false;
