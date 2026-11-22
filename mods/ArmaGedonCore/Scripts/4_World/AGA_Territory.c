@@ -433,7 +433,7 @@ class AGA_Territory
 		return null;
 	}
 
-	static void SyncPlayer(PlayerBase p)
+	static void AGA_SyncPl(PlayerBase p)
 	{
 		if (!p || !p.GetIdentity()) return;
 		AGA_Group g = Of(p.GetIdentity().GetPlainId());
@@ -447,7 +447,7 @@ class AGA_Territory
 		array<Man> players = new array<Man>;
 		GetGame().GetPlayers(players);
 		foreach (Man m : players)
-			SyncPlayer(PlayerBase.Cast(m));
+			AGA_SyncPl(PlayerBase.Cast(m));
 		foreach (TerritoryFlag f : Flags())
 		{
 			if (f) f.AGA_UpdateCount();
@@ -486,7 +486,7 @@ class AGA_Territory
 		if (flag.GetConstruction() && !flag.GetConstruction().IsPartConstructed("base"))
 			flag.GetConstruction().BuildPartServerEx(owner, "base", AT_BUILD_PART);
 		flag.AGA_ApplyLife();
-		SyncPlayer(owner);
+		AGA_SyncPl(owner);
 		flag.AGA_UpdateCount();
 		AGA_Server.Get().Log("[TERYTORIUM] nowa baza #" + g.Id.ToString() + " " + owner.GetIdentity().GetName() + " (" + id + ") @ " + pos.ToString());
 		Tell(owner, "Territory claimed. You are the base owner. Enable invites at the flag pole to add members (max " + LIMIT.ToString() + ").");
@@ -511,7 +511,7 @@ class AGA_Territory
 		g.Ids.Insert(id);
 		g.Names.Insert(p.GetIdentity().GetName());
 		Save();
-		SyncPlayer(p);
+		AGA_SyncPl(p);
 		flag.AGA_UpdateCount();
 		AGA_Server.Get().Log("[TERYTORIUM] " + p.GetIdentity().GetName() + " (" + id + ") dolaczyl do bazy #" + g.Id.ToString());
 		Tell(p, "You joined the group (" + g.Ids.Count().ToString() + "/" + LIMIT.ToString() + ").");
@@ -526,7 +526,7 @@ class AGA_Territory
 		if (i < g.Names.Count()) g.Names.Remove(i);
 		Save();
 		PlayerBase p = AGA_Server.Get().FindPlayer(id);
-		if (p) SyncPlayer(p);
+		if (p) AGA_SyncPl(p);
 		TerritoryFlag f = FlagOf(g);
 		if (f) f.AGA_UpdateCount();
 	}
@@ -703,7 +703,9 @@ class AGA_Territory
 		string cmd = data.param1;
 		if (cmd == "kick") Kick(p, data.param2);
 		else if (cmd == "leave") Leave(p);
-		GetRPCManager().SendRPC("AGA", "AGA_OnGroupView", new Param1<ref AGA_GroupView>(View(p)), true, sender);
+		AGA_GroupView gv = View(p);
+		Param1<ref AGA_GroupView> prm = new Param1<ref AGA_GroupView>(gv);
+		GetRPCManager().SendRPC("AGA", "AGA_OnGroupView", prm, true, sender);
 	}
 }
 

@@ -66,7 +66,7 @@ modded class MissionServer
 	override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity)
 	{
 		super.InvokeOnConnect(player, identity);
-		AGA_Territory.SyncPlayer(player);
+		AGA_Territory.AGA_SyncPl(player);
 		if (identity)
 			GetRPCManager().SendRPC("AGA", "AGA_Zones", new Param1<ref AGA_ZoneDb>(AGA_Territory.Zones()), true, identity);
 		if (identity && AGA_Recipes.Cfg().Disabled.Count() > 0)
