@@ -36,7 +36,6 @@ class AGA_Server
 		LoadConfig();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(SyncInvis, 2000, true);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(RaidTick, 60000, true);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Probe.Run, 45000, false);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ProbeHeliSpots, 90000, false);
 		AGA_Raid.Cfg();
 	}

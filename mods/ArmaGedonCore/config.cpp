@@ -14,7 +14,7 @@ class CfgMods
 	class ArmaGedonCore
 	{
 		dir = "ArmaGedonCore";
-		name = "ARMA-GEDON Admin";
+		name = "ARMA-GEDON Core";
 		author = "ARMA-GEDON";
 		version = "1.0";
 		type = "mod";
@@ -37,5 +37,15 @@ class CfgMods
 				files[] = {"ArmaGedonCore/Scripts/5_Mission"};
 			};
 		};
+	};
+};
+
+class CfgVehicles
+{
+	class HouseNoDestruct;
+	class AGA_SmokeColumn: HouseNoDestruct
+	{
+		scope = 1;
+		model = "\DZ\data\lightpoint.p3d";
 	};
 };
