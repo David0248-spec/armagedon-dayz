@@ -31,6 +31,7 @@ class AGA_Event
 	int Tier;
 	int Born;
 	int LifeMin;
+	vector Tp;
 	ref array<Object> Objs = new array<Object>;
 }
 
@@ -437,6 +438,14 @@ class AGA_Events
 		else if (kind == "CIVIL") BuildCivil(e);
 		else if (kind == "BUILD") BuildSite(e);
 
+		// punkt teleportu dla adminów – obok eventu, nie w środku obiektów
+		if (kind == "PLANE") e.Tp = Off(e, 0, 32);
+		else if (kind == "CONVOY") e.Tp = Off(e, 9, 2);
+		else if (kind == "HUNTER") e.Tp = Off(e, 0, 7);
+		else if (kind == "CIVIL") e.Tp = Off(e, -9, -6);
+		else e.Tp = Off(e, 6, -13);
+		e.Tp[1] = e.Tp[1] + 0.3;
+
 		s_Active.Insert(e);
 		AGA_Server.Get().Log("EVENT " + kind + " T" + e.Tier.ToString() + " @ " + e.Pos.ToString() + " obiektow " + e.Objs.Count().ToString());
 	}
@@ -542,6 +551,17 @@ class AGA_Events
 		Scatter(e, loot, 4 + e.Tier, -6, 6, -6, 10);
 		array<string> workers = {"ZmbM_ConstrWorkerNormal_Beige", "ZmbM_ConstrWorkerNormal_Black", "ZmbM_ConstrWorkerNormal_Green", "ZmbM_ConstrWorkerNormal_Grey", "ZmbM_HeavyIndustryWorker"};
 		TierZeds(e, workers, 3, 8, 26);
+	}
+
+	static string Label(AGA_Event e, int n)
+	{
+		string name = "Event";
+		if (e.Kind == "PLANE") name = "Katastrofa samolotu";
+		else if (e.Kind == "CONVOY") name = "Konwoj medyczny";
+		else if (e.Kind == "HUNTER") name = "Oboz mysliwych";
+		else if (e.Kind == "CIVIL") name = "Oboz cywilow";
+		else if (e.Kind == "BUILD") name = "Plac budowy";
+		return "[EVENT] " + name + " " + n.ToString() + " (T" + e.Tier.ToString() + ")";
 	}
 
 	static void Despawn(AGA_Event e)
