@@ -261,6 +261,10 @@
     "AD_M16A2": [
       6,
       3
+    ],
+    "FAMAS": [
+      8,
+      4
     ]
   },
   "globals": {
@@ -391,6 +395,14 @@
     ],
     "Ammo_556x45": [
       "Tier2",
+      "Tier3",
+      "Tier4"
+    ],
+    "FAMAS": [
+      "Tier3",
+      "Tier4"
+    ],
+    "Mag_FAMAS_25Rnd": [
       "Tier3",
       "Tier4"
     ]
