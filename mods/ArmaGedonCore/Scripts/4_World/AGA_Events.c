@@ -16,6 +16,11 @@ class AGA_LootCrate extends WoodenCrate
 	override bool IsHeavyBehaviour() { return true; }
 	override bool IsTakeable() { return false; }
 	override bool IsDeployable() { return false; }
+	override void AfterStoreLoad()
+	{
+		super.AfterStoreLoad();
+		if (GetGame().IsServer()) GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().ObjectDelete, 2000, false, this);
+	}
 }
 class AGA_LootCrateMil extends AGA_LootCrate {}
 class AGA_LootCrateMed extends AGA_LootCrate {}
@@ -34,10 +39,12 @@ class AGA_Event
 	ref array<ZombieBase> Zs = new array<ZombieBase>;
 	ref array<EntityAI> Crates = new array<EntityAI>;
 	ref array<Object> Objs = new array<Object>;
+	ref array<EntityAI> Items = new array<EntityAI>;
 }
 
 class AGA_Events
 {
+	static AGA_Event s_Cur;
 	static ref array<ref AGA_Event> s_Active = new array<ref AGA_Event>;
 	static int s_Minute;
 	static int s_LastRestartWarn = -1;
@@ -527,6 +534,7 @@ class AGA_Events
 		q[1] = GetGame().SurfaceY(q[0], q[2]) - lo[1] + 0.01;
 		it.SetPosition(q);
 		it.SetLifetime(5400);
+		if (s_Cur) s_Cur.Items.Insert(it);
 		return it;
 	}
 
@@ -539,22 +547,10 @@ class AGA_Events
 	static void OnTop(Object baseObj, string cls)
 	{
 		if (!baseObj || !Valid(cls)) return;
-		vector mm[2];
-		if (!baseObj.GetCollisionBox(mm)) baseObj.ClippingInfo(mm);
-		vector bmax = mm[1];
 		vector p = baseObj.GetPosition();
-		p[0] = p[0] + Math.RandomFloat(-0.3, 0.3);
-		p[2] = p[2] + Math.RandomFloat(-0.3, 0.3);
-		p[1] = p[1] + bmax[1];
-		EntityAI it = EntityAI.Cast(GetGame().CreateObjectEx(cls, p, ECE_NONE));
-		if (!it) return;
-		vector im[2];
-		it.ClippingInfo(im);
-		vector imin = im[0];
-		p[1] = p[1] - imin[1] + 0.01;
-		it.SetPosition(p);
-		it.SetOrientation(Vector(Math.RandomFloat(0, 360), 0, 0));
-		it.SetLifetime(5400);
+		p[0] = p[0] + Math.RandomFloat(-1.2, 1.2);
+		p[2] = p[2] + Math.RandomFloat(-1.2, 1.2);
+		DropAt(p, cls);
 	}
 
 	// przedmiot na ziemi – fizyka sama go położy
@@ -604,6 +600,7 @@ class AGA_Events
 		e.Born = s_Minute;
 		e.LifeMin = 45;
 
+		s_Cur = e;
 		if (kind == "PLANE") BuildPlane(e);
 		else if (kind == "HELI") BuildHeli(e);
 		else if (kind == "CONVOY") BuildConvoy(e);
@@ -619,6 +616,7 @@ class AGA_Events
 		else e.Tp = Off(e, 6, -13);
 		e.Tp[1] = e.Tp[1] + 0.3;
 
+		s_Cur = null;
 		s_Active.Insert(e);
 		AGA_Server.Get().Log("EVENT " + kind + e.Variant + " T" + e.Tier.ToString() + " @ " + e.Pos.ToString() + " obiektow " + e.Objs.Count().ToString());
 	}
@@ -902,6 +900,11 @@ class AGA_Events
 			// nie kasuj rzeczy, które ktoś już zabrał do ekwipunku
 			if (ent && ent.GetHierarchyRootPlayer()) continue;
 			GetGame().ObjectDelete(o);
+		}
+		foreach (EntityAI it : e.Items)
+		{
+			if (!it || it.GetHierarchyParent()) continue;
+			GetGame().ObjectDelete(it);
 		}
 		foreach (ZombieBase z : e.Zs)
 			if (z && !PlayerNear(z.GetPosition(), 100)) GetGame().ObjectDelete(z);

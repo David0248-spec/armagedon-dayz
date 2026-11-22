@@ -485,6 +485,14 @@ modded class mmg_storage_placeable_base
 
 modded class mmg_storage_openable_noLock_base
 {
+	// skrzynie eventów nie przeżywają restartu (event znika, skrzynia zostawała z lewitującym lootem)
+	override void AfterStoreLoad()
+	{
+		super.AfterStoreLoad();
+		if (GetGame().IsServer() && AGA_Build.Fixed(this))
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().ObjectDelete, 2000, false, this);
+	}
+
 	override bool CanPutInCargo(EntityAI parent)
 	{
 		if (AGA_Build.Locked(this) || !AGA_Build.IsEmptyBox(this)) return false;
