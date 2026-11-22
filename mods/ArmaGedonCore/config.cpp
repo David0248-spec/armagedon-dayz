@@ -832,19 +832,6 @@ class CfgVehicles
 	class ExpansionUh1h: ExpansionHelicopterScript
 	{
 		fuelConsumption = 150;
-		class DamageSystem
-		{
-			class GlobalArmor
-			{
-				class Projectile
-				{
-					class Health
-					{
-						damage = 1.35;
-					};
-				};
-			};
-		};
 		class SimulationModule: SimulationModule
 		{
 			altitudeFullForce = 800;
