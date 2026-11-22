@@ -113,7 +113,7 @@ class AGA_Events
 	{
 		// faza 1: mniej i rzadziej, faza 3: więcej i częściej
 		int chance = 45;
-		if (s_Phase == 1) { want = Math.Max(1, want - 1); chance = 30; }
+		if (s_Phase == 1) { if (want > 1) want = want - 1; chance = 30; }
 		if (s_Phase == 3) { want = want + 1; chance = 60; }
 		int have = 0;
 		foreach (AGA_Event e : s_Active) if (e.Kind == kind) have++;
