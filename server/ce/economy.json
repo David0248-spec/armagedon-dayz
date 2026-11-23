@@ -56,7 +56,7 @@
     "Bag": 2.0,
     "BagIV": 1.55,
     "SleepingBag": 1.55,
-    "Colt1911": 1.4,
+    "Colt1911": 1.0,
     "Engraved1911": 0.8,
     "Glock19": 1.6,
     "CZ75": 1.6,
@@ -573,7 +573,8 @@
     "AKS74U": {
       "usage": [
         "Police",
-        "Military"
+        "Military",
+        "ContaminatedArea"
       ]
     },
     "MP5K": {
@@ -631,6 +632,101 @@
       "tiers": [
         "Tier1",
         "Tier2"
+      ]
+    },
+    "AKM": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "AK74": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "AK101": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "M4A1": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "M16A2": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "FAL": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "SVD": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "VSS": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "ASVAL": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "FAMAS": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "Vikhr": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "M14": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "Mag_AKM_30Rnd": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "Mag_AK74_30Rnd": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "Mag_STANAG_30Rnd": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "Mag_SVD_10Rnd": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "NBCJacketGray": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "NBCPantsGray": {
+      "usage": [
+        "ContaminatedArea"
+      ]
+    },
+    "GP5GasMask": {
+      "usage": [
+        "ContaminatedArea"
       ]
     }
   }
