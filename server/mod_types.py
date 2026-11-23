@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-# Porządkuje typy z modów w armagedon_ce (w tym types_weapons.xml i types_gear.xml)
+# Porządkuje typy z modów w armagedon_ce:
+# - włącza wszystkie 34 wybrane bronie z paczki modów + wszystkie ich dedykowane magazynki, amunicję, celowniki, dwójnogi i kolby
+# - wyłącza (nominal=0) 5 usuniętych broni: AN94_Suppressed, JD_Groza_762, AG_M76_Zastava, AWM, KS23
+# - ogranicza ubrania z modów do 1 szt. i tłumiki pod deloot="1"
 import os, re, glob, json
 
 MIS = os.path.expanduser('~/dayz/mpmissions/dayzOffline.chernarusplus')
@@ -7,14 +10,20 @@ CE = os.path.join(MIS, 'armagedon_ce')
 DZ = os.path.expanduser('~/dayz')
 CFG = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ce', 'economy.json')))
 SETN = CFG.get('set_nominal', {})
-MOD_CAP = CFG.get('mod_weapon_cap', 8)
+TSET = CFG.get('tier_set', {})
+AU = CFG.get('add_usage', {})
+REMOVED = set(CFG.get('removed', []))
+MOD_CAP = CFG.get('mod_weapon_cap', 5)
+
+MOD_RARE = set(CFG.get('mod_rare_deloot', []))
+MOD_CIVIL = set(CFG.get('mod_civil_weapons', []))
 
 def names(text):
     return re.findall(r'<type name="([^"]+)"', text)
 
 vanilla = set(names(open(os.path.join(MIS, 'db/types.xml')).read()))
 
-def block(name, nominal, cat, usages, tiers, lifetime=7200):
+def block(name, nominal, cat, usages, tiers, lifetime=5400):
     u = ''.join('\t\t<usage name="%s"/>\n' % x for x in usages)
     v = ''.join('\t\t<value name="%s"/>\n' % x for x in tiers)
     return ('\t<type name="%s">\n\t\t<nominal>%d</nominal>\n\t\t<lifetime>%d</lifetime>\n\t\t<restock>600</restock>\n'
@@ -31,35 +40,78 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
     # Wycinamy duplikaty vanilli
     s = re.sub(r'\s*<type name="([^"]+)">.*?</type>', lambda m: '' if m.group(1) in vanilla else m.group(0), s, flags=re.S)
 
-    # Code Lock
-    s = re.sub(r'(<type name="CodeLock">.*?<nominal>)\d+(</nominal>.*?<min>)\d+(</min>)', r'\g<1>80\g<2>40\g<3>', s, flags=re.S)
-    s = re.sub(r'(<type name="CodeLock">.*?)(</type>)', lambda m: m.group(1) + ('' if 'usage name="Town"' in m.group(1) else '\t<usage name="Town"/>\n\t') + m.group(2), s, count=1, flags=re.S)
+    # Code Lock (głównie budynki przemysłowe Industrial, rzadziej miasta: 25 szt.)
+    s = re.sub(r'(<type name="CodeLock">.*?<nominal>)\d+(</nominal>.*?<min>)\d+(</min>)', r'\g<1>25\g<2>12\g<3>', s, flags=re.S)
 
     def _clean_mod(m):
         b = m.group(0)
         n = m.group(1)
 
-        # Nigdy nie blokuj spawnu przez bazy/graczy
+        if n in REMOVED:
+            b = re.sub(r'<nominal>\d+</nominal>', '<nominal>0</nominal>', b)
+            b = re.sub(r'<min>\d+</min>', '<min>0</min>', b)
+            return b
+
         b = b.replace('count_in_hoarder="1"', 'count_in_hoarder="0"').replace('count_in_player="1"', 'count_in_player="0"')
 
-        # Skróć przesadzone lifetime (28800s -> 7200s dla broni, 3600s dla pistoletów)
-        if '<category name="weapons"' in b:
-            is_pistol = any(p in n for p in ('TT_33', 'Makarov', 'Glock', 'Luger', 'APS', 'PB', 'M92'))
-            if is_pistol:
+        # Ubrania z paczek modów: max 1 szt. na wariant kolorystyczny
+        if '<category name="clothes"' in b:
+            b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>5400</lifetime>', b)
+            nm = re.search(r'<nominal>(\d+)</nominal>', b)
+            if nm and int(nm.group(1)) > 1:
+                b = re.sub(r'<nominal>\d+</nominal>', '<nominal>1</nominal>', b)
+                b = re.sub(r'<min>\d+</min>', '<min>1</min>', b)
+            return b
+
+        # Tłumiki z modów: aktywujemy wszystkie pod deloot="1" (po 2 szt.)
+        if 'Suppressor' in n or 'suppressor' in n:
+            b = b.replace('deloot="0"', 'deloot="1"')
+            b = re.sub(r'<nominal>\d+</nominal>', '<nominal>2</nominal>', b)
+            b = re.sub(r'<min>\d+</min>', '<min>1</min>', b)
+            b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>7200</lifetime>', b)
+            return b
+
+        # Włączamy wyzerowane wcześniej dodatki i optykę z paczek modów (np. SV98Optic, AG_Rail_Bipod, AK_TacticalBttstck)
+        if any(k in n for k in ('Optic', 'optic', 'Trijicon', 'Bipod', 'Bttstck', 'Hndgrd', 'Light', 'Wrap')):
+            nm = re.search(r'<nominal>(\d+)</nominal>', b)
+            if nm and int(nm.group(1)) == 0:
+                b = re.sub(r'<nominal>\d+</nominal>', '<nominal>3</nominal>', b)
+                b = re.sub(r'<min>\d+</min>', '<min>1</min>', b)
+            b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>7200</lifetime>', b)
+
+        # Obsługa 34 aktywnych broni z modów
+        is_weapon_item = '<category name="weapons"' in b and not n.startswith(('Mag_', 'Ammo', 'AG_Ammo', 'Ammobox', 'AmmoBox', 'AGMag')) and not any(k in n for k in ('Optic', 'optic', 'Trijicon', 'Bttstck', 'Hndgrd', 'Mount', 'Light', 'Bipod', 'Suppressor', 'suppressor', 'Wrap', 'Grenade'))
+        if is_weapon_item:
+            if n in MOD_RARE:
+                b = b.replace('deloot="0"', 'deloot="1"')
+                b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>10800</lifetime>', b)
+            elif n in MOD_CIVIL:
                 b = re.sub(r'\s*<usage name="Military"\s*/>', '', b)
-                b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>3600</lifetime>', b)
+                lt = 3600 if n in ('TT_33', 'MakarovPM', 'M92', 'LugerP08') else 7200
+                b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % lt, b)
             else:
                 b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>7200</lifetime>', b)
+
+        if n in AU:
+            if n not in MOD_RARE:
+                b = b.replace('deloot="1"', 'deloot="0"')
+            tags = ''.join('\t\t<usage name="%s"/>\n' % u for u in AU[n].get('usage', []) if 'usage name="%s"' % u not in b) + \
+                   ''.join('\t\t<value name="%s"/>\n' % t for t in AU[n].get('tiers', []) if 'value name="%s"' % t not in b)
+            b = b.replace('</type>', tags + '\t</type>')
+
+        if n in TSET:
+            vals = ''.join('\t\t<value name="%s"/>\n' % t for t in TSET[n])
+            b = re.sub(r'\s*<value name="Tier\d"\s*/>', '', b)
+            b = b.replace('</type>', vals + '\t</type>')
 
         if n in SETN:
             b = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % SETN[n][0], b)
             b = re.sub(r'<min>\d+</min>', '<min>%d</min>' % SETN[n][1], b)
-            if 'usage name="Military"' not in b:
-                b = b.replace('</type>', '\t<usage name="Military"/>\n\t\t<value name="Tier2"/>\n\t\t<value name="Tier3"/>\n\t\t<value name="Tier4"/>\n\t</type>')
+            if is_weapon_item and n not in MOD_CIVIL and 'usage name="Military"' not in b and 'usage name="Police"' not in b:
+                b = b.replace('</type>', '\t\t<usage name="Military"/>\n\t</type>')
             return b
 
-        # Przytnij nadmiarowe bronie z modów (np. G36=22, M16A4=26), żeby nie wypierały AKS-74U/AK-74
-        if '<category name="weapons"' in b and not n.startswith(('Mag_', 'Ammo', 'AG_Ammo')):
+        if is_weapon_item:
             nm = re.search(r'<nominal>(\d+)</nominal>', b)
             if nm and int(nm.group(1)) > MOD_CAP:
                 b = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % MOD_CAP, b)
@@ -70,7 +122,7 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
     open(f, 'w').write(s)
     print('mod types %s: %d -> %d' % (os.path.basename(f), before, len(names(s))))
 
-# Dutch Army Clothing
+# Dutch Army Clothing (po 1 szt. na wariant)
 dutch = os.path.join(DZ, '@dutcharmyclothing/typesxml/template.xml')
 if os.path.exists(dutch):
     out = []
@@ -79,15 +131,15 @@ if os.path.exists(dutch):
             continue
         low = n.lower()
         if 'platecarrier' in low or 'ballistic' in low or 'tacticalhelmet' in low:
-            out.append(block(n, 2, 'clothes', ['Military'], ['Tier3', 'Tier4']))
+            out.append(block(n, 1, 'clothes', ['Military'], ['Tier3', 'Tier4']))
         elif 'bag' in low:
-            out.append(block(n, 2, 'clothes', ['Military'], ['Tier2', 'Tier3', 'Tier4']))
+            out.append(block(n, 1, 'clothes', ['Military'], ['Tier2', 'Tier3', 'Tier4']))
         else:
-            out.append(block(n, 3, 'clothes', ['Military', 'Police'], ['Tier2', 'Tier3', 'Tier4']))
+            out.append(block(n, 1, 'clothes', ['Military', 'Police'], ['Tier2', 'Tier3', 'Tier4']))
     open(os.path.join(CE, 'types_dutcharmy.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>\n<types>\n' + ''.join(out) + '</types>\n')
     print('dutch: %d typow' % len(out))
 
-# Uncuepas Civilian Clothing
+# Uncuepas Civilian Clothing (po 1 szt. na wariant)
 unc = os.path.join(DZ, '@uncuepascivilianclothing/classes.xml')
 if os.path.exists(unc):
     out = []
@@ -96,7 +148,7 @@ if os.path.exists(unc):
             continue
         low = n.lower()
         if 'hunt' in low or 'woodland' in low:
-            out.append(block(n, 2, 'clothes', ['Hunting', 'Village'], ['Tier1', 'Tier2', 'Tier3']))
+            out.append(block(n, 1, 'clothes', ['Hunting', 'Village'], ['Tier1', 'Tier2', 'Tier3']))
         elif 'firefight' in low:
             out.append(block(n, 1, 'clothes', ['Firefighter'], ['Tier1', 'Tier2', 'Tier3']))
         elif 'surgical' in low or 'medic' in low:
