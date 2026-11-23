@@ -47,8 +47,11 @@ def fix_type(m):
         block = block.replace('count_in_hoarder="1"', 'count_in_hoarder="0"')
         block = block.replace('count_in_player="1"', 'count_in_player="0"')
 
+    # KRYTYCZNE: dla DELOOT_ONLY ustawiamy deloot="1" i wycinamy wszystkie stare <usage> (np. Military),
+    # aby broń/dodatki NIE respiły się w zwykłych barakach (zostaje tylko deloot + ewentualne ContaminatedArea).
     if name in DELOOT_ONLY:
         block = block.replace('deloot="0"', 'deloot="1"')
+        block = re.sub(r'\s*<usage name="[^"]+"\s*/>', '', block)
 
     if name in STRIP_MIL:
         block = re.sub(r'\s*<usage name="Military"\s*/>', '', block)
@@ -56,9 +59,11 @@ def fix_type(m):
     if name in LIFE:
         block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % LIFE[name], block)
     elif cname == 'weapons':
-        lt = 3600 if name in STRIP_MIL else 7200
+        lt = 10800 if name in DELOOT_ONLY else (3600 if name in STRIP_MIL else 7200)
         block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % lt, block)
-    elif cname in ('food', 'tools', 'clothes'):
+    elif cname == 'food':
+        block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>4800</lifetime>', block)
+    elif cname in ('tools', 'clothes'):
         block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>5400</lifetime>', block)
 
     mult = cfg['category_mult'].get(cname, 1.0)
@@ -70,19 +75,25 @@ def fix_type(m):
     if name.startswith('Mag_') and '<quantmin>' in block:
         block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>20</quantmin>', block)
         block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', block)
+    elif (cname == 'food' or name.startswith(('Tetracycline', 'Charcoal', 'Multivitamin', 'Painkiller', 'Disinfectant'))) and '<quantmin>' in block:
+        block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>35</quantmin>', block)
+        block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>100</quantmax>', block)
 
     mr = cfg.get('max_restock')
     if mr:
         rr = re.search(r'<restock>(\d+)</restock>', block)
-        if rr and int(rr.group(1)) > mr:
-            block = block.replace(rr.group(0), '<restock>%d</restock>' % mr, 1)
+        limit_r = 480 if cname == 'food' else mr
+        if rr and int(rr.group(1)) > limit_r:
+            block = block.replace(rr.group(0), '<restock>%d</restock>' % limit_r, 1)
 
     if name in AU:
         if name not in DELOOT_ONLY:
             block = block.replace('deloot="1"', 'deloot="0"')
-        tags = ''.join('<usage name="%s"/>' % u for u in AU[name].get('usage', []) if 'usage name="%s"' % u not in block) + \
-               ''.join('<value name="%s"/>' % t for t in AU[name].get('tiers', []) if 'value name="%s"' % t not in block)
-        block = block.replace('</type>', '\t' + tags + '\n\t</type>')
+        if 'usage' in AU[name]:
+            block = re.sub(r'\s*<usage name="[^"]+"\s*/>', '', block) if name in ('Mosin9130', 'CZ527', 'CZ550', 'Winchester70', 'SKS') else block
+        tags = ''.join('\t\t<usage name="%s"/>\n' % u for u in AU[name].get('usage', []) if 'usage name="%s"' % u not in block) + \
+               ''.join('\t\t<value name="%s"/>\n' % t for t in AU[name].get('tiers', []) if 'value name="%s"' % t not in block)
+        block = block.replace('</type>', tags + '\t</type>')
         changed += 1
 
     if name in TSET:
@@ -120,24 +131,25 @@ def fix_type(m):
 
 s = re.sub(r'<type name="([^"]+)">.*?</type>', fix_type, s, flags=re.S)
 
+# Warianty kolorystyczne i kolbowe broni (max 1-2 szt. na wariant, dziedziczą strefy broni bazowej)
 if cfg.get('weapon_variants'):
     base = {m.group(1): m.group(0) for m in re.finditer(r'<type name="([^"]+)">.*?</type>', s, flags=re.S)}
     def var_fix(m):
         global changed
         name, block = m.group(1), m.group(0)
-        mm = re.match(r'^([A-Za-z0-9]+)_(Black|Green|Camo|Tan|Woodland|Wood|Olive|Desert|Grey|Snow|White|Brown|Coyote)$', name)
+        mm = re.match(r'^([A-Za-z0-9]+)_(Black|Green|Camo|Tan|Woodland|Wood|Olive|Desert|Grey|Snow|White|Brown|Coyote|Bttstck)$', name)
         if not mm or mm.group(1) not in base or '<category name="weapons"' not in block:
-            return block
-        if int(re.search(r'<nominal>(\d+)</nominal>', block).group(1)) > 0:
             return block
         bb = base[mm.group(1)]
         bn = int(re.search(r'<nominal>(\d+)</nominal>', bb).group(1))
         if bn == 0:
             return block
-        n0 = max(1, bn // 5)
+        n0 = max(1, min(2, bn // 6))
         nb = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
-        nb = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, n0 // 2), nb)
+        nb = re.sub(r'<min>\d+</min>', '<min>1</min>', nb)
         nb = nb.replace('count_in_hoarder="1"', 'count_in_hoarder="0"').replace('count_in_player="1"', 'count_in_player="0"')
+        if 'deloot="1"' in bb:
+            nb = nb.replace('deloot="0"', 'deloot="1"')
         nb = re.sub(r'\s*<(usage|value) name="[^"]+"\s*/>', '', nb)
         tags = ''.join('\n\t\t' + t for t in re.findall(r'<(?:usage|value) name="[^"]+"\s*/>', bb))
         nb = nb.replace('</type>', tags.lstrip('\n') + '\n\t</type>') if tags else nb
