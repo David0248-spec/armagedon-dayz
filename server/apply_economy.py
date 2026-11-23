@@ -11,10 +11,9 @@ REMOVED = set(cfg.get('removed', []))
 STRIP_MIL = set(cfg.get('strip_military', []))
 DELOOT_ONLY = set(cfg.get('deloot_only', []))
 
-# Zapisujemy stałą fazę "2" (100% balansu) dla pełnej kompatybilności z ArmaGedonCore
 os.makedirs(os.path.expanduser('~/dayz/profiles/ArmaGedonCore'), exist_ok=True)
 open(os.path.expanduser('~/dayz/profiles/ArmaGedonCore/phase.txt'), 'w').write('2')
-print('ekonomia: staly balans (fazy wipe wylaczone)')
+print('ekonomia: staly balans Vanilla+ (fazy wipe wylaczone)')
 
 def pristine(rel):
     p = os.path.join(mis, rel)
@@ -40,34 +39,28 @@ def fix_type(m):
     cat = re.search(r'<category name="([^"]+)"', block)
     cname = cat.group(1) if cat else ''
 
-    # 1. Usuwanie przedmiotów z listy REMOVED
     if name in REMOVED:
         changed += 1
         return re.sub(r'<min>\d+</min>', '<min>0</min>', re.sub(r'<nominal>\d+</nominal>', '<nominal>0</nominal>', block))
 
-    # 2. Wyłączenie blokowania spawnu przez bazy i graczy (count_in_hoarder=0, count_in_player=0)
     if cname in ('weapons', 'explosives', 'clothes', 'tools') or any(k in name for k in BUILD):
         block = block.replace('count_in_hoarder="1"', 'count_in_hoarder="0"')
         block = block.replace('count_in_player="1"', 'count_in_player="0"')
 
-    # 3. Kontrola deloot (End-Game tylko na heli-crashach / konwojach / pociągach)
     if name in DELOOT_ONLY:
         block = block.replace('deloot="0"', 'deloot="1"')
 
-    # 4. Usunięcie tagu Military z pistoletów cywilnych/policyjnych i broni myśliwskich
     if name in STRIP_MIL:
         block = re.sub(r'\s*<usage name="Military"\s*/>', '', block)
 
-    # 5. Czas życia (lifetime) - zapobiega zaleganiu pistoletów i śmieci przez 4-8h
     if name in LIFE:
         block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % LIFE[name], block)
     elif cname == 'weapons':
         lt = 3600 if name in STRIP_MIL else 7200
         block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % lt, block)
-    elif cname in ('food', 'tools'):
+    elif cname in ('food', 'tools', 'clothes'):
         block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>5400</lifetime>', block)
 
-    # 6. Mnożniki kategorii i nazw
     mult = cfg['category_mult'].get(cname, 1.0)
     for k, v in SORTED_NAME_MULT:
         if k in name:
@@ -84,7 +77,6 @@ def fix_type(m):
         if rr and int(rr.group(1)) > mr:
             block = block.replace(rr.group(0), '<restock>%d</restock>' % mr, 1)
 
-    # 7. Dodatkowe usage (np. Town i Tier1 dla Mosin/CZ/Tundra)
     if name in AU:
         if name not in DELOOT_ONLY:
             block = block.replace('deloot="1"', 'deloot="0"')
@@ -93,7 +85,6 @@ def fix_type(m):
         block = block.replace('</type>', '\t' + tags + '\n\t</type>')
         changed += 1
 
-    # 8. Nadpisanie Tierów
     if name in TSET:
         vals = ''.join('<value name="%s"/>' % t for t in TSET[name])
         b2 = re.sub(r'\s*<value name="Tier\d"\s*/>', '', block)
@@ -104,7 +95,6 @@ def fix_type(m):
             block = b2
             changed += 1
 
-    # 9. Sztywne wartości nominal/min
     if name in SETN:
         n0, m0 = SETN[name]
         block = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
@@ -130,7 +120,6 @@ def fix_type(m):
 
 s = re.sub(r'<type name="([^"]+)">.*?</type>', fix_type, s, flags=re.S)
 
-# Warianty kolorystyczne broni (1/3 ilości bazowej, te same tiery i flagi)
 if cfg.get('weapon_variants'):
     base = {m.group(1): m.group(0) for m in re.finditer(r'<type name="([^"]+)">.*?</type>', s, flags=re.S)}
     def var_fix(m):
@@ -145,7 +134,7 @@ if cfg.get('weapon_variants'):
         bn = int(re.search(r'<nominal>(\d+)</nominal>', bb).group(1))
         if bn == 0:
             return block
-        n0 = max(2, bn // 3)
+        n0 = max(1, bn // 5)
         nb = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
         nb = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, n0 // 2), nb)
         nb = nb.replace('count_in_hoarder="1"', 'count_in_hoarder="0"').replace('count_in_player="1"', 'count_in_player="0"')
@@ -175,7 +164,7 @@ open(p, 'w').write(s)
 
 # --- cfgspawnabletypes.xml ---
 p, s = pristine('cfgspawnabletypes.xml')
-ch = cfg.get('spawn_mag_chance', 0.55)
+ch = cfg.get('spawn_mag_chance', 0.4)
 added = 0
 for w, mag in cfg.get('weapon_mags', {}).items():
     if not mag:
