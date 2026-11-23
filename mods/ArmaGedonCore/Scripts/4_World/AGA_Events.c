@@ -1,5 +1,5 @@
 // ARMA-GEDON: dynamiczne eventy – samolot i heli (MAYDAY + katastrofa slyszalna z 4 km), konwoje, posterunek,
-// obozy mysliwych i cywilow, plac budowy (balans Vanilla+ / KarmaKrew + Vanilla oraz 34 bronie modowe + dodatki).
+// obozy mysliwych i cywilow, plac budowy (Plate Carrier + czyste bronie + losowe paczki lub luzna amunicja).
 
 class AGA_SmokeColumn extends Wreck_UH1Y
 {
@@ -483,6 +483,34 @@ class AGA_Events
 		return GetGame().ConfigIsExisting("CfgVehicles " + c) || GetGame().ConfigIsExisting("CfgWeapons " + c) || GetGame().ConfigIsExisting("CfgMagazines " + c);
 	}
 
+	// Losowa ilość amunicji dla luźnych nabojów i magazynków na eventach
+	static void RandomizeAmmo(EntityAI it)
+	{
+		if (!it) return;
+		ItemBase ib = ItemBase.Cast(it);
+		if (!ib) return;
+		string cls = it.GetType();
+		if (cls.Contains("AmmoBox") || cls.Contains("Ammobox")) return;
+		if (cls.Contains("Ammo_"))
+		{
+			int mx = ib.GetQuantityMax();
+			if (mx > 1)
+			{
+				int q = Math.RandomIntInclusive(Math.Min(4, mx), Math.Max(4, Math.Min(24, mx)));
+				ib.SetQuantity(q);
+			}
+		}
+		else if (cls.StartsWith("Mag_"))
+		{
+			Magazine mag = Magazine.Cast(it);
+			if (mag && mag.GetAmmoMax() > 1)
+			{
+				int mq = Math.RandomIntInclusive(Math.Max(2, mag.GetAmmoMax() / 5), mag.GetAmmoMax());
+				mag.ServerSetAmmoCount(mq);
+			}
+		}
+	}
+
 	static string CrateClass(AGA_Event e)
 	{
 		if (e.Kind == "PLANE") return "AGA_EvWeapons";
@@ -512,7 +540,11 @@ class AGA_Events
 	{
 		if (!c || cls == "" || !Valid(cls)) return;
 		EntityAI it = c.GetInventory().CreateInInventory(cls);
-		if (it) it.SetLifetime(5400);
+		if (it)
+		{
+			it.SetLifetime(5400);
+			RandomizeAmmo(it);
+		}
 	}
 
 	static void GiveFrom(EntityAI c, array<string> pool, int n)
@@ -544,7 +576,7 @@ class AGA_Events
 	{
 		if (!Valid(cls)) return null;
 		p[1] = GetGame().SurfaceY(p[0], p[2]);
-		EntityAI it = EntityAI.Cast(GetGame().CreateObjectEx(cls, p, ECE_PLACE_ON_SURFACE | ECE_EQUIP_ATTACHMENTS));
+		EntityAI it = EntityAI.Cast(GetGame().CreateObjectEx(cls, p, ECE_PLACE_ON_SURFACE));
 		if (!it) return null;
 		it.SetOrientation(Vector(Math.RandomFloat(0, 360), 0, 0));
 		it.PlaceOnSurface();
@@ -555,6 +587,7 @@ class AGA_Events
 		q[1] = GetGame().SurfaceY(q[0], q[2]) - lo[1] + 0.01;
 		it.SetPosition(q);
 		it.SetLifetime(5400);
+		RandomizeAmmo(it);
 		if (s_Cur) s_Cur.Items.Insert(it);
 		return it;
 	}
@@ -597,7 +630,7 @@ class AGA_Events
 
 	static EntityAI PlaceAt(vector hit, string cls)
 	{
-		EntityAI it = EntityAI.Cast(GetGame().CreateObjectEx(cls, hit, ECE_KEEPHEIGHT | ECE_EQUIP_ATTACHMENTS));
+		EntityAI it = EntityAI.Cast(GetGame().CreateObjectEx(cls, hit, ECE_KEEPHEIGHT));
 		if (!it) return null;
 		it.SetOrientation(Vector(Math.RandomFloat(0, 360), 0, 0));
 		vector mm[2];
@@ -607,6 +640,7 @@ class AGA_Events
 		q[1] = hit[1] - lo[1] + 0.01;
 		it.SetPosition(q);
 		it.SetLifetime(5400);
+		RandomizeAmmo(it);
 		if (s_Cur) s_Cur.Items.Insert(it);
 		return it;
 	}
@@ -723,9 +757,9 @@ class AGA_Events
 		s_OnMiss = 0;
 	}
 
-	// ================= kompozycje eventów (Vanilla + 34 bronie modowe + dodatki) =================
+	// ================= kompozycje eventów =================
 
-	// samolot transportowy: 1 pewna broń na skrzyniach + szansa (45%) na drugą na glebie + rzadka skrzynia
+	// samolot transportowy: 1 pewna broń + szansa na drugą + Plate Carrier + losowe paczki lub luźna amunicja
 	static void BuildPlane(AGA_Event e)
 	{
 		e.LifeMin = 90;
@@ -765,19 +799,21 @@ class AGA_Events
 		Fire(e, -11, -38);
 		array<string> guns = {"M16A2|Mag_STANAG_30Rnd", "AKS74U|Mag_AK74_30Rnd", "AK74|Mag_AK74_30Rnd", "AKM|Mag_AKM_30Rnd", "AK101|Mag_AK101_30Rnd", "G36|Mag_G36_30Rnd", "G36C|Mag_G36_30Rnd", "M16A4|Mag_STANAG_30Rnd", "VBB_FAMAS|Mag_FAMAS_35Rnd", "SA58|Mag_FAL_20Rnd", "SA58P|Mag_FAL_20Rnd", "sz_AKS74UN|Mag_AK74_30Rnd", "sz_AKS74UN_Tactical|Mag_AK74_30Rnd", "RPK74|Mag_AK74_45Rnd", "AG_RPK_762x39|Mag_AKM_30Rnd"};
 		array<string> rare = {"M4A1|Mag_STANAG_30Rnd", "FAL|Mag_FAL_20Rnd", "SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "AEK971|Mag_AK74_30Rnd", "AN94|Mag_AK74_30Rnd", "AG_SR2m|Mag_SR2_30rnd", "M24|Ammo_308Win", "SVT40|Mag_SVT40_10Rnd", "SV_98|Mag_SV_98_10Rnd", "AG_FN_SPR_A3G|Mag_fn_spr_a3g_5rnd", "MK12Mod1|Mag_MK12Mod1_20Rnd"};
-		array<string> gear = {"BallisticHelmet_Green", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "AssaultBag_Green", "TacticalGloves_Green", "MilitaryBelt", "TTSKOJacket_Camo", "TTSKOPants", "UKAssVest_Olive", "Mich2001Helmet"};
+		array<string> gear = {"PlateCarrierVest", "PlateCarrierPouches", "BallisticHelmet_Green", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "AssaultBag_Green", "TacticalGloves_Green", "MilitaryBelt", "TTSKOJacket_Camo", "TTSKOPants", "UKAssVest_Olive", "Mich2001Helmet"};
 		array<string> att = {"KobraOptic", "M68Optic", "M4_OEBttstck", "M4_RISHndgrd", "AK_PlasticBttstck", "AK_RailHndgrd", "AK_TacticalBttstck", "RPK_Bttstck", "RPK_Hndgrd", "RPK_Bipod", "M24_Bipod", "AG_Rail_Bipod", "OKP7_Optic", "UniversalLight"};
 		array<string> extra = {"ACOGOptic", "PSO1Optic", "KobraOptic", "M68Optic", "M4_Suppressor", "AK_Suppressor", "AK_Suppressor545", "PBS4_suppressor", "Aimpoint_Optic", "holo_Optic", "Hamr_Optic", "Accupoint_Trijicon", "MRADOptic", "Specter_optic", "SV98Optic"};
-		array<string> ammo = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_AK74_30Rnd", "Mag_G36_30Rnd", "Ammo_556x45", "Ammo_762x39", "Ammo_545x39", "Ammo_308Win", "AG_Ammo_9x21", "M67Grenade", "BandageDressing"};
+		array<string> ammo = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_AK74_30Rnd", "Mag_G36_30Rnd", "Ammo_556x45", "AmmoBox_556x45_20Rnd", "Ammo_762x39", "AmmoBox_762x39_20Rnd", "Ammo_545x39", "AmmoBox_545x39_20Rnd", "Ammo_308Win", "AmmoBox_308Win_20Rnd", "AG_Ammo_9x21", "AG_Ammobox_9x21_30rnd", "M67Grenade", "BandageDressing"};
 		GunOn(a1, guns);
 		if (Chance(0.45)) GunOn(a2, guns);
-		LootOnFrom(a2, ammo, 1);
+		LootOnFrom(a2, ammo, 2);
 		LootOnFrom(a3, gear, 1);
 		if (Chance(0.6)) LootOnFrom(a4, att, 1);
 		LootOnFrom(w1, gear, 1);
-		DropFrom(e, ammo, 1, -9, 9, -58, -18);
+		DropFrom(e, ammo, 2, -9, 9, -58, -18);
 		EntityAI rc = LootCrate(e, 1, -36);
 		if (Chance(0.24)) GiveGun(rc, rare); else if (Chance(0.35)) GiveGun(rc, guns);
+		GiveFrom(rc, ammo, 1);
+		if (Chance(0.35)) { Give(rc, "PlateCarrierVest"); Give(rc, "PlateCarrierPouches"); }
 		if (Chance(0.5)) GiveFrom(rc, extra, 1);
 		if (Chance(0.04)) Give(rc, "NVGoggles");
 		array<string> mil = {"AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_PatrolNormal_PautRev", "ZmbM_usSoldier_normal_Woodland"};
@@ -804,17 +840,19 @@ class AGA_Events
 			Object b2 = Put(e, "StaticObj_ammoboxes_single", 8, 4, -25, 0.02);
 			Object b3 = Put(e, "StaticObj_ammoboxes_big", -5, 7, 70, 0.02);
 			array<string> mg2 = {"M16A2|Mag_STANAG_30Rnd", "AKS74U|Mag_AK74_30Rnd", "AK74|Mag_AK74_30Rnd", "AKM|Mag_AKM_30Rnd", "G36C|Mag_G36_30Rnd", "M16A4|Mag_STANAG_30Rnd", "VBB_FAMAS|Mag_FAMAS_35Rnd", "SA58|Mag_FAL_20Rnd", "sz_AKS74UN|Mag_AK74_30Rnd", "UMP45|Mag_UMP_25Rnd", "MP5K|Mag_MP5_30Rnd"};
-			array<string> mgear = {"Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_G36_30Rnd", "Ammo_556x45", "Ammo_762x39", "BallisticHelmet_Green", "MilitaryBoots_Black", "TacticalGloves_Green", "AssaultBag_Green", "BandageDressing", "M67Grenade"};
+			array<string> mgear = {"PlateCarrierVest", "PlateCarrierPouches", "Mag_STANAG_30Rnd", "Mag_AKM_30Rnd", "Mag_G36_30Rnd", "Ammo_556x45", "AmmoBox_556x45_20Rnd", "Ammo_762x39", "AmmoBox_762x39_20Rnd", "Ammo_545x39", "AmmoBox_545x39_20Rnd", "BallisticHelmet_Green", "MilitaryBoots_Black", "TacticalGloves_Green", "AssaultBag_Green", "BandageDressing", "M67Grenade"};
 			array<string> mrare = {"M4A1|Mag_STANAG_30Rnd", "FAL|Mag_FAL_20Rnd", "SVD|Mag_SVD_10Rnd", "VSS|Mag_VSS_10Rnd", "ASVAL|Mag_VAL_20Rnd", "AEK971|Mag_AK74_30Rnd", "AN94|Mag_AK74_30Rnd", "AG_SR2m|Mag_SR2_30rnd", "M24|Ammo_308Win", "SVT40|Mag_SVT40_10Rnd", "SV_98|Mag_SV_98_10Rnd", "AG_FN_SPR_A3G|Mag_fn_spr_a3g_5rnd", "MK12Mod1|Mag_MK12Mod1_20Rnd"};
 			array<string> matt = {"KobraOptic", "M68Optic", "AK_PlasticBttstck", "M4_OEBttstck", "AK_TacticalBttstck", "M24_Bipod", "UniversalLight", "holo_Optic", "Hamr_Optic", "Specter_optic"};
 			GunOn(b1, mg2);
-			LootOnFrom(b2, mgear, 1);
+			LootOnFrom(b2, mgear, 2);
 			if (Chance(0.5)) LootOnFrom(b3, matt, 1);
 			c = LootCrate(e, 6, -5);
 			if (Chance(0.20)) GiveGun(c, mrare); else if (Chance(0.35)) GiveGun(c, mg2);
+			GiveFrom(c, mgear, 1);
+			if (Chance(0.30)) { Give(c, "PlateCarrierVest"); Give(c, "PlateCarrierPouches"); }
 			if (Chance(0.2)) Give(c, "M67Grenade");
 			if (Chance(0.03)) Give(c, "NVGoggles");
-			DropFrom(e, mgear, 1, -8, 8, -8, 8);
+			DropFrom(e, mgear, 2, -8, 8, -8, 8);
 			array<string> mz = {"AG_ZmbM_Spetsnaz", "ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland"};
 			Zeds(e, mz, 3 + e.Tier, 8, 30);
 			if (e.Tier >= 3 && Chance(0.25)) PlateZed(e, 10, 25);
@@ -826,7 +864,7 @@ class AGA_Events
 			Object s1 = Put(e, "StaticObj_Furniture_bag_DZ", -6, -4, 30, 0.02);
 			Object s2 = Put(e, "StaticObj_Furniture_box_c", 7, -3, -40, 0.02);
 			Smoke(e, 2, 1);
-			array<string> cl = {"Hoodie_Blue", "Jeans_Blue", "HikingBootsLow_Black", "MountainBag_Green", "TunaCan", "BakedBeansCan", "WaterBottle", "Flashlight", "Battery9V", "Binoculars", "CZ75", "Mag_CZ75_15Rnd", "Ammo_9x19", "Compass", "Matchbox"};
+			array<string> cl = {"Hoodie_Blue", "Jeans_Blue", "HikingBootsLow_Black", "MountainBag_Green", "TunaCan", "BakedBeansCan", "WaterBottle", "Flashlight", "Battery9V", "Binoculars", "CZ75", "Mag_CZ75_15Rnd", "Ammo_9x19", "AmmoBox_9x19_25rnd", "Compass", "Matchbox"};
 			LootOnFrom(s1, cl, 1);
 			LootOnFrom(s2, cl, 1);
 			c = LootCrate(e, 7, 3);
@@ -916,7 +954,7 @@ class AGA_Events
 		Zeds(e, doc, 4 + e.Tier, 6, 28);
 	}
 
-	// rozbita kolumna wojskowa
+	// rozbita kolumna wojskowa + Plate Carrier + losowa amunicja
 	static void BuildMilConvoy(AGA_Event e)
 	{
 		e.LifeMin = 80;
@@ -939,20 +977,22 @@ class AGA_Events
 		Object b2 = Put(e, "StaticObj_ammoboxes_single", -6, -8, 70, 0.02);
 		Object b3 = Put(e, "StaticObj_ammoboxes_big", 6.5, -1, 85, 0.02);
 		Object b4 = Put(e, "StaticObj_Misc_Table_Camp", -6, 2, 10, 0.02);
-		array<string> top = {"Mag_STANAG_30Rnd", "Mag_AK74_30Rnd", "Mag_G36_30Rnd", "Ammo_556x45", "Ammo_545x39", "M67Grenade", "BandageDressing"};
+		array<string> top = {"Mag_STANAG_30Rnd", "Mag_AK74_30Rnd", "Mag_G36_30Rnd", "Ammo_556x45", "AmmoBox_556x45_20Rnd", "Ammo_545x39", "AmmoBox_545x39_20Rnd", "Ammo_762x39", "AmmoBox_762x39_20Rnd", "M67Grenade", "BandageDressing"};
 		array<string> guns = {"AK74|Mag_AK74_30Rnd", "AKM|Mag_AKM_30Rnd", "AKS74U|Mag_AK74_30Rnd", "M16A2|Mag_STANAG_30Rnd", "M16A4|Mag_STANAG_30Rnd", "G36|Mag_G36_30Rnd", "G36C|Mag_G36_30Rnd", "VBB_FAMAS|Mag_FAMAS_35Rnd", "SA58|Mag_FAL_20Rnd", "sz_AKS74UN|Mag_AK74_30Rnd", "RPK74|Mag_AK74_45Rnd", "AG_RPK_762x39|Mag_AKM_30Rnd"};
 		array<string> rare = {"SVD|Mag_SVD_10Rnd", "ASVAL|Mag_VAL_20Rnd", "AEK971|Mag_AK74_30Rnd", "AN94|Mag_AK74_30Rnd", "AG_SR2m|Mag_SR2_30rnd", "M24|Ammo_308Win", "SVT40|Mag_SVT40_10Rnd", "SV_98|Mag_SV_98_10Rnd", "MK12Mod1|Mag_MK12Mod1_20Rnd"};
-		array<string> gear = {"BallisticHelmet_Green", "Mich2001Helmet", "UKAssVest_Olive", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "TacticalGloves_Green", "AssaultBag_Green"};
+		array<string> gear = {"PlateCarrierVest", "PlateCarrierPouches", "BallisticHelmet_Green", "Mich2001Helmet", "UKAssVest_Olive", "GorkaEJacket_Summer", "GorkaPants_Summer", "MilitaryBoots_Black", "TacticalGloves_Green", "AssaultBag_Green"};
 		array<string> extra = {"PSO1Optic", "KobraOptic", "PKAS_Optic", "OKP7_Optic", "RGD5Grenade", "AK_PlasticBttstck", "AK_RailHndgrd", "AK_TacticalBttstck", "RPK_Bipod", "RPK_Bttstck", "RPK_Hndgrd", "Mag_AK74_45Rnd", "UniversalLight"};
 		GunOn(b1, guns);
-		LootOnFrom(b1, top, 1);
+		LootOnFrom(b1, top, 2);
 		if (Chance(0.45)) GunOn(b3, guns);
 		LootOnFrom(b3, gear, 1);
-		LootOnFrom(b2, top, 1);
+		LootOnFrom(b2, top, 2);
 		LootOnFrom(b4, extra, 1);
-		DropFrom(e, top, 1, -8, 8, -20, 20);
+		DropFrom(e, top, 2, -8, 8, -20, 20);
 		EntityAI c = LootCrate(e, -5, -3);
 		if (Chance(0.20)) GiveGun(c, rare); else if (Chance(0.35)) GiveGun(c, guns);
+		GiveFrom(c, top, 1);
+		if (Chance(0.30)) { Give(c, "PlateCarrierVest"); Give(c, "PlateCarrierPouches"); }
 		if (Chance(0.5)) GiveFrom(c, extra, 1);
 		array<string> mil = {"ZmbM_SoldierNormal", "ZmbM_PatrolNormal_Autumn", "ZmbM_PatrolNormal_Flat", "ZmbM_usSoldier_normal_Woodland", "AG_ZmbM_Spetsnaz"};
 		Zeds(e, mil, 6 + e.Tier, 10, 40);
@@ -974,16 +1014,17 @@ class AGA_Events
 		Object t = Put(e, "StaticObj_Misc_Table_Camp", 5, 2, 90, 0.02);
 		Object r = Put(e, "StaticObj_Furniture_radio_b", 5, 2.4, 90, 0.02);
 		Object bx = Put(e, "StaticObj_Furniture_box_c", -5, 3, 40, 0.02);
-		array<string> top = {"Mag_MP5_30Rnd", "Ammo_12gaPellets", "Mag_Glock_15Rnd", "Ammo_9x19", "Handcuffs", "PoliceVest", "PersonalRadio", "TearGas_SmokeGrenade"};
+		array<string> top = {"Mag_MP5_30Rnd", "Ammo_12gaPellets", "AmmoBox_00buck_10rnd", "Mag_Glock_15Rnd", "Ammo_9x19", "AmmoBox_9x19_25rnd", "Ammo_762x25", "AmmoBox_762x25_25rnd", "Handcuffs", "PoliceVest", "PersonalRadio", "TearGas_SmokeGrenade"};
 		array<string> guns = {"MP5K|Mag_MP5_30Rnd", "M1014|Ammo_12gaPellets", "Mp133Shotgun|Ammo_12gaPellets", "Saiga9|Mag_PP19_30Rnd", "AG_PP19|Mag_PP19_30Rnd", "Kedr|Mag_Kedr_20Rnd", "Glock18C|Mag_Glock_15Rnd", "APS|Mag_APS_20Rnd", "PB|Mag_PB_8Rnd", "AG_ADAR|Mag_STANAG_30Rnd", "UMP45|Mag_UMP_25Rnd"};
 		array<string> gear = {"PoliceVest", "PoliceJacket", "PolicePants", "PoliceCap", "Handcuffs", "HandcuffKeys", "PersonalRadio", "Flashlight", "BandageDressing", "PP19_RailHndgrd", "SurefireLight", "Aimpoint_Optic", "holo_Optic"};
 		GunOn(t, guns);
-		LootOnFrom(t, top, 1);
+		LootOnFrom(t, top, 2);
 		LootOnFrom(bx, gear, 1);
 		if (r) LootOn(r, "Battery9V");
-		DropFrom(e, top, 1, -6, 6, -12, 12);
+		DropFrom(e, top, 2, -6, 6, -12, 12);
 		EntityAI c = LootCrate(e, 4, -4);
 		if (Chance(0.5)) GiveGun(c, guns);
+		GiveFrom(c, top, 1);
 		GiveFrom(c, gear, 2);
 		array<string> cops = {"ZmbM_PolicemanFat", "ZmbF_PoliceWomanNormal", "ZmbM_PolicemanSpecForce", "ZmbM_PolicemanSpecForce_Heavy"};
 		Zeds(e, cops, 4 + e.Tier, 6, 25);
@@ -1026,7 +1067,7 @@ class AGA_Events
 		}
 		Put(e, "StaticObj_Forest_DeerSkeleton_Full", 6.5, -3.5, 120, 0.02);
 		Put(e, "StaticObj_Forest_DeerSkeleton_Skull", -4.6, -4.4, 60, 0);
-		array<string> ammo = {"Ammo_762x54", "Ammo_308Win", "Ammo_22", "Ammo_12gaPellets", "Ammo_12gaSlug", "Mag_CZ527_5rnd", "AG_Ammo_792x57"};
+		array<string> ammo = {"Ammo_762x54", "AmmoBox_762x54_20Rnd", "Ammo_308Win", "AmmoBox_308Win_20Rnd", "Ammo_22", "AmmoBox_22_50Rnd", "Ammo_12gaPellets", "AmmoBox_00buck_10rnd", "Mag_CZ527_5rnd", "AG_Ammo_792x57", "AG_AmmoBox_792x57_20Rnd"};
 		array<string> wear = {"HuntingJacket_Autumn", "HuntingJacket_Brown", "HunterPants_Autumn", "HunterPants_Brown", "BoonieHat_DPM", "HuntingBag", "WoolGloves_Green"};
 		array<string> misc = {"HuntingKnife", "Compass", "Rope", "Canteen", "Matchbox", "DeerSteakMeat", "Binoculars", "HuntingOptic", "PUHuntingOptic", "BurlapWrap", "GrassBurlapWrap"};
 		array<string> hg = {"Mosin9130|Ammo_762x54", "CZ527|Mag_CZ527_5rnd", "Izh18|Ammo_762x39", "Winchester70|Ammo_308Win", "Izh43Shotgun|Ammo_12gaPellets", "Ruger1022|Mag_Ruger1022_15Rnd", "kar98k|AG_Ammo_792x57", "VEPR_SOK94|Mag_VEPR_SOK94_10rnd", "MP153|Ammo_12gaPellets", "Izh27|Ammo_12gaPellets"};
@@ -1034,10 +1075,10 @@ class AGA_Events
 		LootOnFrom(tb, misc, 1);
 		LootOnFrom(mt, wear, 1);
 		LootOnFrom(bx, misc, 1);
-		LootOnFrom(bx, ammo, 1);
+		LootOnFrom(bx, ammo, 2);
 		EntityAI c = LootCrate(e, -5.5, 2.5);
 		GiveFrom(c, wear, 1);
-		GiveFrom(c, ammo, 1);
+		GiveFrom(c, ammo, 2);
 		array<string> svt = {"SVT40|Mag_SVT40_10Rnd"};
 		if (Chance(0.1 + e.Tier * 0.03)) GiveGun(c, svt);
 		array<string> hz = {"ZmbM_HunterOld_Autumn", "ZmbM_HunterOld_Spring", "ZmbM_HunterOld_Summer", "ZmbM_HikerSkinny_Green", "ZmbM_HikerSkinny_Grey", "ZmbM_ForestManOld"};
@@ -1089,6 +1130,7 @@ class AGA_Events
 		Put(e, "StaticObj_Furniture_bucket", -5, 1, 0, 0.02);
 		array<string> food = {"TunaCan", "BakedBeansCan", "SpaghettiCan", "PeachesCan", "SardinesCan", "WaterBottle", "SodaCan_Cola", "Canteen"};
 		array<string> stuff = {"Hoodie_Blue", "Jeans_Blue", "AthleticShoes_Black", "WoolCoat_Black", "Sweater_Gray", "Matchbox", "Flashlight", "Battery9V", "Rag", "KitchenKnife", "CanOpener", "Hatchet", "SewingKit", "TaloonBag_Blue"};
+		array<string> civAmmo = {"Ammo_9x19", "AmmoBox_9x19_25rnd", "Ammo_22", "Ammo_12gaPellets", "Ammo_762x25", "AmmoBox_762x25_25rnd"};
 		LootOnFrom(t1, food, 2);
 		LootOnFrom(m1, stuff, 1);
 		LootOnFrom(b1, food, 1);
@@ -1096,6 +1138,7 @@ class AGA_Events
 		DropFrom(e, stuff, 1, -6, 6, -5, 8);
 		EntityAI c = LootCrate(e, -4, 6);
 		GiveFrom(c, stuff, 2);
+		GiveFrom(c, civAmmo, 1);
 		array<string> pist = {"CZ75|Mag_CZ75_15Rnd", "MKII|Mag_MKII_10Rnd", "Izh43Shotgun|Ammo_12gaPellets", "TT_33|Mag_TT_33_8Rnd", "MakarovPM|Mag_MakarovPM_8Rnd", "M92|Mag_M92_15Rnd", "LugerP08|Mag_LugerP08_8Rnd", "PPSH41|Mag_PPSH41_35Rnd", "Vepr_KM|AGMag_AKM_10Rnd"};
 		if (e.Tier >= 2 && Chance(0.3)) GiveGun(c, pist);
 		array<string> civ = {"ZmbM_CitizenASkinny_Blue", "ZmbF_CitizenANormal_Blue", "ZmbM_HikerSkinny_Blue", "ZmbF_HikerSkinny_Red", "ZmbM_FarmerFat_Brown", "ZmbF_JoggerSkinny_Red"};
