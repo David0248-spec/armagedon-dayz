@@ -157,48 +157,48 @@
   },
   "set_nominal": {
     "AK74": [
-      90,
-      60
-    ],
-    "AKS74U": [
       70,
       45
     ],
+    "AKS74U": [
+      100,
+      65
+    ],
     "M16A2": [
-      60,
-      38
+      50,
+      32
     ],
     "AKM": [
-      65,
-      42
+      45,
+      28
     ],
     "AK101": [
       40,
       25
     ],
     "M4A1": [
-      20,
-      10
+      14,
+      7
     ],
     "FAL": [
       22,
       12
     ],
     "SKS": [
-      60,
-      38
+      80,
+      50
     ],
     "Mag_AK74_30Rnd": [
-      150,
-      95
+      160,
+      100
     ],
     "Mag_STANAG_30Rnd": [
       80,
       50
     ],
     "Mag_AKM_30Rnd": [
-      70,
-      45
+      55,
+      35
     ],
     "Mag_AK101_30Rnd": [
       35,
@@ -329,12 +329,12 @@
       38
     ],
     "UMP45": [
-      55,
-      34
+      60,
+      38
     ],
     "PP19": [
-      30,
-      18
+      35,
+      22
     ],
     "Saiga": [
       30,
@@ -351,6 +351,34 @@
     "Mag_UMP_25Rnd": [
       45,
       28
+    ],
+    "Mosin9130": [
+      60,
+      38
+    ],
+    "Winchester70": [
+      45,
+      28
+    ],
+    "CZ527": [
+      40,
+      25
+    ],
+    "B95": [
+      35,
+      22
+    ],
+    "Izh18": [
+      45,
+      28
+    ],
+    "Ruger1022": [
+      40,
+      25
+    ],
+    "CZ61": [
+      35,
+      22
     ]
   },
   "globals": {
@@ -387,6 +415,7 @@
       "Tier3"
     ],
     "SKS": [
+      "Tier1",
       "Tier2",
       "Tier3"
     ],
@@ -557,6 +586,51 @@
       "usage": [
         "Police",
         "Military"
+      ]
+    },
+    "SKS": {
+      "usage": [
+        "Hunting",
+        "Village",
+        "Military"
+      ],
+      "tiers": [
+        "Tier1",
+        "Tier2",
+        "Tier3"
+      ]
+    },
+    "Mosin9130": {
+      "usage": [
+        "Hunting",
+        "Village",
+        "Farm"
+      ],
+      "tiers": [
+        "Tier1",
+        "Tier2",
+        "Tier3"
+      ]
+    },
+    "Izh18": {
+      "usage": [
+        "Hunting",
+        "Village",
+        "Farm"
+      ],
+      "tiers": [
+        "Tier1",
+        "Tier2"
+      ]
+    },
+    "Ruger1022": {
+      "usage": [
+        "Hunting",
+        "Village"
+      ],
+      "tiers": [
+        "Tier1",
+        "Tier2"
       ]
     }
   }
