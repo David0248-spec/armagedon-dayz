@@ -55,7 +55,18 @@
     "NVGoggles": 0.7,
     "Bag": 2.0,
     "BagIV": 1.55,
-    "SleepingBag": 1.55
+    "SleepingBag": 1.55,
+    "Colt1911": 1.1,
+    "Engraved1911": 0.8,
+    "Glock19": 1.3,
+    "CZ75": 1.3,
+    "FNX45": 1.3,
+    "MakarovIJ70": 1.3,
+    "MKII": 1.3,
+    "Deagle": 1.0,
+    "Magnum": 1.0,
+    "Derringer": 0.8,
+    "LongHorn": 1.0
   },
   "event_nominal": {
     "StaticHeliCrash": 4,
@@ -132,68 +143,68 @@
   },
   "set_nominal": {
     "AK74": [
-      50,
-      32
+      90,
+      60
     ],
     "AKS74U": [
-      34,
-      20
+      70,
+      45
     ],
     "M16A2": [
-      36,
-      22
+      60,
+      38
     ],
     "AKM": [
-      30,
-      18
+      65,
+      42
     ],
     "AK101": [
-      26,
-      16
+      40,
+      25
     ],
     "M4A1": [
-      9,
-      4
+      20,
+      10
     ],
     "FAL": [
-      12,
-      6
+      22,
+      12
     ],
     "SKS": [
-      36,
-      21
+      60,
+      38
     ],
     "Mag_AK74_30Rnd": [
-      90,
-      60
+      150,
+      95
     ],
     "Mag_STANAG_30Rnd": [
-      45,
-      28
+      80,
+      50
     ],
     "Mag_AKM_30Rnd": [
-      30,
-      18
+      70,
+      45
     ],
     "Mag_AK101_30Rnd": [
-      22,
-      14
+      35,
+      22
     ],
     "Mag_FAL_20Rnd": [
-      14,
-      8
+      22,
+      12
     ],
     "Ammo_545x39": [
-      100,
-      60
+      150,
+      95
     ],
     "Ammo_556x45": [
-      70,
-      40
+      110,
+      70
     ],
     "Ammo_762x39": [
-      90,
-      55
+      140,
+      90
     ],
     "SVD": [
       6,
@@ -256,8 +267,8 @@
       4
     ],
     "FAMAS": [
-      14,
-      8
+      20,
+      11
     ],
     "LeeEnfield": [
       15,
@@ -296,8 +307,36 @@
       2
     ],
     "Vikhr": [
-      12,
-      7
+      18,
+      10
+    ],
+    "MP5K": [
+      60,
+      38
+    ],
+    "UMP45": [
+      55,
+      34
+    ],
+    "PP19": [
+      30,
+      18
+    ],
+    "Saiga": [
+      30,
+      18
+    ],
+    "Mag_MP5_30Rnd": [
+      40,
+      25
+    ],
+    "Mag_MP5_15Rnd": [
+      45,
+      28
+    ],
+    "Mag_UMP_25Rnd": [
+      45,
+      28
     ]
   },
   "globals": {
@@ -313,7 +352,8 @@
   "tier_set": {
     "MP5K": [
       "Tier1",
-      "Tier2"
+      "Tier2",
+      "Tier3"
     ],
     "CZ61": [
       "Tier1",
@@ -337,6 +377,7 @@
       "Tier3"
     ],
     "AKS74U": [
+      "Tier1",
       "Tier2",
       "Tier3"
     ],
@@ -359,6 +400,7 @@
       "Tier4"
     ],
     "AKM": [
+      "Tier2",
       "Tier3",
       "Tier4"
     ],
@@ -391,6 +433,7 @@
       "Tier3"
     ],
     "Mag_MP5_30Rnd": [
+      "Tier1",
       "Tier2",
       "Tier3"
     ],
@@ -418,6 +461,7 @@
       "Tier4"
     ],
     "Mag_AKM_30Rnd": [
+      "Tier2",
       "Tier3",
       "Tier4"
     ],
@@ -481,6 +525,24 @@
       "tiers": [
         "Tier3",
         "Tier4"
+      ]
+    },
+    "AKS74U": {
+      "usage": [
+        "Police",
+        "Military"
+      ]
+    },
+    "MP5K": {
+      "usage": [
+        "Police",
+        "Military"
+      ]
+    },
+    "UMP45": {
+      "usage": [
+        "Police",
+        "Military"
       ]
     }
   }
