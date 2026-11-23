@@ -1,82 +1,99 @@
 #!/usr/bin/env python3
-# Nakłada mnożniki lootu (server/ce/economy.json) na czyste pliki vanilla misji.
-import json, os, re, shutil, sys
+# Nakłada mnożniki lootu (server/ce/economy.json) na czyste pliki vanilla misji (stały balans bez faz wipe).
+import json, os, re, shutil
+
 mis = os.path.expanduser('~/dayz/mpmissions/dayzOffline.chernarusplus')
 cfg = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ce', 'economy.json')))
-# --- fazy wipe'a: 1 = tyg. 1-2, 2 = tyg. 3-4, 3 = tyg. 5+ ---
-import datetime
-_days = (datetime.date.today() - datetime.date.fromisoformat(cfg.get('wipe_start', '2026-11-22'))).days
-PHASE = 1 if _days < 14 else (2 if _days < 28 else 3)
-RARE = set(cfg.get('phase1_removed', []))
+
 BUILD = cfg.get('build_items', [])
 LIFE = cfg.get('lifetime', {})
 REMOVED = set(cfg.get('removed', []))
+STRIP_MIL = set(cfg.get('strip_military', []))
+DELOOT_ONLY = set(cfg.get('deloot_only', []))
+
+# Zapisujemy stałą fazę "2" (100% balansu) dla pełnej kompatybilności z ArmaGedonCore
 os.makedirs(os.path.expanduser('~/dayz/profiles/ArmaGedonCore'), exist_ok=True)
-open(os.path.expanduser('~/dayz/profiles/ArmaGedonCore/phase.txt'), 'w').write(str(PHASE))
-print('faza wipe: %d (dzien %d)' % (PHASE, _days + 1))
+open(os.path.expanduser('~/dayz/profiles/ArmaGedonCore/phase.txt'), 'w').write('2')
+print('ekonomia: staly balans (fazy wipe wylaczone)')
+
 def pristine(rel):
-    p = os.path.join(mis, rel); b = p + '.vanilla'
-    if not os.path.exists(b): shutil.copy(p, b)
+    p = os.path.join(mis, rel)
+    b = p + '.vanilla'
+    if not os.path.exists(b):
+        shutil.copy(p, b)
     return p, open(b).read()
+
 # --- types.xml ---
 p, s = pristine('db/types.xml')
 changed = 0
-EZ = cfg.get('enable_zero')
+
+SORTED_NAME_MULT = sorted(cfg.get('name_mult', {}).items(), key=lambda x: len(x[0]), reverse=True)
+SETN = cfg.get('set_nominal', {})
+TSET = cfg.get('tier_set', {})
+AU = cfg.get('add_usage', {})
+
 def fix_type(m):
     global changed
-    block = m.group(0); name = m.group(1)
-    # wyłączone w vanilli (nominal 0), ale z miejscem spawnu – włącz z małą ilością
-    if EZ and name not in REMOVED and re.search(r'<nominal>0</nominal>', block) and '<usage name=' in block \
-            and 'crafted="1"' not in block and 'deloot="1"' not in block and not name.startswith(('Sawedoff', 'Wreck', 'Land_', 'Static')):
-        cm = re.search(r'<category name="([^"]+)"', block)
-        n0 = EZ.get(cm.group(1) if cm else 'default', EZ['default'])
-        block = re.sub(r'<nominal>0</nominal>', '<nominal>%d</nominal>' % n0, block)
-        block = re.sub(r'<min>0</min>', '<min>%d</min>' % max(1, n0 // 2), block)
-        changed += 1
-    if name in LIFE:
-        nb0 = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % LIFE[name], block)
-        if nb0 != block: changed += 1
-        block = nb0
-    mult = 1.0
+    block = m.group(0)
+    name = m.group(1)
+
     cat = re.search(r'<category name="([^"]+)"', block)
-    if cat: mult = cfg['category_mult'].get(cat.group(1), 1.0)
-    for k, v in cfg['name_mult'].items():
-        if k in name: mult = v
     cname = cat.group(1) if cat else ''
-    tiers = re.findall(r'<value name="(Tier\d)"', block)
-    hi = bool(tiers) and all(t in ('Tier3', 'Tier4') for t in tiers)
+
+    # 1. Usuwanie przedmiotów z listy REMOVED
     if name in REMOVED:
         changed += 1
         return re.sub(r'<min>\d+</min>', '<min>0</min>', re.sub(r'<nominal>\d+</nominal>', '<nominal>0</nominal>', block))
-    if PHASE == 1:
-        if name in RARE:
-            changed += 1
-            return re.sub(r'<min>\d+</min>', '<min>0</min>', re.sub(r'<nominal>\d+</nominal>', '<nominal>0</nominal>', block))
-        if cname == 'weapons' and hi: mult *= cfg.get('phase1_weapon_mult', 0.6)
-        if cname == 'explosives': mult *= 0.5
-    elif PHASE == 3:
-        if cname == 'weapons' and hi: mult *= 1.25
-        if cname == 'explosives': mult *= 1.5
-        if any(k in name for k in BUILD): mult *= 1.3
+
+    # 2. Wyłączenie blokowania spawnu przez bazy i graczy (count_in_hoarder=0, count_in_player=0)
+    if cname in ('weapons', 'explosives', 'clothes', 'tools') or any(k in name for k in BUILD):
+        block = block.replace('count_in_hoarder="1"', 'count_in_hoarder="0"')
+        block = block.replace('count_in_player="1"', 'count_in_player="0"')
+
+    # 3. Kontrola deloot (End-Game tylko na heli-crashach / konwojach / pociągach)
+    if name in DELOOT_ONLY:
+        block = block.replace('deloot="0"', 'deloot="1"')
+
+    # 4. Usunięcie tagu Military z pistoletów cywilnych/policyjnych i broni myśliwskich
+    if name in STRIP_MIL:
+        block = re.sub(r'\s*<usage name="Military"\s*/>', '', block)
+
+    # 5. Czas życia (lifetime) - zapobiega zaleganiu pistoletów i śmieci przez 4-8h
+    if name in LIFE:
+        block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % LIFE[name], block)
+    elif cname == 'weapons':
+        lt = 3600 if name in STRIP_MIL else 7200
+        block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % lt, block)
+    elif cname in ('food', 'tools'):
+        block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>5400</lifetime>', block)
+
+    # 6. Mnożniki kategorii i nazw
+    mult = cfg['category_mult'].get(cname, 1.0)
+    for k, v in SORTED_NAME_MULT:
+        if k in name:
+            mult = v
+            break
+
     if name.startswith('Mag_') and '<quantmin>' in block:
-        nb1 = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>10</quantmin>', block)
-        nb1 = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', nb1)
-        if nb1 != block: changed += 1
-        block = nb1
-    # szybsze odnawianie: restock maks. 10 min
+        block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>20</quantmin>', block)
+        block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', block)
+
     mr = cfg.get('max_restock')
     if mr:
         rr = re.search(r'<restock>(\d+)</restock>', block)
         if rr and int(rr.group(1)) > mr:
             block = block.replace(rr.group(0), '<restock>%d</restock>' % mr, 1)
-    # stałe ilości i dodatkowe tiery (np. słabsze automaty w bazach wojskowych niższych tierów)
-    SETN = cfg.get('set_nominal', {}); TSET = cfg.get('tier_set', {})
-    AU = cfg.get('add_usage', {})
-    if name in AU: block = block.replace('deloot="1"', 'deloot="0"')
+
+    # 7. Dodatkowe usage (np. Town i Tier1 dla Mosin/CZ/Tundra)
     if name in AU:
-        tags = ''.join('<usage name="%s"/>' % u for u in AU[name]['usage'] if 'usage name="%s"' % u not in block) + ''.join('<value name="%s"/>' % t for t in AU[name].get('tiers', []) if 'value name="%s"' % t not in block)
+        if name not in DELOOT_ONLY:
+            block = block.replace('deloot="1"', 'deloot="0"')
+        tags = ''.join('<usage name="%s"/>' % u for u in AU[name].get('usage', []) if 'usage name="%s"' % u not in block) + \
+               ''.join('<value name="%s"/>' % t for t in AU[name].get('tiers', []) if 'value name="%s"' % t not in block)
         block = block.replace('</type>', '\t' + tags + '\n\t</type>')
         changed += 1
+
+    # 8. Nadpisanie Tierów
     if name in TSET:
         vals = ''.join('<value name="%s"/>' % t for t in TSET[name])
         b2 = re.sub(r'\s*<value name="Tier\d"\s*/>', '', block)
@@ -84,85 +101,107 @@ def fix_type(m):
         if um:
             k = um[-1].end()
             b2 = b2[:k] + '\n\t\t' + vals + b2[k:]
-            if b2 != block: changed += 1
             block = b2
+            changed += 1
+
+    # 9. Sztywne wartości nominal/min
     if name in SETN:
         n0, m0 = SETN[name]
         block = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
         block = re.sub(r'<min>\d+</min>', '<min>%d</min>' % m0, block)
         changed += 1
         return block
-    if mult == 1.0: return block
-    if mult < 1.0 and int((re.search(r'<nominal>(\d+)</nominal>', block) or [0,'0'])[1]) <= 1: return block
+
+    if mult == 1.0:
+        return block
+    if mult < 1.0 and int((re.search(r'<nominal>(\d+)</nominal>', block) or [0, '0'])[1]) <= 1:
+        return block
+
     def scale(tag, b):
         mm = re.search(r'<%s>(\d+)</%s>' % (tag, tag), b)
-        if not mm or int(mm.group(1)) == 0: return b
+        if not mm or int(mm.group(1)) == 0:
+            return b
         return b.replace(mm.group(0), '<%s>%d</%s>' % (tag, max(1, round(int(mm.group(1)) * mult)), tag), 1)
+
     nb = scale('min', scale('nominal', block))
-    if nb != block: changed += 1
+    if nb != block:
+        changed += 1
     return nb
+
 s = re.sub(r'<type name="([^"]+)">.*?</type>', fix_type, s, flags=re.S)
-# warianty kolorystyczne broni (AK74_Black, Mosin9130_Camo...): spawn jak broń bazowa, 1/3 jej ilości
+
+# Warianty kolorystyczne broni (1/3 ilości bazowej, te same tiery i flagi)
 if cfg.get('weapon_variants'):
     base = {m.group(1): m.group(0) for m in re.finditer(r'<type name="([^"]+)">.*?</type>', s, flags=re.S)}
     def var_fix(m):
         global changed
         name, block = m.group(1), m.group(0)
         mm = re.match(r'^([A-Za-z0-9]+)_(Black|Green|Camo|Tan|Woodland|Wood|Olive|Desert|Grey|Snow|White|Brown|Coyote)$', name)
-        if not mm or mm.group(1) not in base or '<category name="weapons"' not in block: return block
-        if int(re.search(r'<nominal>(\d+)</nominal>', block).group(1)) > 0: return block
+        if not mm or mm.group(1) not in base or '<category name="weapons"' not in block:
+            return block
+        if int(re.search(r'<nominal>(\d+)</nominal>', block).group(1)) > 0:
+            return block
         bb = base[mm.group(1)]
         bn = int(re.search(r'<nominal>(\d+)</nominal>', bb).group(1))
-        if bn == 0: return block
+        if bn == 0:
+            return block
         n0 = max(2, bn // 3)
         nb = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
         nb = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, n0 // 2), nb)
+        nb = nb.replace('count_in_hoarder="1"', 'count_in_hoarder="0"').replace('count_in_player="1"', 'count_in_player="0"')
         nb = re.sub(r'\s*<(usage|value) name="[^"]+"\s*/>', '', nb)
         tags = ''.join('\n\t\t' + t for t in re.findall(r'<(?:usage|value) name="[^"]+"\s*/>', bb))
-        nb = nb.replace('</type>', tags.lstrip('\n').replace('\t\t', '\t\t', 1) + '\n\t</type>') if tags else nb
+        nb = nb.replace('</type>', tags.lstrip('\n') + '\n\t</type>') if tags else nb
         changed += 1
         return nb
     s = re.sub(r'<type name="([^"]+)">.*?</type>', var_fix, s, flags=re.S)
+
 open(p, 'w').write(s)
 print('types.xml: zmieniono %d typow' % changed)
-# --- events.xml (vanilla + nasze bloki ARMAGEDON doklejane potem przez setup_ce) ---
+
+# --- events.xml ---
 p, s = pristine('db/events.xml')
 for ev, val in cfg['event_nominal'].items():
     m = re.search(r'(<event name="%s">.*?<nominal>)(\d+)(</nominal>.*?<max>)(\d+)(</max>)' % re.escape(ev), s, flags=re.S)
-    if not m: print('brak eventu', ev); continue
+    if not m:
+        print('brak eventu', ev)
+        continue
     nom = int(m.group(2))
-    pm = 0.85 if PHASE == 1 else (1.3 if PHASE == 3 else 1.0)
-    new = int(val) if val >= 2 else max(1, round(nom * val * pm))
+    new = int(val) if val >= 2 else max(1, round(nom * val))
     mx = max(int(m.group(4)), new)
     s = s[:m.start()] + m.group(1) + str(new) + m.group(3) + str(mx) + m.group(5) + s[m.end():]
     print('event %s: %d -> %d' % (ev, nom, new))
 open(p, 'w').write(s)
 
-# --- cfgspawnabletypes: broń z magazynkiem z szansą (losowa ilość naboi z quantmin/quantmax magazynka) ---
+# --- cfgspawnabletypes.xml ---
 p, s = pristine('cfgspawnabletypes.xml')
-ch = cfg.get('spawn_mag_chance', 0.5); added = 0
+ch = cfg.get('spawn_mag_chance', 0.55)
+added = 0
 for w, mag in cfg.get('weapon_mags', {}).items():
-    if not mag: continue
+    if not mag:
+        continue
     m = re.search(r'<type name="%s">(.*?)</type>' % re.escape(w), s, flags=re.S)
     att = '\t\t<attachments chance="%.2f">\n\t\t\t<item name="%s" chance="1.00" />\n\t\t</attachments>\n' % (ch, mag)
     if m:
         body = m.group(1)
         if 'Mag_' in body:
             nb = re.sub(r'<attachments chance="[\d.]+">(\s*<item name="Mag_)', lambda q: '<attachments chance="%.2f">%s' % (ch, q.group(1)), body)
-            if nb == body: continue
+            if nb == body:
+                continue
             s = s[:m.start(1)] + nb + s[m.end(1):]
         else:
             s = s[:m.end() - len('</type>')] + att + '\t</type>' + s[m.end():]
     else:
         s = s.replace('</spawnabletypes>', '\t<type name="%s">\n%s\t</type>\n</spawnabletypes>' % (w, att))
     added += 1
+
 sc = cfg.get('stock_chance')
 if sc:
     s = re.sub(r'<attachments chance="[\d.]+">(\s*<item name="[^"]*(?:Bttstck|Hndgrd|Buttstock|Handguard)[^"]*")', lambda q: '<attachments chance="%.2f">%s' % (sc, q.group(1)), s)
 open(p, 'w').write(s)
 print('cfgspawnabletypes: magazynki dodane do %d broni' % added)
 
-# --- globals.xml: pod 100-115 graczy (więcej zombie/zwierząt, szybsze odnawianie lootu) ---
+# --- globals.xml ---
 p, s = pristine('db/globals.xml')
 for k, v in cfg.get('globals', {}).items():
     s = re.sub(r'(<var name="%s" type="\d+" value=")[^"]*(")' % k, r'\g<1>%s\2' % v, s)
