@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Porządkuje typy z modów w armagedon_ce:
-# - włącza wszystkie 34 wybrane bronie z paczki modów + wszystkie ich dedykowane magazynki, amunicję, celowniki, dwójnogi i kolby
+# - wycina <usage name="Military"/> z broni End-Game (MOD_RARE / DELOOT_ONLY), zostawiając wyłącznie deloot="1" + ContaminatedArea
 # - wyłącza (nominal=0) 5 usuniętych broni: AN94_Suppressed, JD_Groza_762, AG_M76_Zastava, AWM, KS23
 # - ogranicza ubrania z modów do 1 szt. i tłumiki pod deloot="1"
 import os, re, glob, json
@@ -13,9 +13,10 @@ SETN = CFG.get('set_nominal', {})
 TSET = CFG.get('tier_set', {})
 AU = CFG.get('add_usage', {})
 REMOVED = set(CFG.get('removed', []))
+DELOOT_ONLY = set(CFG.get('deloot_only', []))
 MOD_CAP = CFG.get('mod_weapon_cap', 5)
 
-MOD_RARE = set(CFG.get('mod_rare_deloot', []))
+MOD_RARE = set(CFG.get('mod_rare_deloot', [])) | DELOOT_ONLY
 MOD_CIVIL = set(CFG.get('mod_civil_weapons', []))
 
 def names(text):
@@ -63,15 +64,19 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
                 b = re.sub(r'<min>\d+</min>', '<min>1</min>', b)
             return b
 
-        # Tłumiki z modów: aktywujemy wszystkie pod deloot="1" (po 2 szt.)
+        # Tłumiki z modów: wyłącznie deloot="1" + ContaminatedArea (zero zwykłych baraków)
         if 'Suppressor' in n or 'suppressor' in n:
             b = b.replace('deloot="0"', 'deloot="1"')
+            b = re.sub(r'\s*<usage name="[^"]+"\s*/>', '', b)
+            if n in AU:
+                tags = ''.join('\t\t<usage name="%s"/>\n' % u for u in AU[n].get('usage', []))
+                b = b.replace('</type>', tags + '\t</type>')
             b = re.sub(r'<nominal>\d+</nominal>', '<nominal>2</nominal>', b)
             b = re.sub(r'<min>\d+</min>', '<min>1</min>', b)
-            b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>7200</lifetime>', b)
+            b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>10800</lifetime>', b)
             return b
 
-        # Włączamy wyzerowane wcześniej dodatki i optykę z paczek modów (np. SV98Optic, AG_Rail_Bipod, AK_TacticalBttstck)
+        # Włączamy wyzerowane wcześniej dodatki i optykę z paczek modów
         if any(k in n for k in ('Optic', 'optic', 'Trijicon', 'Bipod', 'Bttstck', 'Hndgrd', 'Light', 'Wrap')):
             nm = re.search(r'<nominal>(\d+)</nominal>', b)
             if nm and int(nm.group(1)) == 0:
@@ -84,6 +89,7 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
         if is_weapon_item:
             if n in MOD_RARE:
                 b = b.replace('deloot="0"', 'deloot="1"')
+                b = re.sub(r'\s*<usage name="[^"]+"\s*/>', '', b)
                 b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>10800</lifetime>', b)
             elif n in MOD_CIVIL:
                 b = re.sub(r'\s*<usage name="Military"\s*/>', '', b)
@@ -107,7 +113,7 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
         if n in SETN:
             b = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % SETN[n][0], b)
             b = re.sub(r'<min>\d+</min>', '<min>%d</min>' % SETN[n][1], b)
-            if is_weapon_item and n not in MOD_CIVIL and 'usage name="Military"' not in b and 'usage name="Police"' not in b:
+            if is_weapon_item and n not in MOD_RARE and n not in MOD_CIVIL and 'usage name="Military"' not in b and 'usage name="Police"' not in b:
                 b = b.replace('</type>', '\t\t<usage name="Military"/>\n\t</type>')
             return b
 
