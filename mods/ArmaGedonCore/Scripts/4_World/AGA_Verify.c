@@ -1,4 +1,4 @@
-// ARMA-GEDON: serwerowa logika weryfikacji (z natychmiastowym usuwaniem obiektu gracza przy odrzuceniu -> 0 klonow)
+// ARMA-GEDON: serwerowa weryfikacja anty-cheat (ochrona postaci podczas weryfikacji + usuwanie obiektu przy odrzuceniu -> 0 klonow)
 class AGA_VerifyState
 {
 	string Code;
@@ -40,14 +40,7 @@ class AGA_Verify
 		Init();
 		if (!id) return;
 		string uid = id.GetPlainId();
-		AGA_VerifyState st;
-		if (s_St.Find(uid, st) && !st.Done)
-		{
-			st.Id = id;
-			Ask(id, st);
-			return;
-		}
-		st = new AGA_VerifyState();
+		AGA_VerifyState st = new AGA_VerifyState();
 		st.Code = NewCode();
 		st.Tries = TRIES;
 		st.Done = false;
@@ -75,7 +68,18 @@ class AGA_Verify
 		Begin(id);
 	}
 
-	// Usuwa postać ze świata zanim silnik zapisze ją przy rozłączeniu (eliminuje klonowanie)
+	static void ProtectPlayer(PlayerBase p, string uid)
+	{
+		if (!p) return;
+		if (!IsVerified(uid)) p.SetAllowDamage(false);
+	}
+
+	static void UnprotectPlayer(string uid)
+	{
+		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
+		if (p) p.SetAllowDamage(true);
+	}
+
 	static void CleanupGhostPlayer(string uid)
 	{
 		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
@@ -136,6 +140,7 @@ class AGA_Verify
 		if (a == st.Code)
 		{
 			st.Done = true;
+			UnprotectPlayer(uid);
 			GetRPCManager().SendRPC("AGA", "AGA_VerifyAsk", new Param2<string, int>("", -1), true, sender);
 			AGA_Server.Get().Log("[WERYFIKACJA] ok " + sender.GetName() + " (" + uid + ")");
 			return;
