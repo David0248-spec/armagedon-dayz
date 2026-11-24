@@ -1,4 +1,4 @@
-// ARMA-GEDON: weryfikacja anty-cheat po wejsciu na serwer (przepisz liczbe z ramki, 3 proby, limit czasu)
+// ARMA-GEDON: serwerowa logika weryfikacji (z natychmiastowym usuwaniem obiektu gracza przy odrzuceniu -> 0 klonow)
 class AGA_VerifyState
 {
 	string Code;
@@ -28,14 +28,29 @@ class AGA_Verify
 		return (Math.RandomIntInclusive(1, 9) * 100 + Math.RandomIntInclusive(0, 99)).ToString();
 	}
 
+	static bool IsVerified(string uid)
+	{
+		if (!s_St) return false;
+		AGA_VerifyState st;
+		return s_St.Find(uid, st) && st.Done;
+	}
+
 	static void Begin(PlayerIdentity id)
 	{
 		Init();
-		if (!id) return;   // weryfikacja dla kazdego (takze admin)
+		if (!id) return;
 		string uid = id.GetPlainId();
-		AGA_VerifyState st = new AGA_VerifyState();
+		AGA_VerifyState st;
+		if (s_St.Find(uid, st) && !st.Done)
+		{
+			st.Id = id;
+			Ask(id, st);
+			return;
+		}
+		st = new AGA_VerifyState();
 		st.Code = NewCode();
 		st.Tries = TRIES;
+		st.Done = false;
 		st.Id = id;
 		s_St.Set(uid, st);
 		AGA_Server.Get().Log("[WERYFIKACJA] start " + id.GetName() + " (" + uid + ")");
@@ -43,35 +58,34 @@ class AGA_Verify
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(Timeout, TIMEOUT_MS, false, uid);
 	}
 
-	// po wejsciu postaci: jesli weryfikacja nie wystartowala przy laczeniu – wystartuj teraz
 	static void EnsureStarted(PlayerIdentity id)
 	{
 		Init();
 		if (!id) return;
 		AGA_VerifyState st;
-		if (s_St.Find(id.GetPlainId(), st)) { st.Id = id; if (!st.Done) Ask(id, st); return; }
+		if (s_St.Find(id.GetPlainId(), st))
+		{
+			st.Id = id;
+			if (st.Done)
+				GetRPCManager().SendRPC("AGA", "AGA_VerifyAsk", new Param2<string, int>("", -1), true, id);
+			else
+				Ask(id, st);
+			return;
+		}
 		Begin(id);
 	}
 
-	// postac wchodzi do swiata – bez zaliczonej weryfikacji rozlaczamy (nie da sie ominac czekaniem)
-	static void OnSpawn(PlayerIdentity id)
+	// Usuwa postać ze świata zanim silnik zapisze ją przy rozłączeniu (eliminuje klonowanie)
+	static void CleanupGhostPlayer(string uid)
 	{
-		Init();
-		if (!id) return;
-		AGA_VerifyState st;
-		if (s_St.Find(id.GetPlainId(), st) && st.Done) return;
-		string uid = id.GetPlainId();
-		AGA_Server.Get().Log("[WERYFIKACJA] kick " + uid + ": nie zaliczona przed wejsciem");
-		Forget(uid);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(DropNow, 300, false, id, uid);
+		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
+		if (p)
+		{
+			AGA_Server.Get().Log("[WERYFIKACJA] usuwanie niezweryfikowanej postaci " + uid);
+			GetGame().ObjectDelete(p);
+		}
 	}
 
-	static void DropNow(PlayerIdentity id, string uid)
-	{
-		if (id) GetGame().DisconnectPlayer(id, uid);
-	}
-
-	// klient zglasza gotowosc (menu zarejestrowane) – wyslij pytanie ponownie
 	void AGA_VerifyHello(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
 		if (type != CallType.Server || !sender) return;
@@ -83,16 +97,20 @@ class AGA_Verify
 		GetRPCManager().SendRPC("AGA", "AGA_VerifyAsk", new Param2<string, int>(st.Code, st.Tries), true, id);
 	}
 
-	static void Forget(string uid) { if (s_St) s_St.Remove(uid); }
+	static void Forget(string uid)
+	{
+		if (s_St) s_St.Remove(uid);
+	}
 
 	static void Kick(string uid, string why)
 	{
-		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
 		AGA_Server.Get().Log("[WERYFIKACJA] kick " + uid + ": " + why);
 		PlayerIdentity id;
 		AGA_VerifyState st;
 		if (s_St && s_St.Find(uid, st)) id = st.Id;
+		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
 		if (p && p.GetIdentity()) id = p.GetIdentity();
+		CleanupGhostPlayer(uid);
 		Forget(uid);
 		if (id) GetGame().DisconnectPlayer(id, uid);
 	}
