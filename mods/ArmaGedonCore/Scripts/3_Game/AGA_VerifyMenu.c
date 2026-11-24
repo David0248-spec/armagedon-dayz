@@ -1,4 +1,4 @@
-// ARMA-GEDON – weryfikacja anty-cheat: okno pokazuje sie juz na ekranie odliczania (przed wejsciem postaci)
+// ARMA-GEDON – weryfikacja anty-cheat
 class AGA_VerifyMenu extends UIScriptedMenu
 {
 	static ref AGA_VerifyMenu s_Open;
@@ -10,14 +10,26 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	protected TextWidget m_Status;
 	protected bool m_Passed;
 	protected bool m_Closed;
+	protected bool m_Wrong;
+	protected float m_Tick;
+	protected float m_OpenedAt;
+	protected bool m_BackConsumed;
 
 	bool IsClosed() { return m_Closed; }
 
 	override Widget Init()
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("ArmaGedonCore/GUI/layouts/aga_verify.layout");
+		if (!layoutRoot)
+			return super.Init();
+
 		m_Answer = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("Answer"));
 		m_Status = TextWidget.Cast(layoutRoot.FindAnyWidget("Status"));
+		m_OpenedAt = GetGame().GetTickTime();
+
+		Widget notif = layoutRoot.FindAnyWidget("notification_root");
+		if (notif) notif.Show(false);
+
 		Refresh(false);
 		return layoutRoot;
 	}
@@ -25,7 +37,6 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	void Refresh(bool wrong)
 	{
 		if (!layoutRoot) return;
-		// cyfry: kazda lekko obrocona i przesunieta, w tle kilka linii
 		for (int i = 0; i < 3; i++)
 		{
 			TextWidget d = TextWidget.Cast(layoutRoot.FindAnyWidget("D" + i.ToString()));
@@ -59,17 +70,27 @@ class AGA_VerifyMenu extends UIScriptedMenu
 		}
 	}
 
-	protected bool m_Wrong;
-	protected float m_Tick;
-
-	// pozostaly czas na odpowiedz (po nim serwer rozlacza)
+	// Identyczna obsluga ESC jak w sal_loginscreen.c (blokuje przypadkowe zamkniecie okna)
 	override void Update(float timeslice)
 	{
-		super.Update(timeslice);
+		if (GetUApi().GetInputByID(UAUIBack).LocalPress())
+		{
+			if (!m_BackConsumed)
+			{
+				m_BackConsumed = true;
+				return;
+			}
+		}
+		else
+		{
+			m_BackConsumed = false;
+			super.Update(timeslice);
+		}
+
 		m_Tick += timeslice;
-		if (m_Tick < 0.25 || !m_Status || !AGA_VerifyClient.s_Holding) return;
+		if (m_Tick < 0.25 || !m_Status) return;
 		m_Tick = 0;
-		int left = AGA_VerifyClient.s_LoginTime - (int)(GetGame().GetTickTime() - AGA_VerifyClient.s_HoldAt);
+		int left = 180 - (int)(GetGame().GetTickTime() - m_OpenedAt);
 		if (left < 0) left = 0;
 		string msg = "Type the number shown in the frame";
 		if (m_Wrong) msg = "Wrong answer - try again (" + s_Tries.ToString() + " left)";
@@ -92,6 +113,7 @@ class AGA_VerifyMenu extends UIScriptedMenu
 		super.OnShow();
 		if (GetGame().GetMission()) GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
 		GetGame().GetUIManager().ShowUICursor(true);
+		GetGame().GetSoundScene().SetSoundVolume(0, 1);
 		if (m_Answer) SetFocus(m_Answer);
 	}
 
@@ -99,6 +121,7 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	{
 		super.OnHide();
 		GetGame().GetUIManager().ShowUICursor(false);
+		GetGame().GetSoundScene().SetSoundVolume(1.0, 1.0);
 		if (GetGame().GetMission()) GetGame().GetMission().PlayerControlEnable(false);
 		m_Closed = true;
 	}
@@ -115,9 +138,10 @@ class AGA_VerifyMenu extends UIScriptedMenu
 		if (n == "Exit" || n == "Exit_txt")
 		{
 			Send("#exit");
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().DisconnectSessionForce);
 			return true;
 		}
-		return false;
+		return super.OnClick(w, x, y, button);
 	}
 
 	override bool OnChange(Widget w, int x, int y, bool finished)
@@ -131,15 +155,11 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	}
 }
 
-
-// odbior pytania z serwera i pokazywanie okna – dziala zanim powstanie misja (ekran odliczania)
 class AGA_VerifyClient
 {
 	static ref AGA_VerifyClient s_Inst;
-	static bool s_Verified;      // w tej sesji juz zaliczona
-	static bool s_Holding;       // wstrzymane odliczanie (czeka na weryfikacje)
-	static int  s_LoginTime;
-	static float s_HoldAt;
+	static bool s_Verified;
+	static bool s_HelloSent;
 
 	static void Init()
 	{
@@ -148,9 +168,21 @@ class AGA_VerifyClient
 		GetRPCManager().AddRPC("AGA", "AGA_VerifyAsk", s_Inst, SingleplayerExecutionType.Client);
 	}
 
+	static void Reset()
+	{
+		s_Verified = false;
+		s_HelloSent = false;
+		AGA_VerifyMenu.s_Pending = false;
+		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed())
+			AGA_VerifyMenu.s_Open.Close();
+		AGA_VerifyMenu.s_Open = null;
+	}
+
 	static void Hello()
 	{
 		Init();
+		if (s_Verified || s_HelloSent) return;
+		s_HelloSent = true;
 		GetRPCManager().SendRPC("AGA", "AGA_VerifyHello", new Param1<int>(0), true);
 	}
 
@@ -163,29 +195,21 @@ class AGA_VerifyClient
 			AGA_VerifyMenu.s_Pending = false;
 			s_Verified = true;
 			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Passed();
-			Release();
 			return;
 		}
+		s_Verified = false;
 		AGA_VerifyMenu.s_Code = data.param1;
 		AGA_VerifyMenu.s_Tries = data.param2;
 		AGA_VerifyMenu.s_Pending = true;
-		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Refresh(true);
-		Show();
-	}
-
-	// po zaliczeniu: dopiero teraz odliczanie do wejscia (pozostaly czas)
-	static void Release()
-	{
-		if (!s_Holding) return;
-		s_Holding = false;
-		int left = s_LoginTime - (int)(GetGame().GetTickTime() - s_HoldAt);
-		DayZGame g = DayZGame.Cast(GetGame());
-		if (g && left > 0) g.AGA_ShowLoginTime(left);
+		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed())
+			AGA_VerifyMenu.s_Open.Refresh(true);
+		else
+			Show();
 	}
 
 	static void Show()
 	{
-		if (!AGA_VerifyMenu.s_Pending) return;
+		if (s_Verified || !AGA_VerifyMenu.s_Pending) return;
 		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) return;
 		UIScriptedMenu cur = GetGame().GetUIManager().GetMenu();
 		if (cur && !LoginTimeBase.Cast(cur) && !LoginScreenBase.Cast(cur)) return;
@@ -194,43 +218,53 @@ class AGA_VerifyClient
 	}
 }
 
+// 1:1 struktura z sal_loginscreen.c (LoginQueueBase + LoginTimeBase)
+modded class LoginQueueBase
+{
+	override Widget Init()
+	{
+		Widget w = super.Init();
+		AGA_VerifyClient.Reset();
+		AGA_VerifyClient.Hello();
+		return w;
+	}
+
+	override void Update(float timeslice)
+	{
+		super.Update(timeslice);
+		AGA_VerifyClient.Show();
+	}
+}
+
+modded class LoginTimeBase
+{
+	override Widget Init()
+	{
+		Widget w = super.Init();
+		AGA_VerifyClient.Hello();
+		return w;
+	}
+
+	override void Update(float timeslice)
+	{
+		super.Update(timeslice);
+		AGA_VerifyClient.Show();
+	}
+}
+
 modded class DayZGame
 {
-	// bez zaliczonej weryfikacji nie ma ekranu odliczania – najpierw okno weryfikacji
-	override void OnLoginTimeEvent(int loginTime)
-	{
-		if (AGA_VerifyClient.s_Verified)
-		{
-			super.OnLoginTimeEvent(loginTime);
-			return;
-		}
-		AGA_VerifyClient.s_Holding = true;
-		AGA_VerifyClient.s_LoginTime = loginTime;
-		AGA_VerifyClient.s_HoldAt = GetTickTime();
-		AGA_VerifyClient.Hello();
-		AGA_VerifyClient.Show();
-		// awaryjnie: gdyby pytanie nie doszlo w 8 s – normalne odliczanie
-		GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_HoldFallback, 8000, false);
-	}
-
-	void AGA_HoldFallback()
-	{
-		if (AGA_VerifyClient.s_Holding && !AGA_VerifyMenu.s_Pending) AGA_VerifyClient.Release();
-	}
-
-	void AGA_ShowLoginTime(int t)
-	{
-		super.OnLoginTimeEvent(t);
-	}
-
 	override void OnUpdate(bool doSim, float timeslice)
 	{
 		super.OnUpdate(doSim, timeslice);
 		if (!IsDedicatedServer() && IsMultiplayer())
 		{
 			AGA_VerifyClient.Init();
-			AGA_VerifyClient.Show();
-			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed() && GetMission()) GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
+			if (AGA_VerifyMenu.s_Pending && !AGA_VerifyClient.s_Verified)
+			{
+				AGA_VerifyClient.Show();
+				if (GetMission()) GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
+			}
 		}
 	}
 }
