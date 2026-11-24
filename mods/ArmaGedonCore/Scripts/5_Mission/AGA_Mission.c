@@ -176,7 +176,7 @@ modded class MissionGameplay
 			PlayerBase vp = PlayerBase.Cast(GetGame().GetPlayer());
 			if (!vp || !vp.IsAlive()) return;
 			m_AGA_VerifyDelay += timeslice;
-			if (m_AGA_VerifyDelay < 0.5) return;
+			if (m_AGA_VerifyDelay < 0.8) return;
 
 			AGA_VerifyClient.s_ReadyToShow = true;
 			PlayerControlDisable(INPUT_EXCLUDE_ALL);
