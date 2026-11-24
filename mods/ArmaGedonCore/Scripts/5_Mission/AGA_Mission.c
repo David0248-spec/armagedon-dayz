@@ -1,7 +1,6 @@
 // ARMA-GEDON – funkcje serwera (panel admina: VPP Admin Tools)
 modded class MissionServer
 {
-	// weryfikacja startuje juz przy laczeniu (przed odliczaniem do wejscia)
 	override void OnClientPrepareEvent(PlayerIdentity identity, out bool useDB, out vector pos, out float yaw, out int preloadTimeout)
 	{
 		super.OnClientPrepareEvent(identity, useDB, pos, yaw, preloadTimeout);
@@ -18,7 +17,6 @@ modded class MissionServer
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_SyncVPP, 20000, true);
 	}
 
-	// aktualne eventy jako lokacje w Teleport Managerze VPP ([EVENT] ...)
 	protected string m_AGA_VPPSig;
 
 	void AGA_SyncVPP()
@@ -51,18 +49,26 @@ modded class MissionServer
 			cnt.Set(e.Kind, n);
 			tm.AddLocation(AGA_Events.Label(e, n), e.Tp);
 		}
-		// VPP wczytuje listę z pliku przy każdym otwarciu menu – zapisujemy
 		tm.Save();
 		m_AGA_VPPSig = sig;
 		AGA_Server.Get().Log("VPP sync: zapisano " + AGA_Events.s_Active.Count().ToString() + " eventow, lokacji " + locs.Count().ToString());
 	}
 
-	// wylogowanie w trakcie walki: dłuższy licznik i wpis do logu
 	override void OnClientDisconnectedEvent(PlayerIdentity identity, PlayerBase player, int logoutTime, bool authFailed)
 	{
-		if (identity) AGA_Link.Forget(identity.GetPlainId());
-		if (identity && player) AGA_Survival.SaveStam(player, identity.GetPlainId());
-		if (identity) AGA_Verify.Forget(identity.GetPlainId());
+		if (identity)
+		{
+			string uid = identity.GetPlainId();
+			// Jesli gracz rozlaczyl sie bez zaliczenia weryfikacji, usuwamy postac zanim silnik zapisze klona
+			if (!AGA_Verify.IsVerified(uid) && player)
+			{
+				GetGame().ObjectDelete(player);
+				player = null;
+			}
+			AGA_Link.Forget(uid);
+			if (player) AGA_Survival.SaveStam(player, uid);
+			AGA_Verify.Forget(uid);
+		}
 		if (!authFailed && player && player.IsAlive() && player.AGA_InCombat())
 		{
 			if (logoutTime < 60) logoutTime = 60;
@@ -76,20 +82,21 @@ modded class MissionServer
 	{
 		super.InvokeOnConnect(player, identity);
 		AGA_Survival.Start();
-		AGA_Verify.OnSpawn(identity);
-		if (identity) AGA_Survival.LoadStam(player, identity.GetPlainId());
-		AGA_Territory.AGA_SyncPl(player);
 		if (identity)
-			GetRPCManager().SendRPC("AGA", "AGA_Zones", new Param1<ref AGA_ZoneDb>(AGA_Territory.Zones()), true, identity);
-		if (identity && AGA_Recipes.Cfg().Disabled.Count() > 0)
-			GetRPCManager().SendRPC("AGA", "AGA_OnRecipes", new Param1<array<string>>(AGA_Recipes.Cfg().Disabled), true, identity);
-		if (identity)
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().WelcomeInfo, 25000, false, identity.GetPlainId());
-		if (identity && AGA_Server.Get().IsBanned(identity.GetPlainId()))
 		{
-			AGA_Server.Get().Log("Zbanowany probowal wejsc: " + identity.GetName() + " (" + identity.GetPlainId() + ")");
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().DoKick, 2000, false, identity.GetPlainId());
+			AGA_Verify.EnsureStarted(identity);
+			AGA_Survival.LoadStam(player, identity.GetPlainId());
+			GetRPCManager().SendRPC("AGA", "AGA_Zones", new Param1<ref AGA_ZoneDb>(AGA_Territory.Zones()), true, identity);
+			if (AGA_Recipes.Cfg().Disabled.Count() > 0)
+				GetRPCManager().SendRPC("AGA", "AGA_OnRecipes", new Param1<array<string>>(AGA_Recipes.Cfg().Disabled), true, identity);
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().WelcomeInfo, 25000, false, identity.GetPlainId());
+			if (AGA_Server.Get().IsBanned(identity.GetPlainId()))
+			{
+				AGA_Server.Get().Log("Zbanowany probowal wejsc: " + identity.GetName() + " (" + identity.GetPlainId() + ")");
+				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().DoKick, 2000, false, identity.GetPlainId());
+			}
 		}
+		AGA_Territory.AGA_SyncPl(player);
 	}
 }
 
@@ -157,6 +164,11 @@ modded class MissionGameplay
 	override void OnUpdate(float timeslice)
 	{
 		super.OnUpdate(timeslice);
+		if (AGA_VerifyMenu.s_Pending && !AGA_VerifyClient.s_Verified)
+		{
+			AGA_VerifyClient.Show();
+			return;
+		}
 		UAInput gIn = GetUApi().GetInputByName("UAAGAGroup");
 		bool pd = gIn && gIn.LocalPress();
 		if ((pd && !m_AGA_PDown) || AGA_Territory.s_OpenMenu)
@@ -165,7 +177,6 @@ modded class MissionGameplay
 			AGA_ToggleGroup();
 		}
 		m_AGA_PDown = pd;
-		// regulamin dopiero po weryfikacji anty-cheat
 		if (AGA_VerifyMenu.s_Pending) return;
 		if (m_AGA_RulesShown) return;
 		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
@@ -178,7 +189,6 @@ modded class MissionGameplay
 	}
 }
 
-// ekran wylogowania: ostrzeżenie w trakcie walki i krótka blokada przycisku "wyjdź teraz"
 modded class LogoutMenu
 {
 	protected float m_AGA_LockTime;
