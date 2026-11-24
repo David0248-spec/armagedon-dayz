@@ -59,7 +59,6 @@ modded class MissionServer
 		if (identity)
 		{
 			string uid = identity.GetPlainId();
-			// Jesli gracz rozlaczyl sie bez zaliczenia weryfikacji, usuwamy postac zanim silnik zapisze klona
 			if (!AGA_Verify.IsVerified(uid) && player)
 			{
 				GetGame().ObjectDelete(player);
@@ -84,16 +83,18 @@ modded class MissionServer
 		AGA_Survival.Start();
 		if (identity)
 		{
+			string uid = identity.GetPlainId();
 			AGA_Verify.EnsureStarted(identity);
-			AGA_Survival.LoadStam(player, identity.GetPlainId());
+			AGA_Verify.ProtectPlayer(player, uid);
+			AGA_Survival.LoadStam(player, uid);
 			GetRPCManager().SendRPC("AGA", "AGA_Zones", new Param1<ref AGA_ZoneDb>(AGA_Territory.Zones()), true, identity);
 			if (AGA_Recipes.Cfg().Disabled.Count() > 0)
 				GetRPCManager().SendRPC("AGA", "AGA_OnRecipes", new Param1<array<string>>(AGA_Recipes.Cfg().Disabled), true, identity);
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().WelcomeInfo, 25000, false, identity.GetPlainId());
-			if (AGA_Server.Get().IsBanned(identity.GetPlainId()))
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().WelcomeInfo, 25000, false, uid);
+			if (AGA_Server.Get().IsBanned(uid))
 			{
-				AGA_Server.Get().Log("Zbanowany probowal wejsc: " + identity.GetName() + " (" + identity.GetPlainId() + ")");
-				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().DoKick, 2000, false, identity.GetPlainId());
+				AGA_Server.Get().Log("Zbanowany probowal wejsc: " + identity.GetName() + " (" + uid + ")");
+				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(AGA_Server.Get().DoKick, 2000, false, uid);
 			}
 		}
 		AGA_Territory.AGA_SyncPl(player);
@@ -112,6 +113,8 @@ modded class MissionGameplay
 
 	void MissionGameplay()
 	{
+		AGA_VerifyClient.Reset();
+		AGA_VerifyClient.Init();
 		GetRPCManager().AddRPC("AGA", "AGA_OnRecipes", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_Zones", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("AGA", "AGA_OnGroupView", this, SingleplayerExecutionType.Client);
@@ -164,11 +167,16 @@ modded class MissionGameplay
 	override void OnUpdate(float timeslice)
 	{
 		super.OnUpdate(timeslice);
-		if (AGA_VerifyMenu.s_Pending && !AGA_VerifyClient.s_Verified)
+
+		// Weryfikacja po zaladowaniu swiata (1:1 jak Salvation - bez dotykania odliczania)
+		if (!AGA_VerifyClient.s_Verified)
 		{
+			PlayerControlDisable(INPUT_EXCLUDE_ALL);
+			AGA_VerifyClient.Hello();
 			AGA_VerifyClient.Show();
 			return;
 		}
+
 		UAInput gIn = GetUApi().GetInputByName("UAAGAGroup");
 		bool pd = gIn && gIn.LocalPress();
 		if ((pd && !m_AGA_PDown) || AGA_Territory.s_OpenMenu)
@@ -177,12 +185,12 @@ modded class MissionGameplay
 			AGA_ToggleGroup();
 		}
 		m_AGA_PDown = pd;
-		if (AGA_VerifyMenu.s_Pending) return;
+
 		if (m_AGA_RulesShown) return;
 		PlayerBase p = PlayerBase.Cast(GetGame().GetPlayer());
 		if (!p || !p.IsAlive()) return;
 		m_AGA_RulesTimer += timeslice;
-		if (m_AGA_RulesTimer < 1.5 || GetGame().GetUIManager().GetMenu()) return;
+		if (m_AGA_RulesTimer < 1.0 || GetGame().GetUIManager().GetMenu()) return;
 		m_AGA_RulesShown = true;
 		m_AGA_RulesMenu = new AGA_RulesMenu();
 		GetGame().GetUIManager().ShowScriptedMenu(m_AGA_RulesMenu, null);
