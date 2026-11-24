@@ -1,4 +1,4 @@
-// ARMA-GEDON – weryfikacja anty-cheat
+// ARMA-GEDON – okno weryfikacji anty-cheat 
 class AGA_VerifyMenu extends UIScriptedMenu
 {
 	static ref AGA_VerifyMenu s_Open;
@@ -13,23 +13,15 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	protected bool m_Wrong;
 	protected float m_Tick;
 	protected float m_OpenedAt;
-	protected bool m_BackConsumed;
 
 	bool IsClosed() { return m_Closed; }
 
 	override Widget Init()
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("ArmaGedonCore/GUI/layouts/aga_verify.layout");
-		if (!layoutRoot)
-			return super.Init();
-
 		m_Answer = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("Answer"));
 		m_Status = TextWidget.Cast(layoutRoot.FindAnyWidget("Status"));
 		m_OpenedAt = GetGame().GetTickTime();
-
-		Widget notif = layoutRoot.FindAnyWidget("notification_root");
-		if (notif) notif.Show(false);
-
 		Refresh(false);
 		return layoutRoot;
 	}
@@ -61,7 +53,11 @@ class AGA_VerifyMenu extends UIScriptedMenu
 			if (t < s_Tries) a.SetColor(ARGB(255, 196, 52, 38));
 			else a.SetColor(ARGB(255, 60, 60, 64));
 		}
-		if (m_Answer) m_Answer.SetText("");
+		if (m_Answer)
+		{
+			m_Answer.SetText("");
+			SetFocus(m_Answer);
+		}
 		m_Wrong = wrong;
 		if (m_Status)
 		{
@@ -70,23 +66,10 @@ class AGA_VerifyMenu extends UIScriptedMenu
 		}
 	}
 
-	// Identyczna obsluga ESC jak w sal_loginscreen.c (blokuje przypadkowe zamkniecie okna)
 	override void Update(float timeslice)
 	{
-		if (GetUApi().GetInputByID(UAUIBack).LocalPress())
-		{
-			if (!m_BackConsumed)
-			{
-				m_BackConsumed = true;
-				return;
-			}
-		}
-		else
-		{
-			m_BackConsumed = false;
-			super.Update(timeslice);
-		}
-
+		super.Update(timeslice);
+		if (m_Answer && GetFocus() != m_Answer) SetFocus(m_Answer);
 		m_Tick += timeslice;
 		if (m_Tick < 0.25 || !m_Status) return;
 		m_Tick = 0;
@@ -113,7 +96,6 @@ class AGA_VerifyMenu extends UIScriptedMenu
 		super.OnShow();
 		if (GetGame().GetMission()) GetGame().GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
 		GetGame().GetUIManager().ShowUICursor(true);
-		GetGame().GetSoundScene().SetSoundVolume(0, 1);
 		if (m_Answer) SetFocus(m_Answer);
 	}
 
@@ -121,9 +103,9 @@ class AGA_VerifyMenu extends UIScriptedMenu
 	{
 		super.OnHide();
 		GetGame().GetUIManager().ShowUICursor(false);
-		GetGame().GetSoundScene().SetSoundVolume(1.0, 1.0);
 		if (GetGame().GetMission()) GetGame().GetMission().PlayerControlEnable(false);
 		m_Closed = true;
+		if (s_Open == this) s_Open = null;
 	}
 
 	override bool OnClick(Widget w, int x, int y, int button)
@@ -138,10 +120,9 @@ class AGA_VerifyMenu extends UIScriptedMenu
 		if (n == "Exit" || n == "Exit_txt")
 		{
 			Send("#exit");
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().DisconnectSessionForce);
 			return true;
 		}
-		return super.OnClick(w, x, y, button);
+		return false;
 	}
 
 	override bool OnChange(Widget w, int x, int y, bool finished)
@@ -173,6 +154,8 @@ class AGA_VerifyClient
 		s_Verified = false;
 		s_HelloSent = false;
 		AGA_VerifyMenu.s_Pending = false;
+		AGA_VerifyMenu.s_Code = "";
+		AGA_VerifyMenu.s_Tries = 3;
 		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed())
 			AGA_VerifyMenu.s_Open.Close();
 		AGA_VerifyMenu.s_Open = null;
@@ -190,21 +173,24 @@ class AGA_VerifyClient
 	{
 		Param2<string, int> data;
 		if (!ctx.Read(data)) return;
+
 		if (data.param2 < 0)
 		{
 			AGA_VerifyMenu.s_Pending = false;
 			s_Verified = true;
-			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) AGA_VerifyMenu.s_Open.Passed();
+			if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed())
+				AGA_VerifyMenu.s_Open.Passed();
 			return;
 		}
+
+		bool wasPending = AGA_VerifyMenu.s_Pending;
 		s_Verified = false;
 		AGA_VerifyMenu.s_Code = data.param1;
 		AGA_VerifyMenu.s_Tries = data.param2;
 		AGA_VerifyMenu.s_Pending = true;
 		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed())
-			AGA_VerifyMenu.s_Open.Refresh(true);
-		else
-			Show();
+			AGA_VerifyMenu.s_Open.Refresh(wasPending);
+		Show();
 	}
 
 	static void Show()
@@ -212,59 +198,8 @@ class AGA_VerifyClient
 		if (s_Verified || !AGA_VerifyMenu.s_Pending) return;
 		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed()) return;
 		UIScriptedMenu cur = GetGame().GetUIManager().GetMenu();
-		if (cur && !LoginTimeBase.Cast(cur) && !LoginScreenBase.Cast(cur)) return;
+		if (cur) return;
 		AGA_VerifyMenu.s_Open = new AGA_VerifyMenu();
-		GetGame().GetUIManager().ShowScriptedMenu(AGA_VerifyMenu.s_Open, cur);
-	}
-}
-
-// 1:1 struktura z sal_loginscreen.c (LoginQueueBase + LoginTimeBase)
-modded class LoginQueueBase
-{
-	override Widget Init()
-	{
-		Widget w = super.Init();
-		AGA_VerifyClient.Reset();
-		AGA_VerifyClient.Hello();
-		return w;
-	}
-
-	override void Update(float timeslice)
-	{
-		super.Update(timeslice);
-		AGA_VerifyClient.Show();
-	}
-}
-
-modded class LoginTimeBase
-{
-	override Widget Init()
-	{
-		Widget w = super.Init();
-		AGA_VerifyClient.Hello();
-		return w;
-	}
-
-	override void Update(float timeslice)
-	{
-		super.Update(timeslice);
-		AGA_VerifyClient.Show();
-	}
-}
-
-modded class DayZGame
-{
-	override void OnUpdate(bool doSim, float timeslice)
-	{
-		super.OnUpdate(doSim, timeslice);
-		if (!IsDedicatedServer() && IsMultiplayer())
-		{
-			AGA_VerifyClient.Init();
-			if (AGA_VerifyMenu.s_Pending && !AGA_VerifyClient.s_Verified)
-			{
-				AGA_VerifyClient.Show();
-				if (GetMission()) GetMission().PlayerControlDisable(INPUT_EXCLUDE_ALL);
-			}
-		}
+		GetGame().GetUIManager().ShowScriptedMenu(AGA_VerifyMenu.s_Open, null);
 	}
 }
