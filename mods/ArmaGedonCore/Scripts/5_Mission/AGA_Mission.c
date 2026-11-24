@@ -105,6 +105,7 @@ modded class MissionGameplay
 {
 	protected bool m_AGA_RulesShown;
 	protected float m_AGA_RulesTimer;
+	protected float m_AGA_VerifyDelay;
 	protected bool m_AGA_RecipesDone;
 
 	protected bool m_AGA_PDown;
@@ -168,9 +169,16 @@ modded class MissionGameplay
 	{
 		super.OnUpdate(timeslice);
 
-		// Weryfikacja po zaladowaniu swiata (1:1 jak Salvation - bez dotykania odliczania)
+		// Weryfikacja dopiero po calkowitym zniknieciu czarnego ekranu ladowania i zaladowaniu postaci
 		if (!AGA_VerifyClient.s_Verified)
 		{
+			if (GetGame().IsLoading()) return;
+			PlayerBase vp = PlayerBase.Cast(GetGame().GetPlayer());
+			if (!vp || !vp.IsAlive()) return;
+			m_AGA_VerifyDelay += timeslice;
+			if (m_AGA_VerifyDelay < 0.5) return;
+
+			AGA_VerifyClient.s_ReadyToShow = true;
 			PlayerControlDisable(INPUT_EXCLUDE_ALL);
 			AGA_VerifyClient.Hello();
 			AGA_VerifyClient.Show();
