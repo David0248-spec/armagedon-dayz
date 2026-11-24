@@ -1,4 +1,4 @@
-// ARMA-GEDON – okno weryfikacji anty-cheat (otwierane dopiero po zniknieciu ekranu ladowania)
+// ARMA-GEDON – okno weryfikacji anty-cheat (otwierane dopiero po wejsciu postaci do swiata gry)
 class AGA_VerifyMenu extends UIScriptedMenu
 {
 	static ref AGA_VerifyMenu s_Open;
@@ -192,7 +192,6 @@ class AGA_VerifyClient
 		AGA_VerifyMenu.s_Pending = true;
 		if (AGA_VerifyMenu.s_Open && !AGA_VerifyMenu.s_Open.IsClosed())
 			AGA_VerifyMenu.s_Open.Refresh(wasPending);
-		Show();
 	}
 
 	static void Show()
