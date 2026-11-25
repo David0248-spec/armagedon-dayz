@@ -10,7 +10,7 @@
     "lootdispatch": 1.1
   },
   "restock": {
-    "_opis": "staly czas odnowienia (s) po spadku ponizej min; jedzenie szybciej, zeby przy 115 graczach nie brakowalo",
+    "_opis": "MAKSYMALNY czas odnowienia (s): dluzsze restocki sa skracane do tej wartosci, restock 0 (od razu) zostaje bez zmian",
     "default": 1800,
     "food": 900
   },
@@ -180,14 +180,14 @@
     "M16A2": [9, 5],
     "AKM": [7, 4],
     "AK101": [6, 3],
-    "SKS": [14, 8],
-    "Mosin9130": [12, 7],
-    "Winchester70": [10, 6],
-    "CZ527": [12, 7],
-    "CZ550": [9, 5],
-    "B95": [10, 6],
-    "Izh18": [12, 7],
-    "Ruger1022": [12, 7],
+    "SKS": [16, 9],
+    "Mosin9130": [16, 9],
+    "Winchester70": [12, 7],
+    "CZ527": [15, 8],
+    "CZ550": [11, 6],
+    "B95": [11, 6],
+    "Izh18": [14, 8],
+    "Ruger1022": [14, 8],
     "Mp133Shotgun": [14, 8],
     "MP5K": [12, 7],
     "UMP45": [10, 6],
@@ -218,9 +218,9 @@
     "AG_PP19": [5, 3],
     "Saiga9": [7, 4],
     "AG_SR2m": [3, 2],
-    "MP153": [7, 4],
+    "MP153": [9, 5],
     "AG_Civ_MP_153_Shotgun": [7, 4],
-    "Izh27": [8, 4],
+    "Izh27": [10, 5],
     "M1014": [5, 3],
     "sz_AKS74UN": [3, 2],
     "sz_AKS74UN_Tactical": [2, 1],
@@ -233,11 +233,11 @@
     "VBB_FAMAS": [3, 2],
     "SA58": [3, 2],
     "SA58P": [2, 1],
-    "Vepr_KM": [6, 3],
-    "VEPR_SOK94": [6, 3],
+    "Vepr_KM": [8, 4],
+    "VEPR_SOK94": [8, 4],
     "AG_RPK_762x39": [2, 1],
     "RPK74": [2, 1],
-    "kar98k": [10, 5],
+    "kar98k": [12, 7],
     "M24": [2, 1],
     "SV_98": [2, 1],
     "SVT40": [3, 2],
@@ -328,8 +328,8 @@
     "NVGoggles": [3, 1]
   },
   "globals": {
-    "ZombieMaxCount": "1400",
-    "AnimalMaxCount": "260",
+    "ZombieMaxCount": "2200",
+    "AnimalMaxCount": "300",
     "RespawnLimit": "60",
     "RespawnTypes": "40",
     "RespawnAttempt": "4",
@@ -422,23 +422,23 @@
       "usage": ["Military"]
     },
     "SKS": {
-      "usage": ["Town", "Village", "Hunting", "Military"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2", "Tier3"]
     },
     "Mosin9130": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2", "Tier3"]
     },
     "CZ527": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2", "Tier3"]
     },
     "CZ550": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2", "Tier3", "Tier4"]
     },
     "Winchester70": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2", "Tier3", "Tier4"]
     },
     "Izh18": {
@@ -446,11 +446,11 @@
       "tiers": ["Tier1", "Tier2"]
     },
     "Ruger1022": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2"]
     },
     "kar98k": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2", "Tier3"]
     },
     "PPSH41": {
@@ -466,11 +466,11 @@
       "tiers": ["Tier2", "Tier3"]
     },
     "Vepr_KM": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier2", "Tier3"]
     },
     "VEPR_SOK94": {
-      "usage": ["Town", "Village", "Hunting"],
+      "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier2", "Tier3"]
     },
     "MP153": {
@@ -624,7 +624,76 @@
     },
     "AG_FN_SPR_A3G": {
       "usage": ["Military"]
+    },
+    "B95": {
+      "usage": ["Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Izh43Shotgun": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Izh18Shotgun": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Repeater": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "LongHorn": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Ammo_762x54": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "AmmoBox_762x54_20Rnd": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Ammo_308Win": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "AmmoBox_308Win_20Rnd": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Ammo_22": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "AmmoBox_22_50Rnd": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Ammo_12gaPellets": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "AmmoBox_00buck_10rnd": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Ammo_12gaSlug": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Mag_CZ527_5rnd": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Mag_Ruger1022_15Rnd": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
     }
   },
-  "default_mil_tiers": ["Tier2", "Tier3", "Tier4"]
+  "default_mil_tiers": ["Tier2", "Tier3", "Tier4"],
+  "mag_quant": {
+    "_opis": "procent zapelnienia magazynkow z CE (quantmin/quantmax)",
+    "min": 15,
+    "max": 85
+  }
 }

@@ -25,8 +25,15 @@ CAP_FILES = ('types_coldwaruniforms.xml', 'types_windstridesclothingpack.xml')
 def finish(b):
     # wspólne zasady dla każdego typu z modów: restock 30 min i tiery dla czysto wojskowych rzeczy
     cat = (re.search(r'<category name="([^"]+)"', b) or [0, ''])[1]
-    if RESTOCK and '<restock>' in b:
-        b = re.sub(r'<restock>\d+</restock>', '<restock>%d</restock>' % RESTOCK.get(cat, RESTOCK.get('default', 1800)), b, count=1)
+    if RESTOCK:
+        rr = re.search(r'<restock>(\d+)</restock>', b)
+        lim = RESTOCK.get(cat, RESTOCK.get('default', 1800))
+        if rr and int(rr.group(1)) > lim:
+            b = b.replace(rr.group(0), '<restock>%d</restock>' % lim, 1)
+    # magazynki z paczek modów: losowa ilość amunicji zamiast zawsze pełnych
+    if re.match(r'\s*<type name="(Mag_|AGMag_)', b) and '<quantmin>' in b:
+        b = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>20</quantmin>', b)
+        b = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', b)
     if DEF_MIL_T and 'deloot="1"' not in b and not re.search(r'<value name=', b) and re.findall(r'<usage name="([^"]+)"', b) == ['Military']:
         b = b.replace('</type>', ''.join('\t\t<value name="%s"/>\n' % t for t in DEF_MIL_T) + '\t</type>')
     return b

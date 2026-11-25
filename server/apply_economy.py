@@ -74,16 +74,21 @@ def fix_type(m):
             mult = v
             break
 
-    if name.startswith('Mag_') and '<quantmin>' in block:
-        block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>20</quantmin>', block)
-        block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>90</quantmax>', block)
+    MQ = cfg.get('mag_quant', {})
+    if name.startswith(('Mag_', 'AGMag_')) and '<quantmin>' in block:
+        block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>%d</quantmin>' % MQ.get('min', 15), block)
+        block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>%d</quantmax>' % MQ.get('max', 85), block)
     elif (cname == 'food' or name.startswith(('Tetracycline', 'Charcoal', 'Multivitamin', 'Painkiller', 'Disinfectant'))) and '<quantmin>' in block:
         block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>35</quantmin>', block)
         block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>100</quantmax>', block)
 
-    # Stały czas odnowienia: po spadku poniżej <min> CE dosypuje loot co RESTOCK sekund (domyślnie 30 min, jedzenie 15 min)
-    if RESTOCK and '<restock>' in block:
-        block = re.sub(r'<restock>\d+</restock>', '<restock>%d</restock>' % RESTOCK.get(cname, RESTOCK.get('default', 1800)), block, count=1)
+    # Maksymalny czas odnowienia: restock dłuższy niż limit (30 min, jedzenie 15 min) jest skracany.
+    # restock 0 = CE dosypuje od razu po spadku poniżej <min> - tego NIE podnosimy (inaczej mapa stoi pusta po resecie).
+    if RESTOCK:
+        rr = re.search(r'<restock>(\d+)</restock>', block)
+        lim = RESTOCK.get(cname, RESTOCK.get('default', 1800))
+        if rr and int(rr.group(1)) > lim:
+            block = block.replace(rr.group(0), '<restock>%d</restock>' % lim, 1)
 
     # Rzeczy wyłącznie wojskowe bez tieru respiły się też na wybrzeżu (T1) - dostają domyślne tiery
     if DEF_MIL_T and cname in ('weapons', 'clothes', 'explosives', 'tools', 'containers') and not re.search(r'<value name=', block):
