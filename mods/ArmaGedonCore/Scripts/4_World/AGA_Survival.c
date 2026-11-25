@@ -6,8 +6,6 @@ class AGA_SurvCfg
 	// zlamana reka
 	static const float ARM_CHANCE_BULLET = 0.35;
 	static const float ARM_CHANCE_MELEE  = 0.10;
-	static const float ARM_SWAY_BROKEN   = 3.5;
-	static const float ARM_SWAY_SPLINT   = 1.8;
 	static const int   ARM_HEAL_MS       = 300000;   // 5 min po zalozeniu szyny
 }
 
@@ -67,6 +65,9 @@ modded class PlayerBase
 		if (!b) return;
 		if (m_AGAArm > 0) b.SetLevel(eBadgeLevel.FIRST);
 		else if (GetBrokenLegs() == eBrokenLegs.NO_BROKEN_LEGS) b.SetLevel(eBadgeLevel.NONE);
+		// SetLevel tylko zapisuje wartosc (DisplayElementBase.SetValue) - bez UpdateHUD ikonka
+		// sie nie pokazywala, bo gra odswieza ja tylko przy zmianie stanu nogi
+		b.UpdateHUD();
 	}
 }
 
@@ -81,18 +82,18 @@ modded class FracturedLegNotfr
 	}
 }
 
-// celowanie ze zlamana reka
-modded class DayZPlayerImplementAiming
+// Celowanie ze zlamana reka: drzenie rak, nie mnoznik sway.
+// Wczesniej mnozylismy CalculateSwayMultiplier (wartosc 0-1 uzywana w Math.Lerp), co rozjezdzalo
+// kamere i blokowalo celowanie. KarmaKrew robi to przez shake_level - tak samo robimy tutaj.
+modded class PlayerBase
 {
-	override protected float CalculateSwayMultiplier()
+	// poziom drzenia rak: 0 = brak. KK: 7 przy zlamaniu, 5 na szynie
+	override int GetShakeLevel()
 	{
-		float r = super.CalculateSwayMultiplier();
-		if (m_PlayerPb)
-		{
-			if (m_PlayerPb.AGA_Arm() == 1) r *= AGA_SurvCfg.ARM_SWAY_BROKEN;
-			else if (m_PlayerPb.AGA_Arm() == 2) r *= AGA_SurvCfg.ARM_SWAY_SPLINT;
-		}
-		return r;
+		int lvl = super.GetShakeLevel();
+		if (m_AGAArm == 1 && lvl < 7) return 7;
+		if (m_AGAArm == 2 && lvl < 5) return 5;
+		return lvl;
 	}
 }
 
@@ -182,7 +183,8 @@ modded class CombinationLock
 	bool AGA_IsVanillaLock()
 	{
 		string t = GetType();
-		return t == "CombinationLock" || t == "CombinationLock4";
+		// DigitalCodeLock doszedl w aktualizacji gry - bez niego dalo sie zalozyc zamek z vanilli
+		return t == "CombinationLock" || t == "CombinationLock4" || t == "DigitalCodeLock";
 	}
 
 	override bool CanPutAsAttachment(EntityAI parent)

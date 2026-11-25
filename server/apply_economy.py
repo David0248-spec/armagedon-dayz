@@ -12,6 +12,7 @@ STRIP_MIL = set(cfg.get('strip_military', []))
 DELOOT_ONLY = set(cfg.get('deloot_only', []))
 RESTOCK = {k: v for k, v in cfg.get('restock', {}).items() if not k.startswith('_')}
 DEF_MIL_T = cfg.get('default_mil_tiers', [])
+DELOOT_NO_USE = set(cfg.get('deloot_no_usage', []))
 
 os.makedirs(os.path.expanduser('~/dayz/profiles/ArmaGedonCore'), exist_ok=True)
 open(os.path.expanduser('~/dayz/profiles/ArmaGedonCore/phase.txt'), 'w').write('2')
@@ -86,6 +87,23 @@ def fix_type(m):
         block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>35</quantmin>', block)
         block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>100</quantmax>', block)
 
+    # Narzedzia i jedzenie: niskie <min> z tego samego powodu co ubrania i amunicja.
+    # Hatchet mial min=95, Headtorch min=81 - CE dosypywalo je seriami po resecie lootu.
+    for _c, _k in (('tools', 'tools_min_ratio'), ('food', 'food_min_ratio')):
+        _r = cfg.get(_k)
+        if _r and cname == _c:
+            _n = re.search(r'<nominal>(\d+)</nominal>', block)
+            if _n and int(_n.group(1)) > 0:
+                block = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, int(int(_n.group(1)) * _r)), block)
+
+    # Amunicja i magazynki: niskie <min>, inaczej CE musi trzymac na mapie po 90 sztuk
+    # jednego naboju (Ammo_380 min=94 w vanilli) i dosypuje je seriami w jedno miejsce.
+    AMR = cfg.get('ammo_min_ratio')
+    if AMR and name.startswith(('Mag_', 'AGMag_', 'Ammo', 'AmmoBox', 'Ammobox', 'AG_Ammo')):
+        nn = re.search(r'<nominal>(\d+)</nominal>', block)
+        if nn and int(nn.group(1)) > 0:
+            block = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, int(int(nn.group(1)) * AMR)), block)
+
     # Maksymalny czas odnowienia: restock dłuższy niż limit (30 min, jedzenie 15 min) jest skracany.
     # restock 0 = CE dosypuje od razu po spadku poniżej <min> - tego NIE podnosimy (inaczej mapa stoi pusta po resecie).
     if RESTOCK:
@@ -99,6 +117,12 @@ def fix_type(m):
         us = re.findall(r'<usage name="([^"]+)"', block)
         if 'Military' in us:
             block = block.replace('</type>', ''.join('\t\t<value name="%s"/>\n' % t for t in DEF_MIL_T) + '\t</type>')
+
+    # Rzadka bron end-game: deloot="1" i ZERO <usage>. Przy deloot=1 kazdy <usage> jest
+    # dodatkowa strefa, wiec wpisanie Military wracalo AEK/M4A1/SVD do zwyklych barakow.
+    if name in DELOOT_NO_USE:
+        block = block.replace('deloot="0"', 'deloot="1"')
+        block = re.sub(r'\s*<usage name="[^"]+"\s*/>', '', block)
 
     if name in AU:
         if name not in DELOOT_ONLY:
@@ -134,6 +158,10 @@ def fix_type(m):
         block = re.sub(r'<min>\d+</min>', '<min>%d</min>' % m0, block)
         changed += 1
         return block
+
+    # ubrania wojskowe: osobny mnoznik, bo zajmowaly 23% puli w barakach (wiecej niz bronie)
+    if cname == 'clothes' and cfg.get('mil_clothes_mult') and '<usage name="Military"' in block:
+        mult = mult * cfg['mil_clothes_mult']
 
     if mult == 1.0:
         return block

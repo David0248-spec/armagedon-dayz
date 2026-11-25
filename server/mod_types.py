@@ -23,6 +23,11 @@ DEF_MIL_T = CFG.get('default_mil_tiers', [])
 CAP_FILES = ('types_coldwaruniforms.xml', 'types_windstridesclothingpack.xml')
 
 def finish(b):
+    # rzadka bron z modow: deloot=1 i zero <usage> (przy deloot=1 usage = dodatkowa strefa)
+    _n = re.search(r'<type name="([^"]+)"', b)
+    if _n and _n.group(1) in DELOOT_NO_USE:
+        b = b.replace('deloot="0"', 'deloot="1"')
+        b = re.sub(r'\s*<usage name="[^"]+"\s*/>', '', b)
     # wspólne zasady dla każdego typu z modów: restock 30 min i tiery dla czysto wojskowych rzeczy
     cat = (re.search(r'<category name="([^"]+)"', b) or [0, ''])[1]
     if RESTOCK:
@@ -46,6 +51,7 @@ def cap(b, n0):
     return b
 
 MOD_RARE = set(CFG.get('mod_rare_deloot', [])) | DELOOT_ONLY
+DELOOT_NO_USE = set(CFG.get('deloot_no_usage', []))
 MOD_CIVIL = set(CFG.get('mod_civil_weapons', []))
 
 def names(text):

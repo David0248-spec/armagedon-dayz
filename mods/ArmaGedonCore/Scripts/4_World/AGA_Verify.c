@@ -40,6 +40,14 @@ class AGA_Verify
 		Init();
 		if (!id) return;
 		string uid = id.GetPlainId();
+		// OnClientPrepareEvent leci TAKZE po smierci i respawnie, a Begin tworzyl wtedy nowy kod
+		// od zera - gracz dostawal weryfikacje drugi raz. Kto juz przeszedl, ma spokoj do rozlaczenia.
+		AGA_VerifyState old;
+		if (s_St.Find(uid, old) && old.Done)
+		{
+			old.Id = id;
+			return;
+		}
 		AGA_VerifyState st = new AGA_VerifyState();
 		st.Code = NewCode();
 		st.Tries = TRIES;
