@@ -1,6 +1,9 @@
 {
   "_opis": "ARMA-GEDON: PELNE dane lootu vanilli (nominal/min/lifetime/restock bez zmian). Wlasne sa tylko: przedmioty z modow, wylaczone psujace gre, rzadka bron jako deloot, strefy i tiery. Nie podnosimy nominalu vanilli - jej liczby sa dobrane do punktow lootu.",
-  "category_mult": {},
+  "category_mult": {
+    "food": 1.25,
+    "weapons": 1.2
+  },
   "mod_weapon_cap": 5,
   "mod_item_cap": 4,
   "mod_optic_cap": 2,
@@ -8,7 +11,9 @@
   "mod_civil_weapons": ["TT_33", "MakarovPM", "M92", "LugerP08", "PPSH41", "AG_ADAR", "Vepr_KM", "VEPR_SOK94", "MP153", "AG_Civ_MP_153_Shotgun", "Izh27", "kar98k"],
   "strip_military": ["MakarovIJ70", "CZ75", "Colt1911", "Engraved1911", "MKII", "P1", "Magnum", "Derringer", "LongHorn", "B95", "Izh18", "Izh43Shotgun", "Repeater", "Ruger1022", "Mosin9130", "CZ527", "CZ550", "Winchester70", "TT_33", "MakarovPM", "M92", "LugerP08", "PPSH41", "AG_ADAR", "Vepr_KM", "VEPR_SOK94", "MP153", "AG_Civ_MP_153_Shotgun", "Izh27", "kar98k"],
   "deloot_only": ["M4A1", "FAL", "SVD", "VSS", "ASVAL", "SV98", "SCARL", "SCARH", "AEK971", "AN94", "AG_SR2m", "M24", "SVT40", "SV_98", "AG_FN_SPR_A3G", "MK12Mod1", "NVGoggles", "M4_Suppressor", "AK_Suppressor", "M24_308Suppressor", "AK_Suppressor545", "PBS4_suppressor"],
-  "name_mult": {},
+  "name_mult": {
+    "WaterBottle": 1.25
+  },
   "event_nominal": {
     "StaticHeliCrash": 5,
     "StaticMilitaryConvoy": 3,
