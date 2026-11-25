@@ -686,15 +686,21 @@ class AGA_Events
 	}
 
 	// Broń wojskowa z eventu leży NA ZIEMI / obiektach (bez skrzyni z gwarantowanym rzadkim).
-	// Rzadka broń wypada z małą szansą zależną od tieru miejsca, w pozostałych przypadkach
-	// zwykła AK-74 / AKM / AK-101 / AKS-74U / M16 itd.
+	// Na JEDEN event wypada najwyżej JEDNA rzadka broń - wczesniej kazde losowanie liczylo
+	// szanse osobno, wiec przy kolumnie wojskowej lezaly FAL, SVD i SVT-40 naraz.
+	static bool s_RareDone;
+
 	static void MilGun(AGA_Event e, Object b, array<string> guns, array<string> rare, float rareBase)
 	{
 		array<string> pool = guns;
 		int tOver = e.Tier - 2;
 		if (tOver < 0) tOver = 0;
 		float rc = rareBase + 0.03 * tOver;
-		if (rare && rare.Count() > 0 && Chance(rc)) pool = rare;
+		if (!s_RareDone && rare && rare.Count() > 0 && Chance(rc))
+		{
+			pool = rare;
+			s_RareDone = true;
+		}
 		string pick = pool.GetRandomElement();
 		array<string> parts = new array<string>;
 		pick.Split("|", parts);
@@ -798,6 +804,7 @@ class AGA_Events
 		e.LifeMin = 45;
 
 		s_Cur = e;
+		s_RareDone = false;   // limit "jedna rzadka bron na event" liczony od nowa
 		if (kind == "PLANE") BuildPlane(e);
 		else if (kind == "HELI") BuildHeli(e);
 		else if (kind == "CONVOY") BuildConvoy(e);
