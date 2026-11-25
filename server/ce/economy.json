@@ -3,10 +3,10 @@
   "category_mult": {
     "weapons": 1.0,
     "explosives": 0.9,
-    "tools": 1.0,
-    "food": 1.5,
+    "tools": 0.9,
+    "food": 1.6,
     "containers": 0.85,
-    "clothes": 0.75,
+    "clothes": 0.6,
     "lootdispatch": 1.1
   },
   "restock": {
@@ -322,10 +322,11 @@
     "AmmoBox_762x25_25rnd": [9, 5],
     "AG_Ammo_9x21": [10, 5],
     "AG_Ammobox_9x21_30rnd": [5, 2],
-    "AntiChemInjector": [5, 2],
+    "AntiChemInjector": [8, 3],
     "Flaregun": [6, 3],
     "M79": [3, 1],
-    "NVGoggles": [3, 1]
+    "NVGoggles": [3, 1],
+    "InjectionVial": [4, 1]
   },
   "globals": {
     "ZombieMaxCount": "2200",
@@ -410,7 +411,7 @@
   "add_usage": {
     "AntiChemInjector": {
       "usage": ["Medic", "Military"],
-      "tiers": ["Tier3", "Tier4"]
+      "tiers": ["Tier2", "Tier3", "Tier4"]
     },
     "AKS74U": {
       "usage": ["Military"]
@@ -688,6 +689,10 @@
     "Mag_Ruger1022_15Rnd": {
       "usage": ["Town", "Village", "Farm", "Hunting"],
       "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "InjectionVial": {
+      "usage": ["Medic"],
+      "tiers": ["Tier3", "Tier4"]
     }
   },
   "default_mil_tiers": ["Tier2", "Tier3", "Tier4"],
@@ -696,5 +701,6 @@
     "min": 15,
     "max": 85
   },
-  "keep_vanilla_lifetime": true
+  "keep_vanilla_lifetime": true,
+  "clothes_min_ratio": 0.2
 }

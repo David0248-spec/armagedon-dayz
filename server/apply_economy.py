@@ -120,6 +120,14 @@ def fix_type(m):
             block = b2
             changed += 1
 
+    # Ubrania: niskie <min>, inaczej CE musi trzymac na mapie po kilka sztuk tego samego
+    # wariantu i dosypuje je seriami w jedna okolice (3x te same buty w jednej wiosce).
+    CMR = cfg.get('clothes_min_ratio')
+    if CMR and cname == 'clothes':
+        nn = re.search(r'<nominal>(\d+)</nominal>', block)
+        if nn and int(nn.group(1)) > 0:
+            block = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, int(int(nn.group(1)) * CMR)), block)
+
     if name in SETN:
         n0, m0 = SETN[name]
         block = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
