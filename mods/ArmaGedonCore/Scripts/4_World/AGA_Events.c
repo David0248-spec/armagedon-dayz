@@ -116,7 +116,8 @@ class AGA_Events
 
 	static bool IsLooted(AGA_Event e)
 	{
-		if (e.Crates.Count() == 0) return false;
+		// eventy wojskowe nie mają już skrzyni - wtedy liczy się tylko loot leżący na miejscu
+		if (e.Crates.Count() == 0 && e.Items.Count() == 0) return false;
 		int left = 0;
 		foreach (EntityAI li : e.Items) if (li && !li.GetHierarchyParent()) left++;
 		if (left > e.Items.Count() * 0.3) return false;
@@ -496,19 +497,27 @@ class AGA_Events
 			int mx = ib.GetQuantityMax();
 			if (mx > 1)
 			{
-				int q = Math.RandomIntInclusive(Math.Min(4, mx), Math.Max(4, Math.Min(24, mx)));
-				ib.SetQuantity(q);
+				int qLo = 4;
+				if (mx < qLo) qLo = mx;
+				int qHi = 24;
+				if (mx < qHi) qHi = mx;
+				if (qHi < qLo) qHi = qLo;
+				ib.SetQuantity(Math.RandomIntInclusive(qLo, qHi));
 			}
 		}
-		else if (cls.StartsWith("Mag_") || cls.StartsWith("AGMag_"))
+		else if (cls.IndexOf("Mag_") == 0 || cls.IndexOf("AGMag_") == 0)
 		{
 			Magazine mag = Magazine.Cast(it);
 			if (mag && mag.GetAmmoMax() > 1)
 			{
 				// 1 na 5 magazynków pusty, reszta 10-80% - pełne magazynki były zbyt łaskawe
+				int am = mag.GetAmmoMax();
+				int mLo = am / 10;
+				if (mLo < 1) mLo = 1;
+				int mHi = am * 8 / 10;
+				if (mHi < mLo) mHi = mLo;
 				int mq = 0;
-				if (Math.RandomInt(0, 5) > 0)
-					mq = Math.RandomIntInclusive(Math.Max(1, mag.GetAmmoMax() / 10), mag.GetAmmoMax() * 8 / 10);
+				if (Math.RandomInt(0, 5) > 0) mq = Math.RandomIntInclusive(mLo, mHi);
 				mag.ServerSetAmmoCount(mq);
 			}
 		}
@@ -680,7 +689,9 @@ class AGA_Events
 	static void MilGun(AGA_Event e, Object b, array<string> guns, array<string> rare, float rareBase)
 	{
 		array<string> pool = guns;
-		float rc = rareBase + 0.03 * Math.Max(0, e.Tier - 2);
+		int tOver = e.Tier - 2;
+		if (tOver < 0) tOver = 0;
+		float rc = rareBase + 0.03 * tOver;
 		if (rare && rare.Count() > 0 && Chance(rc)) pool = rare;
 		string pick = pool.GetRandomElement();
 		array<string> parts = new array<string>;
@@ -973,7 +984,9 @@ class AGA_Events
 		array<string> police = {"MP5K|Mag_MP5_30Rnd", "Mp133Shotgun|Ammo_12gaPellets", "FNX45|Mag_FNX45_15Rnd", "Glock19|Mag_Glock_15Rnd", "M1014|Ammo_12gaPellets", "Saiga9|Mag_PP19_30Rnd", "AG_ADAR|Mag_STANAG_30Rnd", "Kedr|Mag_Kedr_20Rnd", "AG_PP19|Mag_PP19_30Rnd"};
 		EntityAI c = LootCrate(e, 3, 5);
 		GiveFrom(c, basic, 2);
-		if (Chance(0.12 + 0.04 * Math.Max(0, e.Tier - 1))) GiveGun(c, police);
+		int tPol = e.Tier - 1;
+		if (tPol < 0) tPol = 0;
+		if (Chance(0.12 + 0.04 * tPol)) GiveGun(c, police);
 		if (Chance(0.35)) Give(c, nbc.GetRandomElement());
 		array<string> doc = {"ZmbM_DoctorFat", "ZmbF_NurseFat", "ZmbF_DoctorSkinny", "ZmbM_ParamedicNormal_Red", "ZmbM_ParamedicNormal_Blue", "ZmbF_ParamedicNormal_Red", "ZmbF_ParamedicNormal_Blue", "ZmbM_NBC_Grey", "ZmbM_NBC_Yellow"};
 		Zeds(e, doc, 4 + e.Tier, 6, 28);
@@ -1102,7 +1115,9 @@ class AGA_Events
 		if (Chance(0.45)) LootOnFrom(mt, wear, 1);
 		if (Chance(0.35)) LootOnFrom(bx, ammo, 1);
 		array<string> svt = {"SVT40|Mag_SVT40_10Rnd"};
-		if (Chance(0.06 + 0.02 * Math.Max(0, e.Tier - 2))) MilGun(e, bx, hg, svt, 0.35);
+		int tHun = e.Tier - 2;
+		if (tHun < 0) tHun = 0;
+		if (Chance(0.06 + 0.02 * tHun)) MilGun(e, bx, hg, svt, 0.35);
 		array<string> hz = {"ZmbM_HunterOld_Autumn", "ZmbM_HunterOld_Spring", "ZmbM_HunterOld_Summer", "ZmbM_HikerSkinny_Green", "ZmbM_HikerSkinny_Grey", "ZmbM_ForestManOld"};
 		Zeds(e, hz, 2 + e.Tier / 2, 10, 28);
 	}
