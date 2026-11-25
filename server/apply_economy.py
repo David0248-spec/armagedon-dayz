@@ -58,15 +58,19 @@ def fix_type(m):
     if name in STRIP_MIL:
         block = re.sub(r'\s*<usage name="Military"\s*/>', '', block)
 
+    # Czasy zycia (lifetime) zostawiamy jak w vanilli: skracanie ich powodowalo, ze przedmioty
+    # znikaly szybciej niz CE nadazalo dosypywac - budynki byly puste i bez urozmaicenia.
+    # Skracamy tylko to, co jawnie wymieniono w "lifetime" w economy.json.
     if name in LIFE:
         block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % LIFE[name], block)
-    elif cname == 'weapons':
-        lt = 10800 if name in DELOOT_ONLY else (3600 if name in STRIP_MIL else 7200)
-        block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % lt, block)
-    elif cname == 'food':
-        block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>4800</lifetime>', block)
-    elif cname in ('tools', 'clothes'):
-        block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>5400</lifetime>', block)
+    elif not cfg.get('keep_vanilla_lifetime'):
+        if cname == 'weapons':
+            lt = 10800 if name in DELOOT_ONLY else (3600 if name in STRIP_MIL else 7200)
+            block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % lt, block)
+        elif cname == 'food':
+            block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>4800</lifetime>', block)
+        elif cname in ('tools', 'clothes'):
+            block = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>5400</lifetime>', block)
 
     mult = cfg['category_mult'].get(cname, 1.0)
     for k, v in SORTED_NAME_MULT:

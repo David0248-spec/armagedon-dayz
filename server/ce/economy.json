@@ -330,12 +330,12 @@
   "globals": {
     "ZombieMaxCount": "2200",
     "AnimalMaxCount": "300",
-    "RespawnLimit": "60",
-    "RespawnTypes": "40",
-    "RespawnAttempt": "4",
+    "RespawnLimit": "20",
+    "RespawnTypes": "12",
+    "RespawnAttempt": "2",
     "LootProxyPlacement": "1",
-    "RestartSpawn": "100",
-    "LootDamageMax": "0.65"
+    "RestartSpawn": "0",
+    "LootDamageMax": "0.82"
   },
   "tier_set": {
     "MP5K": ["Tier1", "Tier2", "Tier3"],
@@ -602,13 +602,13 @@
       "usage": ["Military"]
     },
     "Mag_AKM_30Rnd": {
-      "usage": ["ContaminatedArea"]
+      "usage": ["Military", "ContaminatedArea"]
     },
     "Mag_AK74_30Rnd": {
-      "usage": ["ContaminatedArea"]
+      "usage": ["Military", "ContaminatedArea"]
     },
     "Mag_STANAG_30Rnd": {
-      "usage": ["ContaminatedArea"]
+      "usage": ["Military", "ContaminatedArea"]
     },
     "NBCJacketGray": {
       "usage": ["ContaminatedArea"]
@@ -695,5 +695,6 @@
     "_opis": "procent zapelnienia magazynkow z CE (quantmin/quantmax)",
     "min": 15,
     "max": 85
-  }
+  },
+  "keep_vanilla_lifetime": true
 }

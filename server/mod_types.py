@@ -96,7 +96,6 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
 
         # Ubrania z paczek modów: max 1 szt. na wariant kolorystyczny
         if '<category name="clothes"' in b:
-            b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>5400</lifetime>', b)
             nm = re.search(r'<nominal>(\d+)</nominal>', b)
             if nm and int(nm.group(1)) > 1:
                 b = re.sub(r'<nominal>\d+</nominal>', '<nominal>1</nominal>', b)
@@ -121,7 +120,6 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
             if nm and int(nm.group(1)) == 0:
                 b = re.sub(r'<nominal>\d+</nominal>', '<nominal>3</nominal>', b)
                 b = re.sub(r'<min>\d+</min>', '<min>1</min>', b)
-            b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>7200</lifetime>', b)
 
         # Obsługa 34 aktywnych broni z modów
         is_weapon_item = '<category name="weapons"' in b and not n.startswith(('Mag_', 'Ammo', 'AG_Ammo', 'Ammobox', 'AmmoBox', 'AGMag')) and not any(k in n for k in ('Optic', 'optic', 'Trijicon', 'Bttstck', 'Hndgrd', 'Mount', 'Light', 'Bipod', 'Suppressor', 'suppressor', 'Wrap', 'Grenade'))
@@ -132,10 +130,8 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
                 b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>10800</lifetime>', b)
             elif n in MOD_CIVIL:
                 b = re.sub(r'\s*<usage name="Military"\s*/>', '', b)
-                lt = 3600 if n in ('TT_33', 'MakarovPM', 'M92', 'LugerP08') else 7200
-                b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>%d</lifetime>' % lt, b)
-            else:
-                b = re.sub(r'<lifetime>\d+</lifetime>', '<lifetime>7200</lifetime>', b)
+                pass  # cywilna bron z modow: lifetime jak w paczce moda
+            # pozostale bronie z modow: lifetime bez zmian
 
         if n in AU:
             if n not in MOD_RARE:
