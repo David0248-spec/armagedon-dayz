@@ -82,12 +82,7 @@ class AGA_Verify
 
 	static void CleanupGhostPlayer(string uid)
 	{
-		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
-		if (p)
-		{
-			AGA_Server.Get().Log("[WERYFIKACJA] usuwanie niezweryfikowanej postaci " + uid);
-			GetGame().ObjectDelete(p);
-		}
+		// zostawione celowo puste: kasowanie postaci powodowało klony (patrz Kick)
 	}
 
 	void AGA_VerifyHello(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -114,7 +109,9 @@ class AGA_Verify
 		if (s_St && s_St.Find(uid, st)) id = st.Id;
 		PlayerBase p = AGA_Server.Get().FindPlayer(uid);
 		if (p && p.GetIdentity()) id = p.GetIdentity();
-		CleanupGhostPlayer(uid);
+		// NIE usuwamy postaci (ObjectDelete): DayZ ma ją w bazie i przy kolejnym wejściu tworzył drugą,
+		// a stara zostawała w świecie = klony z lootem. Postać zostaje nietykalna do rozłączenia
+		// i normalnie zapisuje się w bazie, więc gracz wraca do tej samej postaci.
 		Forget(uid);
 		if (id) GetGame().DisconnectPlayer(id, uid);
 	}

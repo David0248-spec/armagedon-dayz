@@ -7,6 +7,8 @@ if [ -n "$(git status --porcelain)" ]; then
   git stash push -u -q -m "lokalne-zmiany-$(date +%F_%H%M)" && echo "Lokalne zmiany odlozone: git stash list"
 fi
 git reset -q --hard origin/main
+# Paczka zawsze budowana ze źródeł (mods/ArmaGedonCore) - zmiany .c z GitHuba trafiają na serwer bez ręcznego pakowania
+python3 tools/build_pbo.py || { echo 'BLAD: budowanie PBO nie powiodlo sie'; exit 1; }
 [ -d ~/dayz/profiles/ArmaGedonAdmin ] && [ ! -d ~/dayz/profiles/ArmaGedonCore ] && mv ~/dayz/profiles/ArmaGedonAdmin ~/dayz/profiles/ArmaGedonCore || true
 rm -rf ~/dayz/@ArmaGedonAdmin ~/dayz/@ArmaGedonCore && cp -r dist/@ArmaGedonCore ~/dayz/
 bash server/weapons_pack.sh || echo 'UWAGA: paczka broni nie dodana'

@@ -141,6 +141,7 @@ class AGA_VerifyClient
 	static ref AGA_VerifyClient s_Inst;
 	static bool s_Verified;
 	static bool s_HelloSent;
+	static float s_HelloAt;
 	static bool s_ReadyToShow;
 
 	static void Init()
@@ -154,6 +155,7 @@ class AGA_VerifyClient
 	{
 		s_Verified = false;
 		s_HelloSent = false;
+		s_HelloAt = 0;
 		s_ReadyToShow = false;
 		AGA_VerifyMenu.s_Pending = false;
 		AGA_VerifyMenu.s_Code = "";
@@ -166,8 +168,15 @@ class AGA_VerifyClient
 	static void Hello()
 	{
 		Init();
-		if (s_Verified || s_HelloSent) return;
+		if (s_Verified) return;
+		// Prośbę o kod ponawiamy co 3 s, dopóki serwer nie odpowie. Wcześniej leciała tylko raz na
+		// uruchomienie gry: po powrocie do menu i ponownym wejściu okno nie dostawało kodu i trzeba było
+		// restartować grę.
+		if (AGA_VerifyMenu.s_Pending) return;
+		float now = GetGame().GetTickTime();
+		if (s_HelloSent && now - s_HelloAt < 3.0) return;
 		s_HelloSent = true;
+		s_HelloAt = now;
 		GetRPCManager().SendRPC("AGA", "AGA_VerifyHello", new Param1<int>(0), true);
 	}
 

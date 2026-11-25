@@ -59,11 +59,8 @@ modded class MissionServer
 		if (identity)
 		{
 			string uid = identity.GetPlainId();
-			if (!AGA_Verify.IsVerified(uid) && player)
-			{
-				GetGame().ObjectDelete(player);
-				player = null;
-			}
+			// Postaci NIE kasujemy przy wyjściu bez weryfikacji - to tworzyło klony (baza miała ją dalej).
+			// Postać była nietykalna przez całą weryfikację, więc nikt nie mógł jej zabić ani okraść.
 			AGA_Link.Forget(uid);
 			if (player) AGA_Survival.SaveStam(player, uid);
 			AGA_Verify.Forget(uid);
