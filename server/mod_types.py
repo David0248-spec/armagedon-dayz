@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Porządkuje typy z modów w armagedon_ce:
-# - wycina <usage name="Military"/> z broni End-Game (MOD_RARE / DELOOT_ONLY), zostawiając wyłącznie deloot="1" + ContaminatedArea
+# - broń End-Game (MOD_RARE / DELOOT_ONLY) i tłumiki: deloot="1" + Military, czyli TYLKO helicrashe/konwoje CE (nie zwykłe baraki)
 # - wyłącza (nominal=0) 5 usuniętych broni: AN94_Suppressed, JD_Groza_762, AG_M76_Zastava, AWM, KS23
 # - ogranicza ubrania z modów do 1 szt. i tłumiki pod deloot="1"
 import os, re, glob, json
@@ -15,6 +15,28 @@ AU = CFG.get('add_usage', {})
 REMOVED = set(CFG.get('removed', []))
 DELOOT_ONLY = set(CFG.get('deloot_only', []))
 MOD_CAP = CFG.get('mod_weapon_cap', 5)
+ITEM_CAP = CFG.get('mod_item_cap', 4)
+OPTIC_CAP = CFG.get('mod_optic_cap', 3)
+RESTOCK = {k: v for k, v in CFG.get('restock', {}).items() if not k.startswith('_')}
+DEF_MIL_T = CFG.get('default_mil_tiers', [])
+# Paczki tylko z ubraniami/drobiazgami: max ITEM_CAP szt. na typ (np. 150x HescoBox, 40x klapki)
+CAP_FILES = ('types_coldwaruniforms.xml', 'types_windstridesclothingpack.xml')
+
+def finish(b):
+    # wspólne zasady dla każdego typu z modów: restock 30 min i tiery dla czysto wojskowych rzeczy
+    cat = (re.search(r'<category name="([^"]+)"', b) or [0, ''])[1]
+    if RESTOCK and '<restock>' in b:
+        b = re.sub(r'<restock>\d+</restock>', '<restock>%d</restock>' % RESTOCK.get(cat, RESTOCK.get('default', 1800)), b, count=1)
+    if DEF_MIL_T and 'deloot="1"' not in b and not re.search(r'<value name=', b) and re.findall(r'<usage name="([^"]+)"', b) == ['Military']:
+        b = b.replace('</type>', ''.join('\t\t<value name="%s"/>\n' % t for t in DEF_MIL_T) + '\t</type>')
+    return b
+
+def cap(b, n0):
+    nm = re.search(r'<nominal>(\d+)</nominal>', b)
+    if nm and int(nm.group(1)) > n0:
+        b = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, b)
+        b = re.sub(r'<min>\d+</min>', '<min>%d</min>' % max(1, n0 // 2), b)
+    return b
 
 MOD_RARE = set(CFG.get('mod_rare_deloot', [])) | DELOOT_ONLY
 MOD_CIVIL = set(CFG.get('mod_civil_weapons', []))
@@ -27,10 +49,10 @@ vanilla = set(names(open(os.path.join(MIS, 'db/types.xml')).read()))
 def block(name, nominal, cat, usages, tiers, lifetime=5400):
     u = ''.join('\t\t<usage name="%s"/>\n' % x for x in usages)
     v = ''.join('\t\t<value name="%s"/>\n' % x for x in tiers)
-    return ('\t<type name="%s">\n\t\t<nominal>%d</nominal>\n\t\t<lifetime>%d</lifetime>\n\t\t<restock>600</restock>\n'
+    return ('\t<type name="%s">\n\t\t<nominal>%d</nominal>\n\t\t<lifetime>%d</lifetime>\n\t\t<restock>%d</restock>\n'
             '\t\t<min>%d</min>\n\t\t<quantmin>-1</quantmin>\n\t\t<quantmax>-1</quantmax>\n\t\t<cost>100</cost>\n'
             '\t\t<flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="0" deloot="0"/>\n'
-            '\t\t<category name="%s"/>\n%s%s\t</type>\n') % (name, nominal, lifetime, max(1, nominal // 2), cat, u, v)
+            '\t\t<category name="%s"/>\n%s%s\t</type>\n') % (name, nominal, lifetime, RESTOCK.get(cat, RESTOCK.get('default', 1800)), max(1, nominal // 2), cat, u, v)
 
 for f in glob.glob(os.path.join(CE, 'types_*.xml')):
     if f.endswith(('types_helis.xml', 'types_aga.xml')):
@@ -45,6 +67,16 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
     s = re.sub(r'(<type name="CodeLock">.*?<nominal>)\d+(</nominal>.*?<min>)\d+(</min>)', r'\g<1>25\g<2>12\g<3>', s, flags=re.S)
 
     def _clean_mod(m):
+        # wspólne zasady (restock, tiery) nakładamy na wynik, niezależnie od ścieżki wyjścia
+        b = finish(_mod_rules(m))
+        # paczki ubraniowe: tną ilości na typ (HescoBox 150 -> ITEM_CAP itd.)
+        if os.path.basename(f) in CAP_FILES and '<category name="weapons"' not in b:
+            b = cap(b, ITEM_CAP)
+        if any(k in m.group(1) for k in ('Optic', 'optic', 'Trijicon')) and 'deloot="1"' not in b:
+            b = cap(b, OPTIC_CAP)
+        return b
+
+    def _mod_rules(m):
         b = m.group(0)
         n = m.group(1)
 
@@ -64,7 +96,7 @@ for f in glob.glob(os.path.join(CE, 'types_*.xml')):
                 b = re.sub(r'<min>\d+</min>', '<min>1</min>', b)
             return b
 
-        # Tłumiki z modów: wyłącznie deloot="1" + ContaminatedArea (zero zwykłych baraków)
+        # Tłumiki z modów: wyłącznie deloot="1" (helicrashe/konwoje + eventy skryptowe), zero zwykłych baraków
         if 'Suppressor' in n or 'suppressor' in n:
             b = b.replace('deloot="0"', 'deloot="1"')
             b = re.sub(r'\s*<usage name="[^"]+"\s*/>', '', b)

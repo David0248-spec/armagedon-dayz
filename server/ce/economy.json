@@ -1,98 +1,29 @@
 {
-  "_opis": "ARMA-GEDON Vanilla+ (pelny audyt mapy pod 110 graczy: Vanilla + 34 bronie modowe + dodatki + kamzy + losowe ammo)",
+  "_opis": "ARMA-GEDON Vanilla+ pod 115 graczy: duzo jedzenia, bron wg tierow (T1 wybrzeze -> T4 Tisy/NWAF), end-game tylko z eventow (deloot), resp co 30 min",
   "category_mult": {
-    "weapons": 1.15,
-    "explosives": 1.0,
-    "tools": 1.15,
-    "food": 1.2,
+    "weapons": 1.0,
+    "explosives": 0.9,
+    "tools": 1.0,
+    "food": 1.5,
     "containers": 0.85,
-    "clothes": 0.85,
+    "clothes": 0.75,
     "lootdispatch": 1.1
   },
+  "restock": {
+    "_opis": "staly czas odnowienia (s) po spadku ponizej min; jedzenie szybciej, zeby przy 115 graczach nie brakowalo",
+    "default": 1800,
+    "food": 900
+  },
   "mod_weapon_cap": 5,
-  "mod_rare_deloot": [
-    "AEK971",
-    "AN94",
-    "AG_SR2m",
-    "M24",
-    "SVT40",
-    "SV_98",
-    "AG_FN_SPR_A3G",
-    "MK12Mod1"
-  ],
-  "mod_civil_weapons": [
-    "TT_33",
-    "MakarovPM",
-    "M92",
-    "LugerP08",
-    "PPSH41",
-    "AG_ADAR",
-    "Vepr_KM",
-    "VEPR_SOK94",
-    "MP153",
-    "AG_Civ_MP_153_Shotgun",
-    "Izh27",
-    "kar98k"
-  ],
-  "strip_military": [
-    "MakarovIJ70",
-    "CZ75",
-    "Colt1911",
-    "Engraved1911",
-    "MKII",
-    "P1",
-    "Magnum",
-    "Derringer",
-    "LongHorn",
-    "B95",
-    "Izh18",
-    "Izh43Shotgun",
-    "Repeater",
-    "Ruger1022",
-    "Mosin9130",
-    "CZ527",
-    "CZ550",
-    "Winchester70",
-    "TT_33",
-    "MakarovPM",
-    "M92",
-    "LugerP08",
-    "PPSH41",
-    "AG_ADAR",
-    "Vepr_KM",
-    "VEPR_SOK94",
-    "MP153",
-    "AG_Civ_MP_153_Shotgun",
-    "Izh27",
-    "kar98k"
-  ],
-  "deloot_only": [
-    "M4A1",
-    "FAL",
-    "SVD",
-    "VSS",
-    "ASVAL",
-    "SV98",
-    "SCARL",
-    "SCARH",
-    "AEK971",
-    "AN94",
-    "AG_SR2m",
-    "M24",
-    "SVT40",
-    "SV_98",
-    "AG_FN_SPR_A3G",
-    "MK12Mod1",
-    "NVGoggles",
-    "M4_Suppressor",
-    "AK_Suppressor",
-    "M24_308Suppressor",
-    "AK_Suppressor545",
-    "PBS4_suppressor"
-  ],
+  "mod_item_cap": 4,
+  "mod_optic_cap": 3,
+  "mod_rare_deloot": ["AEK971", "AN94", "AG_SR2m", "M24", "SVT40", "SV_98", "AG_FN_SPR_A3G", "MK12Mod1"],
+  "mod_civil_weapons": ["TT_33", "MakarovPM", "M92", "LugerP08", "PPSH41", "AG_ADAR", "Vepr_KM", "VEPR_SOK94", "MP153", "AG_Civ_MP_153_Shotgun", "Izh27", "kar98k"],
+  "strip_military": ["MakarovIJ70", "CZ75", "Colt1911", "Engraved1911", "MKII", "P1", "Magnum", "Derringer", "LongHorn", "B95", "Izh18", "Izh43Shotgun", "Repeater", "Ruger1022", "Mosin9130", "CZ527", "CZ550", "Winchester70", "TT_33", "MakarovPM", "M92", "LugerP08", "PPSH41", "AG_ADAR", "Vepr_KM", "VEPR_SOK94", "MP153", "AG_Civ_MP_153_Shotgun", "Izh27", "kar98k"],
+  "deloot_only": ["M4A1", "FAL", "SVD", "VSS", "ASVAL", "SV98", "SCARL", "SCARH", "AEK971", "AN94", "AG_SR2m", "M24", "SVT40", "SV_98", "AG_FN_SPR_A3G", "MK12Mod1", "NVGoggles", "M4_Suppressor", "AK_Suppressor", "M24_308Suppressor", "AK_Suppressor545", "PBS4_suppressor"],
   "name_mult": {
-    "Ammo_": 1.25,
-    "AmmoBox": 1.3,
+    "Ammo_": 1.1,
+    "AmmoBox": 1.15,
     "Bandage": 1.35,
     "SparkPlug": 1.25,
     "GlowPlug": 1.25,
@@ -103,16 +34,16 @@
     "Wheel": 1.25,
     "TireRepairKit": 1.25,
     "CanisterGasoline": 1.25,
-    "NailBox": 1.2,
-    "MetalPlate": 1.15,
-    "MetalWire": 1.15,
-    "BarbedWire": 1.15,
-    "Pliers": 1.2,
-    "Hatchet": 1.2,
-    "Hammer": 1.2,
-    "Shovel": 1.15,
-    "HandSaw": 1.2,
-    "Hacksaw": 1.2,
+    "NailBox": 1.0,
+    "MetalPlate": 1.0,
+    "MetalWire": 1.0,
+    "BarbedWire": 1.0,
+    "Pliers": 1.0,
+    "Hatchet": 1.0,
+    "Hammer": 1.0,
+    "Shovel": 1.0,
+    "HandSaw": 1.0,
+    "Hacksaw": 1.0,
     "SharpeningStone": 1.25,
     "SeaChest": 0.4,
     "WoodenCrate": 0.4,
@@ -124,8 +55,7 @@
     "LargeTent": 0.4,
     "CarTent": 0.4,
     "PartyTent": 0.4,
-    "Mag_": 1.25,
-    "NVGoggles": 0.7,
+    "Mag_": 1.1,
     "Bag": 1.15,
     "BagIV": 1.25,
     "SleepingBag": 1.1,
@@ -148,7 +78,7 @@
     "Scout": 1.3
   },
   "event_nominal": {
-    "StaticHeliCrash": 4,
+    "StaticHeliCrash": 5,
     "StaticMilitaryConvoy": 3,
     "StaticTrain": 3,
     "StaticPoliceSituation": 5,
@@ -160,48 +90,14 @@
     "VehicleTruck01": 1.25,
     "VehicleBoat": 1.25
   },
-  "build_items": [
-    "NailBox",
-    "Nail",
-    "WoodenPlank",
-    "MetalPlate",
-    "CombinationLock",
-    "CodeLock",
-    "BarbedWire",
-    "MetalWire",
-    "Fence_Kit",
-    "Watchtower_Kit",
-    "PlasticExplosive",
-    "RemoteDetonator"
-  ],
+  "build_items": ["NailBox", "Nail", "WoodenPlank", "MetalPlate", "CombinationLock", "CodeLock", "BarbedWire", "MetalWire", "Fence_Kit", "Watchtower_Kit", "PlasticExplosive", "RemoteDetonator"],
   "lifetime": {
     "TerritoryFlag": 432000,
     "Fence": 604800,
     "Watchtower": 604800,
     "WoodenCrate": 604800
   },
-  "removed": [
-    "AGA_TimedExplosive",
-    "CombinationLock",
-    "CombinationLock4",
-    "Plastic_Explosive",
-    "AN94_Suppressed",
-    "JD_Groza_762",
-    "AG_M76_Zastava",
-    "Mag_M76_10rnd",
-    "AG_ZRAK_ON_M76Optic",
-    "AWM",
-    "Mag_AWM_5rnd",
-    "Ammo_338",
-    "AG_Leupold_Optic",
-    "KS23",
-    "Ammo_4gaFlechette",
-    "Ammobox_4gaFlechette_10rnd",
-    "Ammo_23mm_Flash",
-    "Ammobox_23mm_Flash_10rnd",
-    "Ammo_23mm_TearGas",
-    "Ammobox_23mm_TearGas_10rnd"
-  ],
+  "removed": ["AGA_TimedExplosive", "CombinationLock", "CombinationLock4", "Plastic_Explosive", "AN94_Suppressed", "JD_Groza_762", "AG_M76_Zastava", "Mag_M76_10rnd", "AG_ZRAK_ON_M76Optic", "AWM", "Mag_AWM_5rnd", "Ammo_338", "AG_Leupold_Optic", "KS23", "Ammo_4gaFlechette", "Ammobox_4gaFlechette_10rnd", "Ammo_23mm_Flash", "Ammobox_23mm_Flash_10rnd", "Ammo_23mm_TearGas", "Ammobox_23mm_TearGas_10rnd"],
   "spawn_mag_chance": 0.4,
   "weapon_mags": {
     "AKM": "Mag_AKM_30Rnd",
@@ -263,45 +159,44 @@
     "MK12Mod1": "Mag_MK12Mod1_20Rnd"
   },
   "set_nominal": {
-    "PlateCarrierVest": [16, 9],
-    "PlateCarrierPouches": [14, 8],
-    "PlateCarrierHolster": [12, 6],
-    "PoliceVest": [20, 12],
+    "PlateCarrierVest": [6, 3],
+    "PlateCarrierPouches": [6, 3],
+    "PlateCarrierHolster": [6, 3],
+    "PoliceVest": [16, 10],
     "PressVest_Blue": [7, 4],
     "PressVest_LightBlue": [7, 4],
-    "BallisticHelmet_Black": [12, 7],
-    "BallisticHelmet_Green": [12, 7],
-    "Mich2001Helmet": [10, 5],
-    "GorkaHelmet": [8, 4],
-    "HuntingOptic": [14, 8],
+    "BallisticHelmet_Black": [8, 4],
+    "BallisticHelmet_Green": [8, 4],
+    "Mich2001Helmet": [7, 4],
+    "GorkaHelmet": [6, 3],
+    "HuntingOptic": [12, 7],
     "PUScopeOptic": [10, 5],
-    "ACOGOptic": [10, 5],
-    "PSO1Optic": [10, 5],
-    "KobraOptic": [12, 7],
-    "M68Optic": [12, 7],
-
-    "AKS74U": [14, 8],
-    "AK74": [15, 9],
-    "M16A2": [14, 8],
-    "AKM": [10, 5],
-    "AK101": [10, 5],
-    "SKS": [18, 10],
-    "Mosin9130": [14, 8],
-    "Winchester70": [12, 7],
-    "CZ527": [14, 8],
-    "CZ550": [11, 6],
-    "B95": [12, 7],
-    "Izh18": [14, 8],
-    "Ruger1022": [14, 8],
-    "Mp133Shotgun": [16, 10],
-    "MP5K": [15, 9],
-    "UMP45": [13, 7],
-    "PP19": [12, 7],
-    "CZ61": [14, 8],
-    "Saiga": [8, 4],
-    "FAMAS": [8, 4],
-    "Vikhr": [6, 3],
-    "M14": [5, 3],
+    "ACOGOptic": [7, 4],
+    "PSO1Optic": [7, 4],
+    "KobraOptic": [9, 5],
+    "M68Optic": [9, 5],
+    "AKS74U": [10, 6],
+    "AK74": [10, 6],
+    "M16A2": [9, 5],
+    "AKM": [7, 4],
+    "AK101": [6, 3],
+    "SKS": [14, 8],
+    "Mosin9130": [12, 7],
+    "Winchester70": [10, 6],
+    "CZ527": [12, 7],
+    "CZ550": [9, 5],
+    "B95": [10, 6],
+    "Izh18": [12, 7],
+    "Ruger1022": [12, 7],
+    "Mp133Shotgun": [14, 8],
+    "MP5K": [12, 7],
+    "UMP45": [10, 6],
+    "PP19": [10, 6],
+    "CZ61": [10, 6],
+    "Saiga": [6, 3],
+    "FAMAS": [5, 3],
+    "Vikhr": [4, 2],
+    "M14": [3, 2],
     "M4A1": [4, 2],
     "FAL": [4, 2],
     "SVD": [3, 2],
@@ -311,45 +206,43 @@
     "SCARL": [2, 1],
     "SCARH": [2, 1],
     "M249": [0, 0],
-
     "TT_33": [9, 5],
     "MakarovPM": [10, 6],
     "M92": [8, 4],
     "LugerP08": [5, 2],
-    "APS": [4, 2],
-    "PB": [4, 2],
-    "Glock18C": [5, 2],
+    "APS": [3, 2],
+    "PB": [3, 2],
+    "Glock18C": [4, 2],
     "Kedr": [7, 4],
     "PPSH41": [7, 4],
-    "AG_PP19": [6, 3],
+    "AG_PP19": [5, 3],
     "Saiga9": [7, 4],
     "AG_SR2m": [3, 2],
     "MP153": [7, 4],
     "AG_Civ_MP_153_Shotgun": [7, 4],
     "Izh27": [8, 4],
-    "M1014": [6, 3],
-    "sz_AKS74UN": [3, 1],
+    "M1014": [5, 3],
+    "sz_AKS74UN": [3, 2],
     "sz_AKS74UN_Tactical": [2, 1],
     "AEK971": [3, 2],
     "AN94": [2, 1],
-    "G36": [4, 2],
-    "G36C": [4, 2],
-    "M16A4": [4, 2],
+    "G36": [3, 2],
+    "G36C": [3, 2],
+    "M16A4": [3, 2],
     "AG_ADAR": [7, 4],
-    "VBB_FAMAS": [4, 2],
+    "VBB_FAMAS": [3, 2],
     "SA58": [3, 2],
-    "SA58P": [3, 2],
+    "SA58P": [2, 1],
     "Vepr_KM": [6, 3],
     "VEPR_SOK94": [6, 3],
-    "AG_RPK_762x39": [3, 2],
-    "RPK74": [3, 2],
+    "AG_RPK_762x39": [2, 1],
+    "RPK74": [2, 1],
     "kar98k": [10, 5],
     "M24": [2, 1],
     "SV_98": [2, 1],
     "SVT40": [3, 2],
     "AG_FN_SPR_A3G": [2, 1],
     "MK12Mod1": [2, 1],
-
     "AN94_Suppressed": [0, 0],
     "JD_Groza_762": [0, 0],
     "AG_M76_Zastava": [0, 0],
@@ -366,7 +259,6 @@
     "Ammobox_23mm_Flash_10rnd": [0, 0],
     "Ammo_23mm_TearGas": [0, 0],
     "Ammobox_23mm_TearGas_10rnd": [0, 0],
-
     "Mag_AK74_30Rnd": [50, 30],
     "Mag_AK74_45Rnd": [12, 6],
     "Mag_AK74_60Rnd": [5, 2],
@@ -409,7 +301,6 @@
     "Mag_fn_spr_a3g_5rnd": [5, 2],
     "Mag_fn_spr_a3g_10rnd": [3, 1],
     "Mag_MK12Mod1_20Rnd": [6, 3],
-
     "SV98Optic": [3, 1],
     "M24_Bipod": [3, 1],
     "RPK_Bipod": [4, 2],
@@ -422,7 +313,6 @@
     "BurlapWrap": [4, 2],
     "GrassBurlapWrap": [4, 2],
     "TearGas_SmokeGrenade": [4, 2],
-
     "Ammo_545x39": [70, 45],
     "Ammo_556x45": [60, 38],
     "Ammo_762x39": [65, 42],
@@ -433,8 +323,9 @@
     "AG_Ammo_9x21": [10, 5],
     "AG_Ammobox_9x21_30rnd": [5, 2],
     "AntiChemInjector": [5, 2],
-    "Flaregun": [8, 4],
-    "M79": [3, 1]
+    "Flaregun": [6, 3],
+    "M79": [3, 1],
+    "NVGoggles": [3, 1]
   },
   "globals": {
     "ZombieMaxCount": "1400",
@@ -446,19 +337,18 @@
     "RestartSpawn": "100",
     "LootDamageMax": "0.65"
   },
-  "max_restock": 600,
   "tier_set": {
     "MP5K": ["Tier1", "Tier2", "Tier3"],
     "CZ61": ["Tier1", "Tier2"],
     "UMP45": ["Tier2", "Tier3"],
     "PP19": ["Tier2", "Tier3"],
-    "Saiga": ["Tier2", "Tier3", "Tier4"],
+    "Saiga": ["Tier2", "Tier3"],
     "SKS": ["Tier1", "Tier2", "Tier3"],
     "Mosin9130": ["Tier1", "Tier2", "Tier3"],
     "CZ527": ["Tier1", "Tier2", "Tier3"],
     "CZ550": ["Tier1", "Tier2", "Tier3", "Tier4"],
     "Winchester70": ["Tier1", "Tier2", "Tier3", "Tier4"],
-    "AKS74U": ["Tier2", "Tier3", "Tier4"],
+    "AKS74U": ["Tier2", "Tier3"],
     "AK74": ["Tier2", "Tier3", "Tier4"],
     "M16A2": ["Tier2", "Tier3", "Tier4"],
     "AKM": ["Tier3", "Tier4"],
@@ -466,18 +356,18 @@
     "FAMAS": ["Tier3", "Tier4"],
     "Vikhr": ["Tier3", "Tier4"],
     "M14": ["Tier3", "Tier4"],
-    "M4A1": ["Tier4"],
-    "FAL": ["Tier4"],
-    "SVD": ["Tier4"],
-    "VSS": ["Tier4"],
-    "ASVAL": ["Tier4"],
-    "SV98": ["Tier4"],
-    "SCARL": ["Tier4"],
-    "SCARH": ["Tier4"],
-    "sz_AKS74UN": ["Tier2", "Tier3", "Tier4"],
+    "M4A1": ["Tier3", "Tier4"],
+    "FAL": ["Tier3", "Tier4"],
+    "SVD": ["Tier3", "Tier4"],
+    "VSS": ["Tier3", "Tier4"],
+    "ASVAL": ["Tier3", "Tier4"],
+    "SV98": ["Tier3", "Tier4"],
+    "SCARL": ["Tier3", "Tier4"],
+    "SCARH": ["Tier3", "Tier4"],
+    "sz_AKS74UN": ["Tier3", "Tier4"],
     "sz_AKS74UN_Tactical": ["Tier3", "Tier4"],
     "G36": ["Tier3", "Tier4"],
-    "G36C": ["Tier2", "Tier3", "Tier4"],
+    "G36C": ["Tier3", "Tier4"],
     "M16A4": ["Tier3", "Tier4"],
     "VBB_FAMAS": ["Tier3", "Tier4"],
     "SA58": ["Tier3", "Tier4"],
@@ -490,14 +380,30 @@
     "PB": ["Tier2", "Tier3"],
     "Kedr": ["Tier1", "Tier2"],
     "AG_PP19": ["Tier2", "Tier3"],
-    "AEK971": ["Tier4"],
-    "AN94": ["Tier4"],
-    "AG_SR2m": ["Tier4"],
-    "M24": ["Tier4"],
-    "SVT40": ["Tier4"],
-    "SV_98": ["Tier4"],
-    "AG_FN_SPR_A3G": ["Tier4"],
-    "MK12Mod1": ["Tier4"]
+    "AEK971": ["Tier3", "Tier4"],
+    "AN94": ["Tier3", "Tier4"],
+    "AG_SR2m": ["Tier3", "Tier4"],
+    "M24": ["Tier3", "Tier4"],
+    "SVT40": ["Tier3", "Tier4"],
+    "SV_98": ["Tier3", "Tier4"],
+    "AG_FN_SPR_A3G": ["Tier3", "Tier4"],
+    "MK12Mod1": ["Tier3", "Tier4"],
+    "ACOGOptic": ["Tier3", "Tier4"],
+    "PSO1Optic": ["Tier3", "Tier4"],
+    "KobraOptic": ["Tier2", "Tier3", "Tier4"],
+    "M68Optic": ["Tier2", "Tier3", "Tier4"],
+    "KashtanOptic": ["Tier2", "Tier3", "Tier4"],
+    "PistolSuppressor": ["Tier2", "Tier3", "Tier4"],
+    "FlashGrenade": ["Tier2", "Tier3", "Tier4"],
+    "PlateCarrierHolster": ["Tier3", "Tier4"],
+    "BallisticHelmet_Black": ["Tier3", "Tier4"],
+    "BallisticHelmet_Green": ["Tier3", "Tier4"],
+    "Mich2001Helmet": ["Tier3", "Tier4"],
+    "GorkaHelmet": ["Tier3", "Tier4"],
+    "UKAssVest_Black": ["Tier2", "Tier3", "Tier4"],
+    "UKAssVest_Khaki": ["Tier2", "Tier3", "Tier4"],
+    "UKAssVest_Olive": ["Tier2", "Tier3", "Tier4"],
+    "UKAssVest_Camo": ["Tier2", "Tier3", "Tier4"]
   },
   "weapon_variants": true,
   "stock_chance": 1.0,
@@ -506,67 +412,219 @@
       "usage": ["Medic", "Military"],
       "tiers": ["Tier3", "Tier4"]
     },
-    "AKS74U": { "usage": ["Military", "ContaminatedArea"] },
-    "MP5K": { "usage": ["Police", "Military"] },
-    "UMP45": { "usage": ["Military"] },
-    "SKS": { "usage": ["Town", "Village", "Hunting", "Military"], "tiers": ["Tier1", "Tier2", "Tier3"] },
-    "Mosin9130": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier1", "Tier2", "Tier3"] },
-    "CZ527": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier1", "Tier2", "Tier3"] },
-    "CZ550": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier1", "Tier2", "Tier3", "Tier4"] },
-    "Winchester70": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier1", "Tier2", "Tier3", "Tier4"] },
-    "Izh18": { "usage": ["Town", "Village", "Farm", "Hunting"], "tiers": ["Tier1", "Tier2"] },
-    "Ruger1022": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier1", "Tier2"] },
-    "kar98k": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier1", "Tier2", "Tier3"] },
-    "PPSH41": { "usage": ["Town", "Village", "Farm"], "tiers": ["Tier1", "Tier2", "Tier3"] },
-    "Saiga9": { "usage": ["Police", "Town"], "tiers": ["Tier1", "Tier2", "Tier3"] },
-    "AG_ADAR": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier2", "Tier3"] },
-    "Vepr_KM": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier2", "Tier3"] },
-    "VEPR_SOK94": { "usage": ["Town", "Village", "Hunting"], "tiers": ["Tier2", "Tier3"] },
-    "MP153": { "usage": ["Town", "Village", "Farm", "Hunting"], "tiers": ["Tier1", "Tier2"] },
-    "AG_Civ_MP_153_Shotgun": { "usage": ["Town", "Village", "Farm", "Hunting"], "tiers": ["Tier1", "Tier2"] },
-    "Izh27": { "usage": ["Town", "Village", "Farm", "Hunting"], "tiers": ["Tier1", "Tier2"] },
-    "TT_33": { "usage": ["Town", "Village", "Police"], "tiers": ["Tier1", "Tier2"] },
-    "MakarovPM": { "usage": ["Town", "Village", "Police"], "tiers": ["Tier1", "Tier2"] },
-    "M92": { "usage": ["Town", "Village", "Police"], "tiers": ["Tier1", "Tier2"] },
-    "LugerP08": { "usage": ["Town", "Village", "Farm"], "tiers": ["Tier1", "Tier2"] },
-    "Glock18C": { "usage": ["Police", "Military"], "tiers": ["Tier2", "Tier3"] },
-    "M1014": { "usage": ["Police", "Military"], "tiers": ["Tier2", "Tier3"] },
-    "Kedr": { "usage": ["Police"], "tiers": ["Tier1", "Tier2"] },
-    "AG_PP19": { "usage": ["Police", "Military"], "tiers": ["Tier2", "Tier3"] },
-    "AKM": { "usage": ["ContaminatedArea"] },
-    "AK74": { "usage": ["ContaminatedArea"] },
-    "AK101": { "usage": ["ContaminatedArea"] },
-    "M4A1": { "usage": ["ContaminatedArea"] },
-    "M16A2": { "usage": ["ContaminatedArea"] },
-    "FAL": { "usage": ["ContaminatedArea"] },
-    "SVD": { "usage": ["ContaminatedArea"] },
-    "VSS": { "usage": ["ContaminatedArea"] },
-    "ASVAL": { "usage": ["ContaminatedArea"] },
-    "SV98": { "usage": ["ContaminatedArea"] },
-    "SCARL": { "usage": ["ContaminatedArea"] },
-    "SCARH": { "usage": ["ContaminatedArea"] },
-    "FAMAS": { "usage": ["ContaminatedArea"] },
-    "Vikhr": { "usage": ["ContaminatedArea"] },
-    "M14": { "usage": ["ContaminatedArea"] },
-    "AEK971": { "usage": ["ContaminatedArea"] },
-    "AN94": { "usage": ["ContaminatedArea"] },
-    "M24": { "usage": ["ContaminatedArea"] },
-    "SVT40": { "usage": ["ContaminatedArea"] },
-    "SV_98": { "usage": ["ContaminatedArea"] },
-    "MK12Mod1": { "usage": ["ContaminatedArea"] },
-    "G36": { "usage": ["ContaminatedArea"] },
-    "M16A4": { "usage": ["ContaminatedArea"] },
-    "M4_Suppressor": { "usage": ["ContaminatedArea"] },
-    "AK_Suppressor": { "usage": ["ContaminatedArea"] },
-    "M24_308Suppressor": { "usage": ["ContaminatedArea"] },
-    "AK_Suppressor545": { "usage": ["ContaminatedArea"] },
-    "PBS4_suppressor": { "usage": ["ContaminatedArea"] },
-    "Mag_AKM_30Rnd": { "usage": ["ContaminatedArea"] },
-    "Mag_AK74_30Rnd": { "usage": ["ContaminatedArea"] },
-    "Mag_STANAG_30Rnd": { "usage": ["ContaminatedArea"] },
-    "Mag_SVD_10Rnd": { "usage": ["ContaminatedArea"] },
-    "NBCJacketGray": { "usage": ["ContaminatedArea"] },
-    "NBCPantsGray": { "usage": ["ContaminatedArea"] },
-    "GP5GasMask": { "usage": ["ContaminatedArea"] }
-  }
+    "AKS74U": {
+      "usage": ["Military"]
+    },
+    "MP5K": {
+      "usage": ["Police", "Military"]
+    },
+    "UMP45": {
+      "usage": ["Military"]
+    },
+    "SKS": {
+      "usage": ["Town", "Village", "Hunting", "Military"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Mosin9130": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "CZ527": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "CZ550": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3", "Tier4"]
+    },
+    "Winchester70": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3", "Tier4"]
+    },
+    "Izh18": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "Ruger1022": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "kar98k": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "PPSH41": {
+      "usage": ["Town", "Village", "Farm"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "Saiga9": {
+      "usage": ["Police", "Town"],
+      "tiers": ["Tier1", "Tier2", "Tier3"]
+    },
+    "AG_ADAR": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier2", "Tier3"]
+    },
+    "Vepr_KM": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier2", "Tier3"]
+    },
+    "VEPR_SOK94": {
+      "usage": ["Town", "Village", "Hunting"],
+      "tiers": ["Tier2", "Tier3"]
+    },
+    "MP153": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "AG_Civ_MP_153_Shotgun": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "Izh27": {
+      "usage": ["Town", "Village", "Farm", "Hunting"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "TT_33": {
+      "usage": ["Town", "Village", "Police"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "MakarovPM": {
+      "usage": ["Town", "Village", "Police"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "M92": {
+      "usage": ["Town", "Village", "Police"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "LugerP08": {
+      "usage": ["Town", "Village", "Farm"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "Glock18C": {
+      "usage": ["Police", "Military"],
+      "tiers": ["Tier2", "Tier3"]
+    },
+    "M1014": {
+      "usage": ["Police", "Military"],
+      "tiers": ["Tier2", "Tier3"]
+    },
+    "Kedr": {
+      "usage": ["Police"],
+      "tiers": ["Tier1", "Tier2"]
+    },
+    "AG_PP19": {
+      "usage": ["Police", "Military"],
+      "tiers": ["Tier2", "Tier3"]
+    },
+    "AKM": {
+      "usage": ["Military", "ContaminatedArea"]
+    },
+    "AK74": {
+      "usage": ["Military"]
+    },
+    "AK101": {
+      "usage": ["Military", "ContaminatedArea"]
+    },
+    "M4A1": {
+      "usage": ["Military"]
+    },
+    "M16A2": {
+      "usage": ["Military", "ContaminatedArea"]
+    },
+    "FAL": {
+      "usage": ["Military"]
+    },
+    "SVD": {
+      "usage": ["Military"]
+    },
+    "VSS": {
+      "usage": ["Military"]
+    },
+    "ASVAL": {
+      "usage": ["Military"]
+    },
+    "SV98": {
+      "usage": ["Military"]
+    },
+    "SCARL": {
+      "usage": ["Military"]
+    },
+    "SCARH": {
+      "usage": ["Military"]
+    },
+    "FAMAS": {
+      "usage": ["Military", "ContaminatedArea"]
+    },
+    "Vikhr": {
+      "usage": ["Military", "ContaminatedArea"]
+    },
+    "M14": {
+      "usage": ["Military"]
+    },
+    "AEK971": {
+      "usage": ["Military"]
+    },
+    "AN94": {
+      "usage": ["Military"]
+    },
+    "M24": {
+      "usage": ["Military"]
+    },
+    "SVT40": {
+      "usage": ["Military"]
+    },
+    "SV_98": {
+      "usage": ["Military"]
+    },
+    "MK12Mod1": {
+      "usage": ["Military"]
+    },
+    "G36": {
+      "usage": ["Military"]
+    },
+    "M16A4": {
+      "usage": ["Military"]
+    },
+    "M4_Suppressor": {
+      "usage": ["Military"]
+    },
+    "AK_Suppressor": {
+      "usage": ["Military"]
+    },
+    "M24_308Suppressor": {
+      "usage": ["Military"]
+    },
+    "AK_Suppressor545": {
+      "usage": ["Military"]
+    },
+    "PBS4_suppressor": {
+      "usage": ["Military"]
+    },
+    "Mag_AKM_30Rnd": {
+      "usage": ["ContaminatedArea"]
+    },
+    "Mag_AK74_30Rnd": {
+      "usage": ["ContaminatedArea"]
+    },
+    "Mag_STANAG_30Rnd": {
+      "usage": ["ContaminatedArea"]
+    },
+    "NBCJacketGray": {
+      "usage": ["ContaminatedArea"]
+    },
+    "NBCPantsGray": {
+      "usage": ["ContaminatedArea"]
+    },
+    "GP5GasMask": {
+      "usage": ["ContaminatedArea"]
+    },
+    "AG_SR2m": {
+      "usage": ["Military"]
+    },
+    "AG_FN_SPR_A3G": {
+      "usage": ["Military"]
+    }
+  },
+  "default_mil_tiers": ["Tier2", "Tier3", "Tier4"]
 }

@@ -10,6 +10,8 @@ LIFE = cfg.get('lifetime', {})
 REMOVED = set(cfg.get('removed', []))
 STRIP_MIL = set(cfg.get('strip_military', []))
 DELOOT_ONLY = set(cfg.get('deloot_only', []))
+RESTOCK = {k: v for k, v in cfg.get('restock', {}).items() if not k.startswith('_')}
+DEF_MIL_T = cfg.get('default_mil_tiers', [])
 
 os.makedirs(os.path.expanduser('~/dayz/profiles/ArmaGedonCore'), exist_ok=True)
 open(os.path.expanduser('~/dayz/profiles/ArmaGedonCore/phase.txt'), 'w').write('2')
@@ -79,12 +81,15 @@ def fix_type(m):
         block = re.sub(r'<quantmin>-?\d+</quantmin>', '<quantmin>35</quantmin>', block)
         block = re.sub(r'<quantmax>-?\d+</quantmax>', '<quantmax>100</quantmax>', block)
 
-    mr = cfg.get('max_restock')
-    if mr:
-        rr = re.search(r'<restock>(\d+)</restock>', block)
-        limit_r = 480 if cname == 'food' else mr
-        if rr and int(rr.group(1)) > limit_r:
-            block = block.replace(rr.group(0), '<restock>%d</restock>' % limit_r, 1)
+    # Stały czas odnowienia: po spadku poniżej <min> CE dosypuje loot co RESTOCK sekund (domyślnie 30 min, jedzenie 15 min)
+    if RESTOCK and '<restock>' in block:
+        block = re.sub(r'<restock>\d+</restock>', '<restock>%d</restock>' % RESTOCK.get(cname, RESTOCK.get('default', 1800)), block, count=1)
+
+    # Rzeczy wyłącznie wojskowe bez tieru respiły się też na wybrzeżu (T1) - dostają domyślne tiery
+    if DEF_MIL_T and cname in ('weapons', 'clothes', 'explosives', 'tools', 'containers') and not re.search(r'<value name=', block):
+        us = re.findall(r'<usage name="([^"]+)"', block)
+        if 'Military' in us:
+            block = block.replace('</type>', ''.join('\t\t<value name="%s"/>\n' % t for t in DEF_MIL_T) + '\t</type>')
 
     if name in AU:
         if name not in DELOOT_ONLY:
@@ -148,6 +153,9 @@ if cfg.get('weapon_variants'):
         nb = re.sub(r'<nominal>\d+</nominal>', '<nominal>%d</nominal>' % n0, block)
         nb = re.sub(r'<min>\d+</min>', '<min>1</min>', nb)
         nb = nb.replace('count_in_hoarder="1"', 'count_in_hoarder="0"').replace('count_in_player="1"', 'count_in_player="0"')
+        rb = re.search(r'<restock>\d+</restock>', bb)
+        if rb:
+            nb = re.sub(r'<restock>\d+</restock>', rb.group(0), nb, count=1)
         if 'deloot="1"' in bb:
             nb = nb.replace('deloot="0"', 'deloot="1"')
         nb = re.sub(r'\s*<(usage|value) name="[^"]+"\s*/>', '', nb)
