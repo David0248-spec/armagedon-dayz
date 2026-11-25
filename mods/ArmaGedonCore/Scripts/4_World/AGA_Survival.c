@@ -9,36 +9,20 @@ class AGA_SurvCfg
 	static const float ARM_SWAY_BROKEN   = 3.5;
 	static const float ARM_SWAY_SPLINT   = 1.8;
 	static const int   ARM_HEAL_MS       = 300000;   // 5 min po zalozeniu szyny
-
-	// kondycja: zakres i zmiany co 20 s
-	static const float STAM_MIN = -15.0;
-	static const float STAM_MAX = 15.0;
-	static const float STAM_GAIN_SPRINT = 0.04;
-	static const float STAM_GAIN_MOVE   = 0.02;
-	static const float STAM_LOSS_IDLE   = -0.03;
-	static const float STAM_LOSS_BASE   = -0.035;
-	static const float STAM_RED_BONUS   = 1.15;
-	static const float STAM_DRAIN_FROM  = -7.5;
-	static const float STAM_DRAIN_MULT  = 1.5;
-
 }
 
 // ======================================================================== gracz
 modded class PlayerBase
 {
 	int   m_AGAArm;       // 0 zdrowa, 1 zlamana, 2 na szynie
-	float m_AGAStam;      // umiejetnosc kondycji (-15..15)
-	float m_AGAStamTick;
 
 	override void Init()
 	{
 		super.Init();
 		RegisterNetSyncVariableInt("m_AGAArm", 0, 2);
-		RegisterNetSyncVariableFloat("m_AGAStam", AGA_SurvCfg.STAM_MIN, AGA_SurvCfg.STAM_MAX, 2);
 	}
 
 	int AGA_Arm() { return m_AGAArm; }
-	float AGA_Stam() { return m_AGAStam; }
 
 	void AGA_SetArm(int v)
 	{
@@ -54,15 +38,6 @@ modded class PlayerBase
 	}
 
 	void AGA_HealArm() { if (m_AGAArm == 2) AGA_SetArm(0); }
-
-	void AGA_SetStam(float v)
-	{
-		v = Math.Clamp(v, AGA_SurvCfg.STAM_MIN, AGA_SurvCfg.STAM_MAX);
-		if (Math.AbsFloat(v - m_AGAStam) < 0.0001) return;
-		m_AGAStam = v;
-		SetSynchDirty();
-		if (GetStaminaHandler()) GetStaminaHandler().RecalculateStaminaCap();
-	}
 
 	override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef)
 	{
@@ -146,59 +121,6 @@ modded class ActionSplintSelf
 	}
 }
 
-// ======================================================================== kondycja
-modded class StaminaHandler
-{
-	override void RecalculateStaminaCap()
-	{
-		super.RecalculateStaminaCap();
-		if (!m_Player) return;
-		m_StaminaCap = Math.Max(m_StaminaCap + m_Player.AGA_Stam(), CfgGameplayHandler.GetStaminaMinCap());
-	}
-
-	override void DepleteStaminaEx(EStaminaModifiers modifier, float dT = -1, float coef = 1.0)
-	{
-		if (m_Player && m_Player.AGA_Stam() <= AGA_SurvCfg.STAM_DRAIN_FROM) coef *= AGA_SurvCfg.STAM_DRAIN_MULT;
-		super.DepleteStaminaEx(modifier, dT, coef);
-	}
-
-	override void Update(float deltaT, int pCurrentCommandID)
-	{
-		super.Update(deltaT, pCurrentCommandID);
-		if (!m_Player || !GetGame().IsServer()) return;
-		m_Player.m_AGAStamTick += deltaT;
-		if (m_Player.m_AGAStamTick < 20) return;
-		m_Player.m_AGAStamTick = 0;
-		AGA_StamStep();
-	}
-
-	protected void AGA_StamStep()
-	{
-		float cur = m_Player.AGA_Stam();
-		float d = 0;
-		if (AGA_Territory.FlagAt(m_Player.GetPosition()))
-		{
-			d = AGA_SurvCfg.STAM_LOSS_BASE;                 // siedzenie w bazie oslabia kondycje
-		}
-		else if (m_Player.GetParent() && (m_Player.GetParent().IsInherited(Car) || m_Player.GetParent().IsInherited(Boat)))
-		{
-			return;                                         // w pojezdzie bez zmian
-		}
-		else
-		{
-			HumanMovementState ms = new HumanMovementState();
-			m_Player.GetMovementState(ms);
-			if (m_Stamina < m_StaminaCap * 0.85) d = AGA_SurvCfg.STAM_GAIN_SPRINT;       // wysilek
-			else if (ms.m_iMovement < DayZPlayerConstants.MOVEMENTIDX_WALK) d = AGA_SurvCfg.STAM_LOSS_IDLE; // stanie
-			else d = AGA_SurvCfg.STAM_GAIN_MOVE;                                          // marsz / trucht
-			if (d > 0 && cur < 0) d *= AGA_SurvCfg.STAM_RED_BONUS;
-		}
-		if (d < 0 && cur <= AGA_SurvCfg.STAM_MIN) return;
-		if (d > 0 && cur >= AGA_SurvCfg.STAM_MAX) return;
-		m_Player.AGA_SetStam(cur + d);
-	}
-}
-
 class AGA_StamSave
 {
 	float Value;
@@ -225,7 +147,7 @@ class AGA_Survival
 		if (!FileExist(f)) return;
 		AGA_StamSave s = new AGA_StamSave();
 		JsonFileLoader<AGA_StamSave>.JsonLoadFile(f, s);
-		p.AGA_SetStam(s.Value);
+		// kondycja ma wlasny zapis (AGA_Stamina w AGA_Systems.c) - tu tylko stan reki
 		if (s.Arm > 0) p.AGA_SetArm(s.Arm);
 	}
 
@@ -233,7 +155,6 @@ class AGA_Survival
 	{
 		if (!p || uid == "") return;
 		AGA_StamSave s = new AGA_StamSave();
-		s.Value = p.AGA_Stam();
 		s.Arm = p.AGA_Arm();
 		JsonFileLoader<AGA_StamSave>.JsonSaveFile(Dir() + "/" + uid + ".json", s);
 	}

@@ -8,8 +8,8 @@ class AGA_Stamina
 	static const float TICK = 20.0;
 	static const float GAIN_EFFORT = 0.04;    // wysiłek (wytrzymałość < 85% maksimum)
 	static const float GAIN_MOVING = 0.02;    // ruch bez wysiłku
-	static const float LOSS_IDLE = -0.03;     // stanie w miejscu
-	static const float LOSS_BASE = -0.035;    // przebywanie na terenie bazy
+	static const float LOSS_IDLE = -0.04;     // stanie w miejscu (jak KK lean_config)
+	static const float LOSS_BASE = -0.06;     // przebywanie na terenie bazy (jak KK lean_config)
 	static const float NEGATIVE_BOOST = 1.15; // szybsza odbudowa przy ujemnym bonusie
 	static const float MAX_PENALTY = 0.5;     // maks. dodatkowe zużycie jedzenia/wody
 	static const float DRAIN_THRESHOLD = -7.5;
@@ -18,6 +18,10 @@ class AGA_Stamina
 
 	static ref map<string, float> s_Saved;
 	static string s_Path = "$profile:ArmaGedonCore/stamina.json";
+
+	// klient: ostatnia wartosc z serwera dla strzalek w HUD (5_Mission/AGA_StaminaArrows.c)
+	static float s_ClientValue;
+	static bool s_ClientDirty;
 
 	static void Load()
 	{
@@ -57,12 +61,23 @@ class AGA_Stamina
 
 modded class StaminaHandler
 {
+	// Cap liczony OD ZERA (waga + bonus), tak jak w KK_StaminaSoftSkill.
+	// Wariant "super() + dodaj bonus" dublowal wartosc, bo AGA_Survival.c robil to samo
+	// i oba override sie wykonywaly - stad pasek skakal i znikal co 20 s.
 	override void RecalculateStaminaCap()
 	{
-		super.RecalculateStaminaCap();
-		if (!m_Player) return;
-		m_StaminaCap = m_StaminaCap + m_Player.AGA_GetStaminaSkill();
-		m_StaminaCap = Math.Max(m_StaminaCap, CfgGameplayHandler.GetStaminaMinCap());
+		if (!m_Player)
+		{
+			super.RecalculateStaminaCap();
+			return;
+		}
+		float skill = m_Player.AGA_GetStaminaSkill();
+		if (m_PlayerLoad >= CfgGameplayHandler.GetStaminaWeightLimitThreshold())
+			m_StaminaCap = Math.Max(CfgGameplayHandler.GetStaminaMax() - (((m_PlayerLoad - CfgGameplayHandler.GetStaminaWeightLimitThreshold()) / GameConstants.STAMINA_KG_TO_GRAMS) * CfgGameplayHandler.GetStaminaKgToStaminaPercentPenalty()), CfgGameplayHandler.GetStaminaMinCap());
+		else
+			m_StaminaCap = CfgGameplayHandler.GetStaminaMax();
+		m_StaminaCap = Math.Max(m_StaminaCap + skill, CfgGameplayHandler.GetStaminaMinCap());
+		m_StaminaCapSynced = m_StaminaCap;
 	}
 
 	override void DepleteStaminaEx(EStaminaModifiers modifier, float dT = -1, float coef = 1.0)
@@ -105,6 +120,19 @@ modded class PlayerBase
 		m_AGA_StaminaSkill = Math.Clamp(v, -AGA_Stamina.MAX, AGA_Stamina.MAX);
 		SetSynchDirty();
 		if (GetIdentity()) AGA_Stamina.Set(GetIdentity().GetPlainId(), m_AGA_StaminaSkill);
+		StaminaHandler sh = GetStaminaHandler();
+		if (sh) sh.RecalculateStaminaCap();
+	}
+
+	// Klient: nowa wartosc z serwera -> przelicz pasek i pokaz strzalke wzrostu/spadku (jak KK DisplayStaminaArrows)
+	override void OnVariablesSynchronized()
+	{
+		super.OnVariablesSynchronized();
+		if (GetGame().IsDedicatedServer() || this != GetGame().GetPlayer()) return;
+		StaminaHandler sh = GetStaminaHandler();
+		if (sh) sh.RecalculateStaminaCap();
+		AGA_Stamina.s_ClientValue = m_AGA_StaminaSkill;
+		AGA_Stamina.s_ClientDirty = true;
 	}
 
 	override void OnScheduledTick(float deltaTime)
