@@ -1547,21 +1547,8 @@ class CfgVehicles
 		varQuantityDestroyOnMin = 1;
 	};
 	class ExplosivesBase;
-	class Plastic_Explosive: ExplosivesBase
-	{
-		attachments[] = {"TriggerRemoteDetonator_Receiver", "TriggerAlarmClock"};
-		class GUIInventoryAttachmentsProps
-		{
-			class Trigger
-			{
-				name = "#STR_CfgVehicles_AlarmClock0";
-				description = "";
-				attachmentSlots[] = {"TriggerAlarmClock"};
-				icon = "cat_bb_attachments";
-				view_index = 1;
-			};
-		};
-	};
+	// Plastik zostaje vanillowy (raidy: improwizowany ladunek / zapalnik zdalny) - bez slotu na budzik
+	class Plastic_Explosive: ExplosivesBase {};
 	class AGA_TimedExplosive: Plastic_Explosive
 	{
 		scope = 2;
