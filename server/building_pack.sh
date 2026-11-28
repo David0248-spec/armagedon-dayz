@@ -19,6 +19,14 @@ find_src() {
   done
 }
 
+# gotowe paczki z repozytorium (GitHub) - bez pobierania czegokolwiek ze Steama
+if [ "$MODE" = "build" ] && [ -f $REPO/base/armagedonbase_core.pbo ]; then
+  mkdir -p $CACHE
+  rm -f $CACHE/*.pbo && cp -f $REPO/base/armagedonbase_*.pbo $CACHE/
+  echo "ArmaGedonBase: gotowe z repo ($(ls $CACHE/*.pbo | wc -l) paczek)"
+  exit 0
+fi
+
 if [ "$MODE" = "build" ] || [ "$MODE" = "update" ]; then
   SRC=$(find_src)
   if [ -z "$SRC" ] || [ "$MODE" = "update" ]; then
