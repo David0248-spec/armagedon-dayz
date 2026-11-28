@@ -1,8 +1,5 @@
 class CfgPatches
 {
-	// zgodnosc paczki broni (zgoda autorow) - zastepcze nazwy wymaganych dodatkow
-	class AG_Sounds { units[] = {}; weapons[] = {}; requiredVersion = 0.1; requiredAddons[] = {"DZ_Data"}; };
-	class AG_Ammo_Balancer { units[] = {}; weapons[] = {}; requiredVersion = 0.1; requiredAddons[] = {"DZ_Data"}; };
 	class ArmaGedonCore
 	{
 		units[] = {"AGA_TimedExplosive", "AGA_EvWeapons", "AGA_EvArmy", "AGA_EvMedic"};
@@ -10,6 +7,10 @@ class CfgPatches
 		requiredVersion = 0.1;
 		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DZ_Characters", "DZ_Weapons_Projectiles", "DZ_Weapons_Magazines", "DZ_Weapons_Firearms", "DZ_Weapons_Shotguns", "DZ_Pistols", "DZ_Weapons_Archery_Crossbow", "DZ_Weapons_Explosives", "DZ_Gear_Tools", "DZ_Sounds_Effects", "JM_CF_Scripts", "GDZ_Codelock", "DZ_Gear_Camping", "VBB_Weapons", "AG_Dependence", "AG_Fortification", "AG_Modules", "AG_Stockade", "AG_TreeHouse", "AGAStorage", "AGA_Furniture_redefine"};
 	};
+	// zgodnosc paczki broni (zgoda autorow) - zastepcze nazwy wymaganych dodatkow
+	// (te same zaleznosci co ArmaGedonCore: skrypty moda musza ladowac sie po paczkach bazy)
+	class AG_Sounds { units[] = {}; weapons[] = {}; requiredVersion = 0.1; requiredAddons[] = {"DZ_Data", "AG_Dependence", "AG_Fortification", "AG_Modules", "AG_Stockade", "AG_TreeHouse", "AGAStorage", "AGA_Furniture_redefine"}; };
+	class AG_Ammo_Balancer { units[] = {}; weapons[] = {}; requiredVersion = 0.1; requiredAddons[] = {"DZ_Data", "AG_Dependence", "AG_Fortification", "AG_Modules", "AG_Stockade", "AG_TreeHouse", "AGAStorage", "AGA_Furniture_redefine"}; };
 };
 
 class CfgMods
