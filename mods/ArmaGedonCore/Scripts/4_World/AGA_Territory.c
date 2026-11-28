@@ -186,10 +186,35 @@ class AGA_Territory
 		int n = 0;
 		foreach (Object o : objs)
 		{
-			Fence fc = Fence.Cast(o);
-			if (fc && fc.GetConstruction() && fc.GetConstruction().IsPartConstructed("wall_gate")) n++;
+			BaseBuildingBase bb = BaseBuildingBase.Cast(o);
+			if (!bb || !bb.GetConstruction()) continue;
+			if (bb.IsInherited(Fence))
+			{
+				if (bb.GetConstruction().IsPartConstructed("wall_gate")) n++;
+				continue;
+			}
+			if (!bb.ConfigGetBool("AG_BaseBuilding")) continue;
+			if (bb.IsKindOf("AG_GarageDoor")) { n++; continue; }
+			// drzwi i bramy budowli bazy: każda zbudowana rama drzwi / bramy to jedno wejście
+			map<string, ref ConstructionPart> parts = bb.GetConstruction().GetConstructionParts();
+			if (!parts) continue;
+			foreach (string pn, ConstructionPart cp : parts)
+			{
+				if (cp && cp.IsBuilt() && IsGatePart(pn)) n++;
+			}
 		}
 		return n;
+	}
+
+	// drzwi / brama budowli bazy (liczona raz: lewe skrzydło lub całe drzwi; otwory bez skrzydeł nie)
+	static bool IsGatePart(string part)
+	{
+		string p = part;
+		p.ToLower();
+		if (p.IndexOf("doorway") >= 0 || p.IndexOf("gateway") >= 0 || p.IndexOf("right") >= 0) return false;
+		if (p == "tr_gate") return true;
+		if (p.IndexOf("door_base") >= 0 || p.IndexOf("gateleft_base") >= 0 || p.IndexOf("gate_left") >= 0) return true;
+		return false;
 	}
 	static const float LIFE_L1 = 432000;   // 5 dni
 	static const float LIFE_L2 = 604800;   // 7 dni
@@ -300,7 +325,10 @@ class AGA_Territory
 
 	static bool NeedsTerritory(EntityAI item)
 	{
-		return item.IsInherited(FenceKit) || item.IsInherited(WatchtowerKit) || BaseCat(item, true) != "";
+		if (item.IsInherited(FenceKit) || item.IsInherited(WatchtowerKit) || BaseCat(item, true) != "") return true;
+		// zestawy budowli bazy (fortyfikacje, drzwi, palisada, szopa, osłony) i meble bazy
+		string t = item.GetType();
+		return (item.IsInherited(KitBase) && t.IndexOf("AG_") == 0) || t.IndexOf("AGA_Storage_") == 0 || t.IndexOf("arma_barrel_stash") == 0;
 	}
 
 	static bool ZoneLimited(EntityAI item)
@@ -340,16 +368,16 @@ class AGA_Territory
 	static string BaseCat(EntityAI e, bool kits)
 	{
 		if (!e) return "";
+		if (e.ConfigGetBool("aga_fixed")) return "";
 		if (e.IsKindOf("WoodenCrate") && !e.IsKindOf("AGA_LootCrate")) return "crate";
-		if (e.IsKindOf("mmg_supplycrate_lvl1_base") || e.IsKindOf("mmg_supplycrate_lvl2_base") || e.IsKindOf("mmg_supplycrate_lvl3_base")) return "crate";
-		if (e.IsKindOf("mmg_craftable_gun_rack_base") || e.IsKindOf("mmg_gun_rack_base")) return "rack";
-		if (e.IsKindOf("mmg_gun_wall_base")) return "wall";
-		if (e.IsKindOf("mmg_gear_stand_base")) return "stand";
-		if (e.IsKindOf("mmg_old_table_base") || e.IsKindOf("mmg_toolwagon_base")) return "bench";
+		string t = e.GetType();
+		if (t.IndexOf("AGA_Storage_WoodenCrate") == 0 || t == "AGA_Storage_Metal_Cabinet" || t == "AGA_Storage_Minifridge") return "crate";
+		if (t.IndexOf("AGA_Storage_Wooden_Gunrack") == 0) return "rack";
+		if (t == "AGA_Storage_Metal_GunRack") return "wall";
+		if (t.IndexOf("AGA_Storage_Gearrack") == 0) return "stand";
+		if (t.IndexOf("AGA_Storage_Workbench") == 0) return "bench";
 		if (!kits) return "";
-		if (e.IsKindOf("mmg_gun_wall_kit_wooden") || e.IsKindOf("mmg_gun_wall_kit_metal")) return "wall";
-		if (e.IsKindOf("mmg_gear_stand_kit")) return "stand";
-		if (e.IsKindOf("mmg_toolwagon_kit")) return "bench";
+		if (t == "AGA_Storage_Metal_GunRack_Packed") return "wall";
 		return "";
 	}
 
@@ -436,6 +464,11 @@ class AGA_Territory
 			if (cat != "" && CountCat(flag, cat, item) >= CatMax(cat))
 			{
 				msg = "Storage limit reached: max " + CatMax(cat).ToString() + " " + CatLabel(cat) + " per base.";
+				return false;
+			}
+			if (item.IsKindOf("AG_GarageDoorKit") && GatesNear(flag) >= MAX_GATES)
+			{
+				msg = "Gate limit reached: max " + MAX_GATES.ToString() + " gates per base.";
 				return false;
 			}
 			if (item.IsInherited(Fireplace) && CountNear(flag, Fireplace) >= MAX_FIREPLACES)
@@ -998,11 +1031,13 @@ modded class ActionBuildPart
 		ConstructionActionData cad = player.GetConstructionActionData();
 		ConstructionPart part;
 		if (cad) part = cad.GetCurrentBuildPart();
-		if (part && bb.IsInherited(Fence))
+		if (part && (bb.IsInherited(Fence) || bb.ConfigGetBool("AG_BaseBuilding")))
 		{
 			string pn = part.GetPartName();
 			pn.ToLower();
-			if (pn.IndexOf("gate") >= 0 && AGA_Territory.GatesNear(bb) >= AGA_Territory.MAX_GATES)
+			bool gate = pn.IndexOf("gate") >= 0;
+			if (!bb.IsInherited(Fence)) gate = AGA_Territory.IsGatePart(pn);
+			if (gate && AGA_Territory.GatesNear(bb) >= AGA_Territory.MAX_GATES)
 			{
 				AGA_Territory.Msg("Gate limit reached: max " + AGA_Territory.MAX_GATES.ToString() + " gates per base.");
 				return false;
@@ -1038,6 +1073,24 @@ modded class ActionDismantlePart
 	}
 }
 
+// rozbieranie całych budowli bazy (narzędziem z ich listy): tylko tam, gdzie wolno rozbierać
+modded class AG_ActionDismantle
+{
+	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
+	{
+		if (!super.ActionCondition(player, target, item)) return false;
+		Object o = target.GetObject();
+		if (!o) return true;
+		string msg;
+		if (!AGA_Territory.CanDismantleAt(player, o.GetPosition(), msg))
+		{
+			AGA_Territory.Msg(msg);
+			return false;
+		}
+		return true;
+	}
+}
+
 modded class ActionAttachToConstruction
 {
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
@@ -1050,8 +1103,8 @@ modded class ActionAttachToConstruction
 	}
 }
 
-// zamek szyfrowy tylko na bramie we własnym terytorium
-modded class Fence
+// zamek szyfrowy tylko na bramie / drzwiach we własnym terytorium
+modded class BaseBuildingBase
 {
 	override bool CanReceiveAttachment(EntityAI attachment, int slotId)
 	{

@@ -9,9 +9,12 @@ fi
 git reset -q --hard origin/main
 # Paczka zawsze budowana ze źródeł (mods/ArmaGedonCore) - zmiany .c z GitHuba trafiają na serwer bez ręcznego pakowania
 python3 tools/build_pbo.py || { echo 'BLAD: budowanie PBO nie powiodlo sie'; exit 1; }
+# budowanie bazy (konstrukcje + meble) - przygotowane PRZED podmiana moda, bez nich ArmaGedonCore sie nie skompiluje
+bash server/building_pack.sh build || { echo 'BLAD: paczka budowania bazy nie gotowa - serwer bez zmian'; exit 1; }
 [ -d ~/dayz/profiles/ArmaGedonAdmin ] && [ ! -d ~/dayz/profiles/ArmaGedonCore ] && mv ~/dayz/profiles/ArmaGedonAdmin ~/dayz/profiles/ArmaGedonCore || true
 rm -rf ~/dayz/@ArmaGedonAdmin ~/dayz/@ArmaGedonCore && cp -r dist/@ArmaGedonCore ~/dayz/
 bash server/weapons_pack.sh || echo 'UWAGA: paczka broni nie dodana'
+bash server/building_pack.sh install
 mkdir -p ~/dayz/keys && cp -f dist/keys/*.bikey ~/dayz/keys/ 2>/dev/null || true
 bash server/setup_ce.sh || true
 # VPP Admin Tools: superadmini

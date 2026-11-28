@@ -23,6 +23,14 @@ Cały kod autorski w ArmaGedonCore. Loot: vanilla+ i fazy wipe.
 - Wylogowanie w walce (okno 60 s od strzału/trafienia → licznik min. 60 s + log; ostrzeżenie i blokada przycisku przy >50 s)
 - Okno regulaminu po wejściu
 
+## Budowanie bazy (ArmaGedonBase)
+- Konstrukcje: fortyfikacje (ściany, drzwi, bramy, piętra), drzwi wąskie/szerokie, brama garażowa, szopa, osłony, palisada z narożnikami, domek na drzewie – paczki `armagedonbase_*.pbo` budowane przez `server/building_pack.sh` (`tools/agb_build.py`)
+- Meble: skrzynie poz. 1 → średnia → duża → poz. 4, stojaki na broń drewniane 1–3 i metalowy, stojaki na ubrania, warsztat 1–3, szafka, lodówka, grządki, zbieracz wody, zakopywane skrzynie i beczki
+- Ulepszenia mebli: pierwszy stopień flaga poz. 2, kolejne poz. 3; rozbieranie tylko we własnym terytorium i puste
+- Vanillowe płoty i wieże wyłączone; MMG i Building Fortifications usunięte
+- Raidy (`AGA_Raid.c`, tabela jak KarmaKrew – przebicie połowy z ramą): 5.45 500/720, 5.56 550/720, 7.62x39 400/660, 7.62x54/.308 250/360, śrut 150/215 strzałów, breneka 350/450, granat 20, mina 50/60, claymore 10/15, plastik 3 (drewno/metal). Broń biała nie rani ścian; wybuch pełny do 2,5 m, od 6 m bez obrażeń. Tylko w godzinach raidów.
+- Limit: 5 drzwi/bram na bazę (każde skrzydło lewe / całe drzwi / brama garażowa)
+
 ## Do zrobienia
 ### System budowy (duży, osobna sesja)
 - Flaga z poziomami, dołączanie do flagi, zaproszenia, menu grupy (GroupManagement), ulepszanie kontenerów (L1+), stojaki na broń/ubrania, stół, palisady, barykady drzwi, panele metalowe, oznaczanie skrzyń

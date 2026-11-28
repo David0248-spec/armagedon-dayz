@@ -575,7 +575,7 @@ class AGA_Events
 			vector side = Vector(ori[0] + 90, 0, 0).AnglesToVector();
 			vector p = c.GetPosition() + side * Math.RandomFloat(1.1, 1.6);
 			EntityAI gun = DropAt(p, parts[0]);
-			if (gun && c.IsKindOf("mmg_storage_openable_noLock_base"))
+			if (gun && c.IsKindOf("AGAStorage_openable_noLock_base"))
 			{
 				if (!c.ServerTakeEntityToTargetAttachment(c, gun))
 					c.ServerTakeEntityToCargo(gun);
