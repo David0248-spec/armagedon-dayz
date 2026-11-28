@@ -30,7 +30,9 @@ p, s = pristine('db/types.xml')
 changed = 0
 
 SORTED_NAME_MULT = sorted(cfg.get('name_mult', {}).items(), key=lambda x: len(x[0]), reverse=True)
-SETN = cfg.get('set_nominal', {})
+SETN = dict(cfg.get('set_nominal', {}))
+# reczne wartosci (manual_nominal) maja pierwszenstwo przed wyliczonymi przez econ_plan.py
+SETN.update({k: v for k, v in cfg.get('manual_nominal', {}).items() if not k.startswith('_')})
 TSET = cfg.get('tier_set', {})
 AU = cfg.get('add_usage', {})
 
