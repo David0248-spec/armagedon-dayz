@@ -246,7 +246,17 @@ def ren_text(s):
     s = P_LOADED.sub('AGA_Stashes', s)
     s = P_BARREL.sub('AGA_BarStash', s)
     s = s.replace('Tierro', 'ArmaGedon').replace('MightyMoitzbert', 'ARMA-GEDON').replace('Mighty Moitzbert', 'ARMA-GEDON')
-    return s
+    return lower_paths(s)
+
+
+OUR = ('ag_dependence', 'ag_fortification', 'ag_modules', 'ag_stockade', 'ag_treehouse', 'ag_custom',
+       'agastorage', 'aga_autoclose', 'aga_stashes', 'aga_barstash', 'armagedon_agtreehousefix')
+P_OURPATH = re.compile(r'(?i)(?<![A-Za-z0-9_])(?:' + '|'.join(OUR) + r')[\\/][^"\s,;{}()<>|]*')
+
+
+def lower_paths(s):
+    """Serwer na Linuksie rozroznia wielkosc liter: wszystkie nasze sciezki malymi literami."""
+    return P_OURPATH.sub(lambda m: m.group(0).lower(), s)
 
 
 def ren_binary(d):
@@ -256,6 +266,7 @@ def ren_binary(d):
     s2 = P_SALVATION.sub(lambda m: case_like(m.group(0), 'armagedon'), s2)
     s2 = re.sub(r'(?i)tierro', lambda m: case_like(m.group(0), 'agteam'), s2)
     s2 = s2.replace('Tierro', 'AGTeam').replace('MightyMoitzbert', 'ArmaGedonStudio').replace('Mighty Moitzbert', 'ArmaGedon Studio')
+    s2 = lower_paths(s2)
     out = s2.encode('latin1')
     assert len(out) == len(d)
     return out
@@ -366,18 +377,18 @@ def build(src_dir, out_dir):
         nprops = []
         for k, v in props:
             if k == b'prefix':
-                nprops.append((k, prefix.encode()))
+                nprops.append((k, prefix.lower().encode()))
             elif k == b'product':
                 nprops.append((k, v))
         if not any(k == b'prefix' for k, _ in nprops):
-            nprops.append((b'prefix', prefix.encode()))
+            nprops.append((b'prefix', prefix.lower().encode()))
         out = []
         for name, ts, d in ents:
             low = name.lower()
             if low.endswith(SKIP_EXT) or DROP.search(name):
                 continue
             if low in ('$prefix$', '$pboprefix$'):
-                out.append([name, ts, prefix.encode()])
+                out.append([name, ts, prefix.lower().encode()])
                 continue
             if low.endswith('config.bin'):
                 txt = derap(d)
@@ -398,7 +409,7 @@ def build(src_dir, out_dir):
 
 
 def ren_paths_entry(name):
-    return ren_paths(name)
+    return ren_paths(name).lower()
 
 
 if __name__ == '__main__':
