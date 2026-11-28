@@ -23,7 +23,7 @@ if [ "$MODE" = "build" ] || [ "$MODE" = "update" ]; then
   SRC=$(find_src)
   if [ -z "$SRC" ] || [ "$MODE" = "update" ]; then
     echo "ArmaGedonBase: pobieranie paczki zrodlowej (duza, tylko raz)..."
-    /usr/games/steamcmd +login dawidxjar +workshop_download_item 221100 $SRC_ID validate +quit | tail -2
+    /usr/games/steamcmd +login dawidxjar +workshop_download_item 221100 $SRC_ID validate +quit
     SRC=$(find_src)
   fi
   [ -z "$SRC" ] && { echo "BLAD: brak paczki zrodlowej $SRC_ID"; exit 1; }
