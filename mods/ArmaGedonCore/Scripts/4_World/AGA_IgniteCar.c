@@ -163,6 +163,5 @@ modded class ActionConstructor
 		actions.Insert(AGA_ActionFlagJoin);
 		actions.Insert(AGA_ActionFlagLeave);
 		actions.Insert(AGA_ActionFlagGroup);
-		actions.Insert(AGA_ActionUpgrade);
 	}
 }

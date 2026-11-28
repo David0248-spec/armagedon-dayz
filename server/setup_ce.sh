@@ -9,7 +9,7 @@ CE=$MIS/armagedon_ce
 mkdir -p $CE
 rm -f $CE/types_*.xml
 
-find ~/dayz/@*/ -maxdepth 4 -type f -iname 'types*.xml' | grep -v '@armagedon' | grep -v '@mmgbasestorage' | while IFS= read -r f; do
+find ~/dayz/@*/ -maxdepth 4 -type f -iname 'types*.xml' | grep -v '@armagedon' | while IFS= read -r f; do
   mod=$(echo "$f" | sed 's#.*/dayz/@\([^/]*\)/.*#\1#')
   cp "$f" "$CE/types_${mod}.xml"
   echo "CE: $mod"
@@ -20,6 +20,7 @@ cp -f ~/armagedon-dayz/server/ce/types_helis.xml $CE/types_helis.xml
 cp -f ~/armagedon-dayz/server/ce/types_aga.xml $CE/types_aga.xml
 cp -f ~/armagedon-dayz/server/ce/types_weapons.xml $CE/types_weapons.xml
 cp -f ~/armagedon-dayz/server/ce/types_gear.xml $CE/types_gear.xml
+cp -f ~/armagedon-dayz/server/ce/types_base.xml $CE/types_base.xml
 
 cp -f ~/dayz/@*/keys/*.bikey ~/dayz/keys/ 2>/dev/null || true
 python3 ~/armagedon-dayz/server/mod_types.py

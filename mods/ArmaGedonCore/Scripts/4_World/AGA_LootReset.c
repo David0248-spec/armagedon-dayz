@@ -20,7 +20,7 @@ class AGA_LootReset
 		if (ib.IsInherited(TrapBase) || ib.IsInherited(ExplosivesBase) || ib.IsInherited(FireplaceBase)) return true;
 		if (ib.IsInherited(TerritoryFlagKit) || ib.IsInherited(KitBase)) return true;
 		string t = ib.GetType();
-		if (t.IndexOf("mmg_") == 0 || t.IndexOf("AGA_") == 0 || t.IndexOf("BF_") == 0) return true;
+		if (t.IndexOf("AGA_") == 0) return true;
 		if (AGA_Territory.FlagAt(ib.GetPosition(), 1.2)) return true;
 		return false;
 	}

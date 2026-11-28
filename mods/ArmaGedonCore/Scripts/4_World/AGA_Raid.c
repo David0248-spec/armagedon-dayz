@@ -104,26 +104,90 @@ class AGA_Raid
 	}
 }
 
-// ile trafień potrzeba na jedną część (połowa bramy / ściany); wood = drewno, inaczej metal
+// ============================================================== obrażenia raidowe (tabela jak KarmaKrew)
+// Liczby z tabeli to przebicie całego przejścia: połowa (drewno / metal) + rama.
+//   kule: każde trafienie uderza w jedną strefę -> rama 40% liczby z kolumny drewna,
+//         poszycie drewniane 60%, poszycie metalowe = liczba z kolumny metalu - rama
+//   wybuchy: jeden wybuch rani wszystkie strefy w zasięgu naraz -> każda strefa dostaje pełną liczbę
+// Ładunek improwizowany wybucha ładunkami w środku (plastik, granaty), więc liczy się jak one.
 class AGA_RaidDmg
 {
-	static int Hits(string ammo, bool metal)
+	static const float FRAME_SHARE = 0.4;
+
+	// liczba trafień na przebicie (połowa + rama); explosive = czy to wybuch
+	static void Table(string ammo, out float wood, out float metal, out bool explosive)
 	{
 		string a = ammo;
 		a.ToLower();
-		if (a.IndexOf("plastic") >= 0) return 2;
-		if (a.IndexOf("improvised") >= 0) return 2;
-		if (a.IndexOf("claymore") >= 0) { if (metal) return 15; return 10; }
-		if (a.IndexOf("landmine") >= 0) { if (metal) return 60; return 50; }
-		if (a.IndexOf("grenade") >= 0 || a.IndexOf("rgd") >= 0 || a.IndexOf("m67") >= 0) return 20;
-		if (a.IndexOf("pellet") >= 0) { if (metal) return 215 * 8; return 150 * 8; }
-		if (a.IndexOf("slug") >= 0) { if (metal) return 450; return 350; }
-		if (a.IndexOf("545") >= 0) { if (metal) return 720; return 500; }
-		if (a.IndexOf("556") >= 0) { if (metal) return 720; return 550; }
-		if (a.IndexOf("762x39") >= 0) { if (metal) return 660; return 400; }
-		if (a.IndexOf("762x54") >= 0 || a.IndexOf("308") >= 0 || a.IndexOf("mauser") >= 0 || a.IndexOf("9x39") >= 0) { if (metal) return 360; return 250; }
-		if (a.IndexOf("bullet") >= 0) { if (metal) return 1100; return 800; }
+		explosive = true;
+		wood = 0; metal = 0;
+		if (a.IndexOf("plastic") >= 0) { wood = 3; metal = 3; return; }
+		if (a.IndexOf("claymore") >= 0) { wood = 10; metal = 15; return; }
+		if (a.IndexOf("landmine") >= 0) { wood = 50; metal = 60; return; }
+		if (a.IndexOf("grenade") >= 0 || a.IndexOf("rgd") >= 0 || a.IndexOf("m67") >= 0 || a.IndexOf("40mm_explosive") >= 0) { wood = 20; metal = 20; return; }
+		explosive = false;
+		if (a.IndexOf("pellet") >= 0) { wood = 150 * 8; metal = 215 * 8; return; }
+		if (a.IndexOf("slug") >= 0) { wood = 350; metal = 450; return; }
+		if (a.IndexOf("545") >= 0) { wood = 500; metal = 720; return; }
+		if (a.IndexOf("556") >= 0) { wood = 550; metal = 720; return; }
+		if (a.IndexOf("762x39") >= 0) { wood = 400; metal = 660; return; }
+		if (a.IndexOf("762x54") >= 0 || a.IndexOf("308") >= 0 || a.IndexOf("mauser") >= 0 || a.IndexOf("792x57") >= 0 || a.IndexOf("9x39") >= 0) { wood = 250; metal = 360; return; }
+		if (a.IndexOf("bullet") >= 0) { wood = 800; metal = 1100; return; }
+	}
+
+	// rodzaj strefy budowli bazy: 0 = nie dotyczy (zostaje config), 1 = rama, 2 = drewno, 3 = metal, 4 = cała ściana z bali
+	static int Kind(string zone)
+	{
+		string z = zone;
+		z.ToLower();
+		if (z.IndexOf("spike") >= 0 || z.IndexOf("stairs") >= 0 || z.IndexOf("body") >= 0 || z.IndexOf("furniture") >= 0 || z.IndexOf("shelf") >= 0) return 0;
+		if (z.IndexOf("woodenlogs") >= 0 || z.IndexOf("wire") >= 0 || z.IndexOf("camonet") >= 0) return 0;
+		if (z == "tr_gate") return 2;
+		if (z.IndexOf("metal") >= 0 || z.IndexOf("rollets") >= 0) return 3;
+		if (z.IndexOf("_base") >= 0 || z.IndexOf("frame") >= 0 || z.IndexOf("stand") >= 0) return 1;
+		if (z.IndexOf("wood") >= 0 || z.IndexOf("sashes") >= 0) return 2;
+		if (z.IndexOf("gate") >= 0 || z.IndexOf("wall") >= 0) return 4;
 		return 0;
+	}
+
+	// ile trafień tej amunicji niszczy daną strefę (0 = zostaje zwykły system obrażeń)
+	static float HitsFor(string ammo, int kind)
+	{
+		float wood, metal;
+		bool expl;
+		Table(ammo, wood, metal, expl);
+		if (wood <= 0 || kind <= 0) return 0;
+		if (expl)
+		{
+			if (kind == 3) return metal;
+			return wood;
+		}
+		if (kind == 1) return wood * FRAME_SHARE;
+		if (kind == 2) return wood * (1 - FRAME_SHARE);
+		if (kind == 3) return metal - wood * FRAME_SHARE;
+		return wood;
+	}
+
+	// wybuch: pełne obrażenia do 2,5 m od ładunku, potem coraz mniej, od 6 m nic
+	static float Falloff(EntityAI target, EntityAI source, vector modelPos)
+	{
+		if (!source) return 1;
+		vector hit = target.ModelToWorld(modelPos);
+		if (modelPos == vector.Zero) hit = target.GetPosition();
+		float d = vector.Distance(source.GetPosition(), hit);
+		if (d <= 2.5) return 1;
+		if (d >= 6) return 0;
+		return 1 - (d - 2.5) / 3.5;
+	}
+
+	// stara tabela (inne budowle): liczba trafień na jedną część
+	static float Hits(string ammo, bool metal)
+	{
+		float w, m;
+		bool e;
+		Table(ammo, w, m, e);
+		if (metal) return m;
+		return w;
 	}
 }
 
@@ -133,19 +197,41 @@ modded class BaseBuildingBase
 	{
 		if (AGA_Raid.Block(this, source))
 			return false;
+		if (!GetGame().IsServer() || IsInherited(TerritoryFlag) || dmgZone == "")
+			return super.EEOnDamageCalculated(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+
+		// budowle bazy: stała liczba trafień wg tabeli
+		if (ConfigGetBool("AG_BaseBuilding"))
+		{
+			int kind = AGA_RaidDmg.Kind(dmgZone);
+			if (kind == 0)
+				return super.EEOnDamageCalculated(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+			// ścian i drzwi nie da się rozbić bronią białą
+			if (damageType == DamageType.CLOSE_COMBAT)
+				return false;
+			float n = AGA_RaidDmg.HitsFor(ammo, kind);
+			if (n <= 0)
+				return false;
+			float f = 1;
+			if (damageType == DamageType.EXPLOSION)
+				f = AGA_RaidDmg.Falloff(this, source, modelPos);
+			float mx = GetMaxHealth(dmgZone, "Health");
+			if (mx > 0 && f > 0)
+				DecreaseHealth(dmgZone, "Health", mx * f / n);
+			return false;
+		}
+
 		if (!super.EEOnDamageCalculated(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef))
 			return false;
-		// obrażenia raidowe wg tabeli: stała liczba trafień na część, niezależnie od broni z modów
-		if (!GetGame().IsServer() || IsInherited(TerritoryFlag) || dmgZone == "" || damageType == DamageType.CLOSE_COMBAT)
+		if (damageType == DamageType.CLOSE_COMBAT)
 			return true;
 		string z = dmgZone;
 		z.ToLower();
-		bool metal = z.IndexOf("metal") >= 0;
-		int n = AGA_RaidDmg.Hits(ammo, metal);
-		if (n <= 0) return true;
-		float mx = GetMaxHealth(dmgZone, "Health");
-		if (mx <= 0) return true;
-		DecreaseHealth(dmgZone, "Health", mx / n);
+		float hits = AGA_RaidDmg.Hits(ammo, z.IndexOf("metal") >= 0);
+		if (hits <= 0) return true;
+		float m2 = GetMaxHealth(dmgZone, "Health");
+		if (m2 <= 0) return true;
+		DecreaseHealth(dmgZone, "Health", m2 / hits);
 		return false;
 	}
 }

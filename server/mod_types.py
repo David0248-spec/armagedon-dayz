@@ -70,7 +70,7 @@ def block(name, nominal, cat, usages, tiers, lifetime=5400):
             '\t\t<category name="%s"/>\n%s%s\t</type>\n') % (name, nominal, lifetime, RESTOCK.get(cat, RESTOCK.get('default', 1800)), max(1, nominal // 2), cat, u, v)
 
 for f in glob.glob(os.path.join(CE, 'types_*.xml')):
-    if f.endswith(('types_helis.xml', 'types_aga.xml')):
+    if f.endswith(('types_helis.xml', 'types_aga.xml', 'types_base.xml')):
         continue
     s = open(f, errors='ignore').read().replace('\r', '')
     before = len(names(s))
